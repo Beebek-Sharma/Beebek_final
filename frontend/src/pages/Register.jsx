@@ -80,7 +80,7 @@ const Register = () => {
           )}
           
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <div className="rounded-md shadow-sm -space-y-px">
+            <div className="rounded-md shadow-sm -space-y-4px">
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                   <label htmlFor="first_name" className="sr-only">First Name</label>

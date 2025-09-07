@@ -69,8 +69,8 @@ const Login = () => {
           )}
           
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <div className="rounded-md shadow-sm -space-y-px">
-              <div>
+            <div className="rounded-md shadow-sm space-y-4px">
+              <div className='mb-4'>
                 <label htmlFor="username" className="sr-only">Username</label>
                 <input
                   id="username"

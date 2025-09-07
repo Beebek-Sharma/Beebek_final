@@ -45,12 +45,12 @@ const UniversityList = () => {
             <label htmlFor="search" className="block text-sm font-medium text-gray-700">
               Search
             </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
+            <div className="mt-1 relative rounded-md shadow-sm ">
               <input
                 type="text"
                 name="search"
                 id="search"
-                className="focus:ring-primary-500 focus:border-primary-500 block w-full pl-3 pr-12 sm:text-sm border-gray-300 rounded-md"
+                className="focus:ring-primary-500 focus:border-primary-500 block w-full p-[12px] sm:text-sm border-gray-300 rounded-md"
                 placeholder="Search by name or location"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
