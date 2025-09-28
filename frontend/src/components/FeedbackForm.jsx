@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '../contexts/AuthContext';
+import { useUser, useAuth } from '@clerk/clerk-react';
 
 const FeedbackForm = () => {
   const [subject, setSubject] = useState('');
@@ -8,7 +8,8 @@ const FeedbackForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const { user } = useAuth(); // Changed from authTokens to user
+  const { user, isLoaded, isSignedIn } = useUser();
+  const { getToken } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,17 +19,12 @@ const FeedbackForm = () => {
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      const token = localStorage.getItem('authToken');
-      
-      console.log('API URL:', apiUrl);
-      console.log('Using auth token:', token ? 'Token exists' : 'No token found');
-      
+      const token = await getToken();
       if (!token) {
         setError('Authentication token not found. Please log in again.');
         setLoading(false);
         return;
       }
-      
       const response = await axios.post(
         `${apiUrl}/api/feedback/`,
         { subject, message },

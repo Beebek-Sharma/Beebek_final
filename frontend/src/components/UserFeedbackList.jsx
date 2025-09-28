@@ -1,28 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAuth } from '../contexts/AuthContext';
+import { useUser, useAuth } from '@clerk/clerk-react';
 
 const UserFeedbackList = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { user } = useAuth(); // Changed from authTokens to user
+  const { user, isLoaded, isSignedIn } = useUser();
+  const { getToken } = useAuth();
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-        const token = localStorage.getItem('authToken');
-        
-        console.log('API URL for fetching feedbacks:', apiUrl);
-        console.log('Using auth token:', token ? 'Token exists' : 'No token found');
-        
+        const token = await getToken();
         if (!token) {
           setError('Authentication token not found. Please log in again.');
           setLoading(false);
           return;
         }
-        
         const response = await axios.get(
           `${apiUrl}/api/feedback/`,
           {

@@ -3,12 +3,12 @@ import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useAuth } from '../contexts/AuthContext';
+import { useUser } from '@clerk/clerk-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const CourseComparison = () => {
-  const { isAuthenticated } = useAuth();
+  const { isSignedIn, isLoaded } = useUser();
   const location = useLocation();
   const initialCourseId = location.state?.courseId;
   
@@ -81,7 +81,7 @@ const CourseComparison = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-3xl font-bold text-gray-900">Compare Courses</h1>
         
-        {!isAuthenticated ? (
+  {!isSignedIn ? (
           <div className="mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-4">
             <div className="flex">
               <div className="ml-3">

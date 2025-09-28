@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useAuth } from '../contexts/AuthContext';
+import { useUser, useAuth } from '@clerk/clerk-react';
 
 const AdminFeedbackManager = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -10,7 +10,8 @@ const AdminFeedbackManager = () => {
   const [submitting, setSubmitting] = useState({});
   const [success, setSuccess] = useState({});
   const [activeTab, setActiveTab] = useState('pending');
-  const { user } = useAuth(); // Changed from authTokens to user
+  const { user, isLoaded, isSignedIn } = useUser();
+  const { getToken } = useAuth();
 
   useEffect(() => {
     fetchFeedbacks();
@@ -19,17 +20,12 @@ const AdminFeedbackManager = () => {
   const fetchFeedbacks = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      const token = localStorage.getItem('authToken');
-      
-      console.log('Admin feedback API URL:', apiUrl);
-      console.log('Using auth token:', token ? 'Token exists' : 'No token found');
-      
+      const token = await getToken();
       if (!token) {
         setError('Authentication token not found. Please log in again.');
         setLoading(false);
         return;
       }
-      
       const response = await axios.get(
         `${apiUrl}/api/feedback/`,
         {
@@ -38,8 +34,6 @@ const AdminFeedbackManager = () => {
           },
         }
       );
-      
-      console.log('Admin feedbacks response:', response.data);
       setFeedbacks(response.data);
     } catch (error) {
       console.error('Error fetching admin feedbacks:', error.response?.data || error.message);
@@ -70,17 +64,12 @@ const AdminFeedbackManager = () => {
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      const token = localStorage.getItem('authToken');
-      
+      const token = await getToken();
       if (!token) {
         alert('Authentication token not found. Please log in again.');
         setSubmitting({ ...submitting, [feedbackId]: false });
         return;
       }
-      
-      console.log(`Submitting response to feedback ${feedbackId} to ${apiUrl}`);
-      
-      // The backend will automatically mark the feedback as resolved when we send a response
       const response = await axios.post(
         `${apiUrl}/api/feedback/${feedbackId}/respond/`,
         { message: responseMessages[feedbackId] },
@@ -91,12 +80,8 @@ const AdminFeedbackManager = () => {
           },
         }
       );
-      
-      console.log('Response submission response:', response.data);
       setSuccess({ ...success, [feedbackId]: true });
       setResponseMessages({ ...responseMessages, [feedbackId]: '' });
-      
-      // After responding, refresh the list to update UI
       fetchFeedbacks();
     } catch (error) {
       console.error('Error submitting response:', error.response?.data || error.message);
@@ -109,18 +94,14 @@ const AdminFeedbackManager = () => {
   const markAsResolved = async (feedbackId, currentStatus) => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      const token = localStorage.getItem('authToken');
-      
+      const token = await getToken();
       if (!token) {
         alert('Authentication token not found. Please log in again.');
         return;
       }
-      
-      console.log(`Marking feedback ${feedbackId} as ${!currentStatus ? 'resolved' : 'pending'}`);
-      
       const response = await axios.patch(
         `${apiUrl}/api/feedback/${feedbackId}/`,
-        { is_resolved: !currentStatus },  // Changed 'resolved' to 'is_resolved' to match the model field name
+        { is_resolved: !currentStatus },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -128,9 +109,7 @@ const AdminFeedbackManager = () => {
           },
         }
       );
-      
-      console.log('Status update response:', response.data);
-      fetchFeedbacks(); // Refresh the list
+      fetchFeedbacks();
     } catch (error) {
       console.error('Error updating feedback status:', error.response?.data || error.message);
       alert(`Error updating status: ${error.response?.data?.error || error.message || 'Unknown error'}`);

@@ -68,14 +68,3 @@ The API will be available at http://localhost:8000/api/
 - `POST /api/saved-courses/` - Save a course
 - `DELETE /api/saved-courses/<id>/` - Remove a saved course
 
-## Sample Users
-
-After running the populate_db command, the following users will be available:
-
-- Admin User:
-  - Username: admin
-  - Password: adminpassword
-
-- Student User:
-  - Username: student
-  - Password: studentpassword

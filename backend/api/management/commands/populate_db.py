@@ -9,27 +9,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write('Populating database...')
         
-        # Create admin user
-        if not User.objects.filter(username='admin').exists():
-            admin = User.objects.create_user(
-                username='admin',
-                email='admin@example.com',
-                password='adminpassword',
-                is_staff=True,
-                is_superuser=True
-            )
-            UserProfile.objects.create(user=admin, role='admin')
-            self.stdout.write(self.style.SUCCESS('Admin user created'))
-        
-        # Create test user
-        if not User.objects.filter(username='student').exists():
-            student = User.objects.create_user(
-                username='student',
-                email='student@example.com',
-                password='studentpassword'
-            )
-            UserProfile.objects.create(user=student, role='student')
-            self.stdout.write(self.style.SUCCESS('Student user created'))
+    # Default admin and student user creation removed. Use Django's createsuperuser command to create a superuser.
         
         # Create universities
         universities_data = [

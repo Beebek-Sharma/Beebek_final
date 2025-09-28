@@ -76,16 +76,22 @@ def get_user_profile(request):
 # University and Course views
 @api_view(['GET', 'POST'])
 def list_universities(request):
+    import logging
+    logger = logging.getLogger("universities_view")
     if request.method == 'GET':
+        logger.info(f"GET universities: user={request.user}, is_authenticated={request.user.is_authenticated}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
         universities = University.objects.all()
         serializer = UniversitySerializer(universities, many=True)
         return Response(serializer.data)
-    
     elif request.method == 'POST':
-        # Check if the user is admin
-        if not request.user.is_authenticated or not request.user.profile.role == 'admin':
+        is_admin = request.user.is_authenticated and (
+            (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or 
+            request.user.is_superuser
+        )
+        logger.info(f"POST universities: user={request.user}, is_admin={is_admin}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
+        if not is_admin:
+            logger.warning(f"403 Forbidden: user={request.user}, is_admin={is_admin}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
             return Response({'error': 'Only admins can create universities'}, status=status.HTTP_403_FORBIDDEN)
-        
         serializer = UniversitySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -103,8 +109,12 @@ def university_detail(request, pk):
         serializer = UniversitySerializer(university)
         return Response(serializer.data)
     
-    # Check if user is admin for modifying operations
-    if not request.user.is_authenticated or not request.user.profile.role == 'admin':
+    # Check if user is admin or superuser for modifying operations
+    is_admin = request.user.is_authenticated and (
+        (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or 
+        request.user.is_superuser
+    )
+    if not is_admin:
         return Response({'error': 'Only admins can modify universities'}, status=status.HTTP_403_FORBIDDEN)
     
     if request.method == 'PUT':
@@ -120,34 +130,35 @@ def university_detail(request, pk):
 
 @api_view(['GET', 'POST'])
 def list_courses(request):
+    import logging
+    logger = logging.getLogger("courses_view")
     if request.method == 'GET':
+        logger.info(f"GET courses: user={request.user}, is_authenticated={request.user.is_authenticated}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
         query = request.query_params.get('query', '')
         university_id = request.query_params.get('university', None)
         level = request.query_params.get('level', None)
-        
         courses = Course.objects.all()
-        
         if query:
             courses = courses.filter(
                 Q(name__icontains=query) | 
                 Q(description__icontains=query) |
                 Q(university__name__icontains=query)
             )
-        
         if university_id:
             courses = courses.filter(university__id=university_id)
-            
         if level:
             courses = courses.filter(level=level)
-        
         serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data)
-    
     elif request.method == 'POST':
-        # Check if the user is admin
-        if not request.user.is_authenticated or not request.user.profile.role == 'admin':
+        is_admin = request.user.is_authenticated and (
+            (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or 
+            request.user.is_superuser
+        )
+        logger.info(f"POST courses: user={request.user}, is_admin={is_admin}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
+        if not is_admin:
+            logger.warning(f"403 Forbidden: user={request.user}, is_admin={is_admin}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
             return Response({'error': 'Only admins can create courses'}, status=status.HTTP_403_FORBIDDEN)
-        
         serializer = CourseSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -165,8 +176,12 @@ def course_detail(request, pk):
         serializer = CourseSerializer(course)
         return Response(serializer.data)
     
-    # Check if user is admin for modifying operations
-    if not request.user.is_authenticated or not request.user.profile.role == 'admin':
+    # Check if user is admin or superuser for modifying operations
+    is_admin = request.user.is_authenticated and (
+        (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or 
+        request.user.is_superuser
+    )
+    if not is_admin:
         return Response({'error': 'Only admins can modify courses'}, status=status.HTTP_403_FORBIDDEN)
     
     if request.method == 'PUT':
@@ -216,10 +231,13 @@ def user_saved_courses(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def list_users(request):
-    # Check if user is admin
-    if not request.user.profile.role == 'admin':
+    import logging
+    logger = logging.getLogger("users_view")
+    is_admin = (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or request.user.is_superuser
+    logger.info(f"GET users: user={request.user}, is_authenticated={request.user.is_authenticated}, is_admin={is_admin}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
+    if not is_admin:
+        logger.warning(f"403 Forbidden: user={request.user}, is_admin={is_admin}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
         return Response({'error': 'Only admins can access user list'}, status=status.HTTP_403_FORBIDDEN)
-    
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
@@ -228,8 +246,9 @@ def list_users(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def user_detail(request, pk):
-    # Check if user is admin
-    if not request.user.profile.role == 'admin':
+    # Check if user is admin or superuser
+    is_admin = (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or request.user.is_superuser
+    if not is_admin:
         return Response({'error': 'Only admins can manage users'}, status=status.HTTP_403_FORBIDDEN)
     
     try:
@@ -326,7 +345,7 @@ def feedback_detail(request, pk):
     
     if request.method == 'DELETE':
         # Allow admin or the feedback creator to delete
-        is_admin = hasattr(request.user, 'profile') and request.user.profile.role == 'admin'
+        is_admin = (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or request.user.is_superuser
         if is_admin or feedback.user == request.user:
             feedback.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -337,7 +356,7 @@ def feedback_detail(request, pk):
 @permission_classes([IsAuthenticated])
 def feedback_response_create(request, feedback_id):
     # Only admins can respond to feedback
-    is_admin = hasattr(request.user, 'profile') and request.user.profile.role == 'admin'
+    is_admin = (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or request.user.is_superuser
     if not is_admin:
         return Response({'error': 'Only admins can respond to feedback'}, 
                        status=status.HTTP_403_FORBIDDEN)

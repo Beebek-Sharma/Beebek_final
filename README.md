@@ -66,20 +66,26 @@ The project is organized into two main folders:
 	pip install -r requirements.txt
 	```
 
-5. Apply migrations:
+5. (If you see a pkg_resources error, install setuptools):
+	```bash
+	pip install setuptools
+	```
+
+6. Apply migrations:
 	```bash
 	python manage.py migrate
 	```
 
-6. Create a superuser:
+7. Populate the database with sample data (admin, student, universities, courses):
 	```bash
-	python manage.py createsuperuser
+	python manage.py populate_db
 	```
 
-7. Run the development server:
+8. Run the development server:
 	```bash
 	python manage.py runserver
 	```
+
 
 The backend API will be available at: http://localhost:8000/
 

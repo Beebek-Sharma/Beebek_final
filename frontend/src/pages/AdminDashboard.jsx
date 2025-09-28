@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useAuth } from '../contexts/AuthContext';
+import { useUser, useAuth } from '@clerk/clerk-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const AdminDashboard = () => {
-  const { user } = useAuth();
+  const { user, isLoaded } = useUser();
+  const { getToken } = useAuth();
   const [activeTab, setActiveTab] = useState('universities');
   const [universities, setUniversities] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -49,8 +50,12 @@ const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('authToken');
-        
+        const token = await getToken();
+        if (!token) {
+          setError('Authentication token not found. Please log in again.');
+          setLoading(false);
+          return;
+        }
         if (activeTab === 'universities') {
           const response = await axios.get(`${API_URL}/api/universities/`, {
             headers: { Authorization: `Bearer ${token}` }
@@ -72,11 +77,7 @@ const AdminDashboard = () => {
             setUsers(response.data);
           } catch (error) {
             console.error('Error fetching users:', error);
-            // Fallback to mock data if endpoint not available yet
-            setUsers([
-              { id: 1, username: 'student1', email: 'student1@example.com', role: 'student' },
-              { id: 2, username: 'admin', email: 'admin@example.com', role: 'admin' },
-            ]);
+            setUsers([]);
           }
         }
       } catch (err) {
@@ -106,8 +107,12 @@ const AdminDashboard = () => {
   const handleEdit = async (id) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('authToken');
-      
+      const token = await getToken();
+      if (!token) {
+        setError('Authentication token not found. Please log in again.');
+        setLoading(false);
+        return;
+      }
       if (activeTab === 'universities') {
         const response = await axios.get(`${API_URL}/api/universities/${id}/`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -129,7 +134,6 @@ const AdminDashboard = () => {
           setFormData(userData);
         }
       }
-      
       setEditMode(true);
       setEditItemId(id);
       setShowForm(true);
@@ -145,11 +149,14 @@ const AdminDashboard = () => {
     if (!confirm('Are you sure you want to delete this item? This action cannot be undone.')) {
       return;
     }
-    
     try {
       setLoading(true);
-      const token = localStorage.getItem('authToken');
-      
+      const token = await getToken();
+      if (!token) {
+        setError('Authentication token not found. Please log in again.');
+        setLoading(false);
+        return;
+      }
       if (activeTab === 'universities') {
         await axios.delete(`${API_URL}/api/universities/${id}/`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -167,13 +174,11 @@ const AdminDashboard = () => {
         if (user && user.id === id) {
           throw new Error('You cannot delete your own account while logged in.');
         }
-        
         await axios.delete(`${API_URL}/api/users/${id}/`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUsers(users.filter(u => u.id !== id));
       }
-      
       setLoading(false);
       setError('');
       alert('Item deleted successfully!');
@@ -187,8 +192,11 @@ const AdminDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('authToken');
-      
+      const token = await getToken();
+      if (!token) {
+        setError('Authentication token not found. Please log in again.');
+        return;
+      }
       if (activeTab === 'universities') {
         if (editMode) {
           // Update existing university
@@ -238,14 +246,12 @@ const AdminDashboard = () => {
           // Update existing user
           // Don't send password in update request
           const { password, ...userData } = formData;
-          
           const response = await axios.put(`${API_URL}/api/users/${editItemId}/`, userData, {
             headers: { 
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             }
           });
-          
           // Update the users list with the updated item
           if (response.data) {
             setUsers(users.map(user => user.id === editItemId ? response.data : user));
@@ -262,16 +268,13 @@ const AdminDashboard = () => {
               role: formData.role // Also include it in profile for backend processing
             }
           };
-          
           console.log('Sending user data:', userData);
-          
           const response = await axios.post(`${API_URL}/api/auth/register/`, userData, {
             headers: { 
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
             }
           });
-          
           // If we get back user data, add it to our list
           if (response.data && response.data.user) {
             const newUser = response.data.user;
@@ -279,17 +282,14 @@ const AdminDashboard = () => {
           }
         }
       }
-      
       // Reset form and hide it
       setFormData(initialFormState[activeTab]);
       setShowForm(false);
       setEditMode(false);
       setEditItemId(null);
-      
       // Show success message
       setError('');
       alert(editMode ? 'Successfully updated!' : 'Successfully added!');
-      
     } catch (err) {
       console.error('Error submitting form:', err);
       setError(`Could not save data: ${err.response?.data?.error || err.message}`);

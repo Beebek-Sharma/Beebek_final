@@ -1,11 +1,17 @@
 import React from 'react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import AdminFeedbackManager from '../components/AdminFeedbackManager';
 
 const AdminFeedback = () => {
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8">Admin Feedback Management</h1>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Header />
+      <h1 className="text-3xl font-bold mb-8 pt-2">Admin Feedback Management</h1>
       <AdminFeedbackManager />
+      <div className="mt-auto">
+      <Footer />
+      </div>
     </div>
   );
 };

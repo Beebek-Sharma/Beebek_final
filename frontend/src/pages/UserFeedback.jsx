@@ -1,11 +1,11 @@
 import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useUser } from '@clerk/clerk-react';
 import FeedbackForm from '../components/FeedbackForm';
 import UserFeedbackList from '../components/UserFeedbackList';
 import Header from '../components/Header';
 
 const UserFeedback = () => {
-  const { user } = useAuth();
+  const { user, isLoaded } = useUser();
 
   return (
     <div className="container mx-auto">
