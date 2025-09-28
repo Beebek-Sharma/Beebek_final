@@ -32,9 +32,15 @@ const CourseDetail = () => {
         
         // Check if course is saved by the user
         if (isSignedIn) {
-          // Clerk: get token if needed, or adjust API to use Clerk session
-          // For now, skip token and just setSaved(false) as placeholder
-          setSaved(false); // TODO: Integrate Clerk session with backend if needed
+          try {
+            const savedResponse = await axiosInstance.get('/user/saved-courses/');
+            const isSaved = savedResponse.data.some(item => item.course == id);
+            setSaved(isSaved);
+          } catch (err) {
+            console.error('Error checking if course is saved:', err);
+            // Default to not saved if there's an error
+            setSaved(false);
+          }
         }
       } catch (err) {
         console.error('Error fetching course details:', err);
@@ -55,8 +61,20 @@ const CourseDetail = () => {
     
     try {
       setSavingStatus({ loading: true, error: '' });
-  // Clerk: Integrate with backend if needed, for now just toggle saved state
-  setSaved(!saved);
+      
+      if (saved) {
+        // If already saved, remove from saved courses
+        await axiosInstance.delete('/user/saved-courses/', {
+          data: { course_id: id }
+        });
+        setSaved(false);
+      } else {
+        // If not saved, add to saved courses
+        await axiosInstance.post('/user/saved-courses/', { 
+          course_id: id 
+        });
+        setSaved(true);
+      }
     } catch (err) {
       console.error('Error saving/unsaving course:', err);
       setSavingStatus({ 

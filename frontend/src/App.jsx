@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import Routes from './Routes';
 import Sidebar from './components/Sidebar';
+import ClerkAuthListener from './components/ClerkAuthListener';
 import {
   SignedIn,
   SignedOut,
@@ -14,6 +15,7 @@ import {
 function App() {
   return (
     <BrowserRouter>
+      <ClerkAuthListener />
       <Sidebar />
       <Routes />
     </BrowserRouter>

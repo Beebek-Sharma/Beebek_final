@@ -31,7 +31,7 @@ const UniversityDetail = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        
+        <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
@@ -44,6 +44,7 @@ const UniversityDetail = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50">
+        <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="bg-red-50 border-l-4 border-red-400 p-4">
             <div className="flex">
@@ -68,7 +69,7 @@ const UniversityDetail = () => {
   if (!university) {
     return (
       <div className="min-h-screen bg-gray-50">
-      
+      <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
             <div className="flex">
@@ -92,7 +93,7 @@ const UniversityDetail = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-     
+      <Header />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="lg:flex lg:items-center lg:justify-between mb-8">

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useUser } from '@clerk/clerk-react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import axiosInstance from '../utils/axiosConfig';
 
 const UserDashboard = () => {
   const { user, isLoaded } = useUser();
@@ -15,13 +13,12 @@ const UserDashboard = () => {
 
   useEffect(() => {
     const fetchSavedCourses = async () => {
+      if (!isLoaded || !user) {
+        return;
+      }
+      
       try {
-        const token = localStorage.getItem('authToken');
-        const response = await axios.get(`${API_URL}/api/user/saved-courses/`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        const response = await axiosInstance.get('/user/saved-courses/');
         setSavedCourses(response.data);
       } catch (err) {
         console.error('Error fetching saved courses:', err);
@@ -32,15 +29,11 @@ const UserDashboard = () => {
     };
 
     fetchSavedCourses();
-  }, []);
+  }, [isLoaded, user]);
 
   const handleRemoveCourse = async (courseId) => {
     try {
-      const token = localStorage.getItem('authToken');
-      await axios.delete(`${API_URL}/api/user/saved-courses/`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
+      await axiosInstance.delete('/user/saved-courses/', {
         data: {
           course_id: courseId
         }
