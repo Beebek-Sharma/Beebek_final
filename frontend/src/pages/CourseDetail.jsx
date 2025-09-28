@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useUser } from '@clerk/clerk-react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import CompareButton from '../components/CompareButton';
+import CompareFloatingButton from '../components/CompareFloatingButton';
+import axiosInstance from '../utils/axiosConfig';
 
 const CourseDetail = () => {
   const { id } = useParams();
@@ -21,12 +21,12 @@ const CourseDetail = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/courses/${id}/`);
+        const response = await axiosInstance.get(`/courses/${id}/`);
         setCourse(response.data);
         
         // Fetch university details if needed
         if (response.data.university) {
-          const uniResponse = await axios.get(`${API_URL}/api/universities/${response.data.university}/`);
+          const uniResponse = await axiosInstance.get(`/universities/${response.data.university}/`);
           setUniversity(uniResponse.data);
         }
         
@@ -165,15 +165,9 @@ const CourseDetail = () => {
                 )}
               </button>
               
-              {isSignedIn && (
-                <Link
-                  to="/compare-courses"
-                  state={{ courseId: course.id }}
-                  className="mt-3 sm:mt-0 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                >
-                  Compare
-                </Link>
-              )}
+              <div className="mt-3 sm:mt-0">
+                <CompareButton courseId={course.id} />
+              </div>
             </div>
           </div>
           
@@ -278,6 +272,9 @@ const CourseDetail = () => {
       <div className="mt-auto">
         <Footer />
       </div>
+      
+      {/* Floating comparison button */}
+      <CompareFloatingButton />
     </div>
   );
 };

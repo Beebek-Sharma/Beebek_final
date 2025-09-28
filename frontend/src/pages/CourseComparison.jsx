@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useUser } from '@clerk/clerk-react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import axiosInstance from '../utils/axiosConfig';
 
 const CourseComparison = () => {
   const { isSignedIn, isLoaded } = useUser();
@@ -13,9 +11,20 @@ const CourseComparison = () => {
   const initialCourseId = location.state?.courseId;
   
   const [courses, setCourses] = useState([]);
-  const [selectedCourses, setSelectedCourses] = useState(
-    initialCourseId ? [initialCourseId] : []
-  );
+  const [selectedCourses, setSelectedCourses] = useState(() => {
+    // Try to get selected courses from localStorage first
+    const savedCourses = localStorage.getItem('compareCourses');
+    if (savedCourses) {
+      try {
+        const parsedCourses = JSON.parse(savedCourses);
+        return parsedCourses.map(id => parseInt(id)); // Ensure all IDs are numbers
+      } catch (e) {
+        console.error('Error parsing saved courses', e);
+      }
+    }
+    // Fall back to the initial course from route state
+    return initialCourseId ? [initialCourseId] : [];
+  });
   const [loading, setLoading] = useState(true);
   const [compareData, setCompareData] = useState([]);
   const [error, setError] = useState('');
@@ -23,7 +32,7 @@ const CourseComparison = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/courses/`);
+        const response = await axiosInstance.get('/courses/');
         setCourses(response.data);
       } catch (err) {
         console.error('Error fetching courses:', err);
@@ -47,7 +56,7 @@ const CourseComparison = () => {
         setLoading(true);
         const courseData = await Promise.all(
           selectedCourses.map(async (courseId) => {
-            const response = await axios.get(`${API_URL}/api/courses/${courseId}/`);
+            const response = await axiosInstance.get(`/courses/${courseId}/`);
             return response.data;
           })
         );
@@ -61,6 +70,14 @@ const CourseComparison = () => {
     };
 
     fetchCompareData();
+  }, [selectedCourses]);
+  
+  // Update localStorage when selected courses change
+  useEffect(() => {
+    localStorage.setItem('compareCourses', JSON.stringify(selectedCourses));
+    
+    // Dispatch a storage event to notify other components
+    window.dispatchEvent(new Event('storage'));
   }, [selectedCourses]);
 
   const handleCourseSelect = (e) => {

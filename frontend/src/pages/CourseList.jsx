@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import CompareButton from '../components/CompareButton';
+import CompareFloatingButton from '../components/CompareFloatingButton';
+import axiosInstance from '../utils/axiosConfig';
 
 const CourseList = () => {
   const [courses, setCourses] = useState([]);
@@ -23,7 +23,7 @@ const CourseList = () => {
     const fetchData = async () => {
       try {
         // Fetch all universities for the filter
-        const uniResponse = await axios.get(`${API_URL}/api/universities/`);
+        const uniResponse = await axiosInstance.get(`/universities/`);
         setUniversities(uniResponse.data);
         
         // Parse query parameters from the URL
@@ -39,11 +39,11 @@ const CourseList = () => {
         });
         
         // Fetch courses with the filters
-        let url = `${API_URL}/api/courses/?query=${initialQuery}`;
+        let url = `/courses/?query=${initialQuery}`;
         if (initialUniversity) url += `&university=${initialUniversity}`;
         if (initialLevel) url += `&level=${initialLevel}`;
         
-        const courseResponse = await axios.get(url);
+        const courseResponse = await axiosInstance.get(url);
         setCourses(courseResponse.data);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -62,11 +62,11 @@ const CourseList = () => {
     try {
       setLoading(true);
       
-      let url = `${API_URL}/api/courses/?query=${searchQuery}`;
+      let url = `/courses/?query=${searchQuery}`;
       if (filters.university) url += `&university=${filters.university}`;
       if (filters.level) url += `&level=${filters.level}`;
       
-      const response = await axios.get(url);
+      const response = await axiosInstance.get(url);
       setCourses(response.data);
     } catch (err) {
       console.error('Error searching courses:', err);
@@ -223,12 +223,15 @@ const CourseList = () => {
                       <span className="text-sm font-medium text-gray-900">
                         ${course.fees}
                       </span>
-                      <Link
-                        to={`/courses/${course.id}`}
-                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
-                      >
-                        View Details
-                      </Link>
+                      <div className="flex space-x-3">
+                        <CompareButton courseId={course.id} />
+                        <Link
+                          to={`/courses/${course.id}`}
+                          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
+                        >
+                          View Details
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -240,6 +243,9 @@ const CourseList = () => {
       <div className="mt-auto">
         <Footer />
       </div>
+      
+      {/* Floating comparison button */}
+      <CompareFloatingButton />
     </div>
   );
 };

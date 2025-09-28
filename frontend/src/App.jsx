@@ -1,6 +1,8 @@
 
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import Routes from './Routes';
+import Sidebar from './components/Sidebar';
 import {
   SignedIn,
   SignedOut,
@@ -11,10 +13,10 @@ import {
 
 function App() {
   return (
-    <>
-  {/* Removed duplicate UserButton from header. The correct user icon is in the Header component. */}
+    <BrowserRouter>
+      <Sidebar />
       <Routes />
-    </>
+    </BrowserRouter>
   );
 }
 

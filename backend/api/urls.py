@@ -6,6 +6,9 @@ from .views import (
     user_saved_courses, list_users, user_detail,
     feedback_list, feedback_detail, feedback_response_create
 )
+from .views_search import search
+from .views_popular import popular_items
+from .views_notifications import feedback_unread, feedback_mark_read, feedback_mark_all_read
 
 urlpatterns = [
     path('hello/', hello, name='hello'),
@@ -34,4 +37,15 @@ urlpatterns = [
     path('feedback/', feedback_list, name='feedback_list'),
     path('feedback/<int:pk>/', feedback_detail, name='feedback_detail'),
     path('feedback/<int:feedback_id>/respond/', feedback_response_create, name='feedback_response_create'),
+    
+    # Notifications
+    path('notifications/feedback/', feedback_unread, name='feedback_unread'),
+    path('notifications/feedback/<int:pk>/mark-read/', feedback_mark_read, name='feedback_mark_read'),
+    path('notifications/feedback/mark-all-read/', feedback_mark_all_read, name='feedback_mark_all_read'),
+    
+    # Search
+    path('search/', search, name='search'),
+    
+    # Popular items
+    path('popular/', popular_items, name='popular_items'),
 ]

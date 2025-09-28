@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes as RouterRoutes, Route } from "react-router-dom";
+import { Routes as RouterRoutes, Route } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -21,13 +21,13 @@ import UserFeedback from "./pages/UserFeedback";
 import AdminFeedback from "./pages/AdminFeedback";
 import About from "./pages/About";
 import ContactUs from "./pages/ContactUs";
+import SearchPage from "./pages/SearchPage";
 
 const Routes = () => {
   return (
-    <BrowserRouter>
-      <ErrorBoundary>
-        <ScrollToTop />
-        <RouterRoutes>
+    <ErrorBoundary>
+      <ScrollToTop />
+      <RouterRoutes>
           {/* Public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -38,6 +38,7 @@ const Routes = () => {
           <Route path="/universities/:id" element={<UniversityDetail />} />
           <Route path="/courses" element={<CourseList />} />
           <Route path="/courses/:id" element={<CourseDetail />} />
+          <Route path="/search" element={<SearchPage />} />
           
           {/* Protected routes */}
           <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
@@ -52,7 +53,6 @@ const Routes = () => {
           <Route path="*" element={<NotFound />} />
         </RouterRoutes>
       </ErrorBoundary>
-    </BrowserRouter>
   );
 };
 
