@@ -48,7 +48,7 @@ const UniversityList = () => {
                 type="text"
                 name="search"
                 id="search"
-                className="focus:ring-primary-500 focus:border-primary-500 block w-full p-[12px] sm:text-sm border-gray-300 rounded-md"
+                className="focus:ring-primary-500 focus:border-primary-500 block w-full p-[8px] sm:text-sm border-gray-300 rounded-md"
                 placeholder="Search by name or location"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}

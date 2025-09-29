@@ -461,3 +461,19 @@ def feedback_response_create(request, feedback_id):
         # Return the serialized response data
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def featured_feedback(request):
+    """
+    Get a list of featured feedback entries with admin responses.
+    This endpoint is used for the homepage sidebar.
+    """
+    # Get feedback that has responses and is resolved
+    featured = Feedback.objects.filter(
+        is_resolved=True, 
+        responses__isnull=False
+    ).distinct().order_by('-created_at')[:5]
+    
+    serializer = FeedbackSerializer(featured, many=True)
+    return Response(serializer.data)

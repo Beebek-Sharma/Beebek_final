@@ -109,7 +109,7 @@ const CourseList = () => {
                       name="search"
                       id="search"
                       placeholder="Search courses..."
-                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full p-[8px] shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />

@@ -4,7 +4,7 @@ from .views import (
     hello, submissions, register_user, login_user, get_user_profile, update_user_profile,
     list_universities, university_detail, list_courses, course_detail,
     user_saved_courses, list_users, user_detail,
-    feedback_list, feedback_detail, feedback_response_create
+    feedback_list, feedback_detail, feedback_response_create, featured_feedback
 )
 from .views_search import search
 from .views_popular import popular_items
@@ -49,4 +49,7 @@ urlpatterns = [
     
     # Popular items
     path('popular/', popular_items, name='popular_items'),
+    
+    # Featured feedback for homepage
+    path('featured-feedback/', featured_feedback, name='featured_feedback'),
 ]
