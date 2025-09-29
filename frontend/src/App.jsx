@@ -47,7 +47,7 @@ function App() {
   return (
     <BrowserRouter>
       <ClerkAuthListener />
-      <div className="flex flex-col h-screen bg-gray-50 dark:bg-github-dark">
+      <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-github-dark">
         {/* Fixed Header - Always at the top, doesn't move with sidebar */}
         <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
         
@@ -71,10 +71,12 @@ function App() {
             />
           )}
           
-          {/* Main content area - Doesn't shift when sidebar opens/closes - Medium-style */}
-          <main className="flex-1 overflow-y-auto p-4 pt-20 md:p-8 md:pt-20">
-            <Routes />
-          </main>
+          {/* Main content area with Routes - Doesn't shift when sidebar opens/closes */}
+          <div className="flex flex-col flex-1">
+            <main className="flex-1 overflow-y-auto no-scrollbar p-4 pt-20 md:p-8 md:pt-20">
+              <Routes />
+            </main>
+          </div>
         </div>
       </div>
     </BrowserRouter>
