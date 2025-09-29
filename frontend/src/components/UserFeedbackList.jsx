@@ -70,7 +70,7 @@ const UserFeedbackList = () => {
     <div className="space-y-4">
       <h2 className="text-2xl font-bold mb-4">Your Feedback History</h2>
       {feedbacks.map((feedback) => (
-        <div key={feedback.id} className="bg-white p-4 rounded-lg shadow-md">
+        <div key={feedback.id} className="bg-white dark:bg-github-dark p-4 rounded-lg shadow dark:border-github-darkBorder-md">
           <div className="flex justify-between items-start">
             <h3 className="text-lg font-semibold">{feedback.subject}</h3>
             <span className={`px-2 py-1 rounded text-xs ${
@@ -79,8 +79,8 @@ const UserFeedbackList = () => {
               {feedback.is_resolved ? 'Resolved' : 'Pending'}
             </span>
           </div>
-          <p className="text-gray-600 mt-2">{feedback.message}</p>
-          <div className="text-sm text-gray-500 mt-2">
+          <p className="text-gray-600 dark:text-github-darkText mt-2">{feedback.message}</p>
+          <div className="text-sm text-gray-500 dark:text-github-darkText mt-2">
             Submitted on: {new Date(feedback.created_at).toLocaleDateString()}
           </div>
           
@@ -90,7 +90,7 @@ const UserFeedbackList = () => {
               {feedback.responses.map((response) => (
                 <div key={response.id} className="bg-blue-50 p-3 rounded mt-2">
                   <p>{response.message}</p>
-                  <div className="text-sm text-gray-500 mt-1">
+                  <div className="text-sm text-gray-500 dark:text-github-darkText mt-1">
                     Responded on: {new Date(response.created_at).toLocaleDateString()}
                   </div>
                 </div>

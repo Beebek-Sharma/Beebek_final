@@ -49,7 +49,7 @@ const FeedbackForm = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white dark:bg-github-dark p-6 rounded-lg shadow dark:border-github-darkBorder-md">
       <h2 className="text-2xl font-bold mb-4">Submit Feedback</h2>
       
       {error && (
@@ -66,7 +66,7 @@ const FeedbackForm = () => {
       
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="subject" className="block text-gray-700 font-medium mb-2">
+          <label htmlFor="subject" className="block text-gray-700 dark:text-github-darkText font-medium mb-2">
             Subject
           </label>
           <input
@@ -80,7 +80,7 @@ const FeedbackForm = () => {
         </div>
         
         <div className="mb-4">
-          <label htmlFor="message" className="block text-gray-700 font-medium mb-2">
+          <label htmlFor="message" className="block text-gray-700 dark:text-github-darkText font-medium mb-2">
             Message
           </label>
           <textarea

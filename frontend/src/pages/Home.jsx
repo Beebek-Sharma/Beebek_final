@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../components/Header';
 import Footer from '../components/Footer';
 import UniversityCard from '../components/UniversityCard';
 import CourseCard from '../components/CourseCard';
@@ -32,20 +31,18 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
-      
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="flex flex-col">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Hero Section */}
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
+          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-github-darkText sm:text-5xl sm:tracking-tight lg:text-6xl">
             Find Your Perfect University
           </h1>
-          <p className="mt-5 max-w-xl mx-auto text-xl text-gray-500">
+          <p className="mt-5 max-w-xl mx-auto text-xl text-gray-500 dark:text-github-darkText">
             Search and compare universities and courses to make the best choice for your future.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <div className="inline-flex rounded-md shadow">
+            <div className="inline-flex rounded-md shadow dark:border-github-darkBorder">
               <Link
                 to="/universities"
                 className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
@@ -56,7 +53,7 @@ const Home = () => {
             <div className="inline-flex">
               <Link
                 to="/courses"
-                className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-white hover:bg-gray-50"
+                className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-white dark:bg-github-dark hover:bg-gray-50 dark:bg-github-dark"
               >
                 Explore Courses
               </Link>
@@ -64,7 +61,7 @@ const Home = () => {
             <div className="inline-flex">
               <Link
                 to="/compare-courses"
-                className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-white hover:bg-gray-50"
+                className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-white dark:bg-github-dark hover:bg-gray-50 dark:bg-github-dark"
               >
                 Compare Courses
               </Link>
@@ -74,30 +71,30 @@ const Home = () => {
         
         {/* How It Works Section */}
         <div className="mt-20">
-          <h2 className="text-2xl font-extrabold text-gray-900 mb-8 text-center">
+          <h2 className="text-2xl font-extrabold text-gray-900 dark:text-github-darkText mb-8 text-center">
             How It Works
           </h2>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="bg-white dark:bg-github-dark overflow-hidden shadow dark:border-github-darkBorder rounded-lg">
               <div className="px-4 py-5 sm:p-6">
-                <h3 className="text-lg font-medium text-gray-900">Search</h3>
-                <p className="mt-2 text-sm text-gray-500">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-github-darkText">Search</h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-github-darkText">
                   Browse through our comprehensive database of universities and courses.
                 </p>
               </div>
             </div>
-            <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="bg-white dark:bg-github-dark overflow-hidden shadow dark:border-github-darkBorder rounded-lg">
               <div className="px-4 py-5 sm:p-6">
-                <h3 className="text-lg font-medium text-gray-900">Compare</h3>
-                <p className="mt-2 text-sm text-gray-500">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-github-darkText">Compare</h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-github-darkText">
                   Compare different courses and universities side by side.
                 </p>
               </div>
             </div>
-            <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="bg-white dark:bg-github-dark overflow-hidden shadow dark:border-github-darkBorder rounded-lg">
               <div className="px-4 py-5 sm:p-6">
-                <h3 className="text-lg font-medium text-gray-900">Apply</h3>
-                <p className="mt-2 text-sm text-gray-500">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-github-darkText">Apply</h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-github-darkText">
                   Save your favorite courses and get application guidance.
                 </p>
               </div>
@@ -108,7 +105,7 @@ const Home = () => {
         {/* Popular Universities Section */}
         <div className="mt-20">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-extrabold text-gray-900">
+            <h2 className="text-2xl font-extrabold text-gray-900 dark:text-github-darkText">
               Popular Universities
             </h2>
             <Link 
@@ -137,7 +134,7 @@ const Home = () => {
                   <UniversityCard key={university.id} university={university} />
                 ))
               ) : (
-                <p className="col-span-4 text-center text-gray-500 py-10">No popular universities found.</p>
+                <p className="col-span-4 text-center text-gray-500 dark:text-github-darkText py-10">No popular universities found.</p>
               )}
             </div>
           )}
@@ -146,7 +143,7 @@ const Home = () => {
         {/* Popular Courses Section */}
         <div className="mt-20">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-extrabold text-gray-900">
+            <h2 className="text-2xl font-extrabold text-gray-900 dark:text-github-darkText">
               Popular Courses
             </h2>
             <Link 
@@ -175,7 +172,7 @@ const Home = () => {
                   <CourseCard key={course.id} course={course} />
                 ))
               ) : (
-                <p className="col-span-4 text-center text-gray-500 py-10">No popular courses found.</p>
+                <p className="col-span-4 text-center text-gray-500 dark:text-github-darkText py-10">No popular courses found.</p>
               )}
             </div>
           )}

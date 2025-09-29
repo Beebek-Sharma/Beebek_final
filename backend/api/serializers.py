@@ -11,30 +11,124 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ['role', 'created_at']
+        
+    def to_representation(self, instance):
+        """
+        Handle edge cases where the profile might not have all fields
+        """
+        try:
+            representation = super().to_representation(instance)
+            # Ensure role is always included
+            if 'role' not in representation or not representation['role']:
+                representation['role'] = 'student'
+            return representation
+        except Exception as e:
+            print(f"Error in UserProfileSerializer.to_representation: {str(e)}")
+            # Return minimal data to prevent API failures
+            return {'role': 'student'}
 
 class UserSerializer(serializers.ModelSerializer):
     profile = UserProfileSerializer(read_only=True)
     role = serializers.SerializerMethodField(read_only=True)
+    display_name = serializers.SerializerMethodField(read_only=True)
     
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile', 'role']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile', 'role', 'display_name']
         extra_kwargs = {'password': {'write_only': True}}
     
+    def get_display_name(self, obj):
+        # Use first_name and last_name if available
+        if obj.first_name or obj.last_name:
+            return f"{obj.first_name} {obj.last_name}".strip()
+        # Use email if available (without the @clerk-users.local part)
+        elif obj.email:
+            if '@clerk-users.local' in obj.email:
+                # For auto-generated emails, create a cleaner display
+                user_id = obj.email.split('@')[0]
+                if user_id.startswith('user_'):
+                    return f"User {user_id[-8:]}"
+                return user_id
+            # Return the email username part
+            return obj.email.split('@')[0]
+        # Fall back to username if nothing else is available
+        else:
+            # If username looks like a Clerk ID (long string)
+            if len(obj.username) > 15:
+                if obj.username.startswith('user_'):
+                    # For Clerk user IDs, show a shorter, more readable version
+                    return f"User {obj.username.split('_')[-1][:8]}..."
+                return f"User {obj.username[:8]}..."
+            return obj.username
+    
     def get_role(self, obj):
+        # Define known admin users by username
+        admin_usernames = ['bibehsharma777', 'user_32XoWcGcnIhBc9l8k3AlXmRqEck', 'admin']
+        
+        # Check if user is a superuser or has a known admin username
+        if obj.is_superuser or obj.username in admin_usernames:
+            return 'admin'
+        
         try:
-            return obj.userprofile.role
-        except:
-            return 'student'  # Default role
+            # Try to get role from the user profile
+            # Use hasattr first to avoid unnecessary DB queries
+            if hasattr(obj, 'profile'):
+                return obj.profile.role or 'student'
+            
+            # If profile not loaded in the queryset, try direct database lookup
+            try:
+                profile = UserProfile.objects.get(user=obj)
+                return profile.role
+            except UserProfile.DoesNotExist:
+                # Default to student role if no profile exists
+                # We should never reach this point if update_clerk_users command was run
+                return 'student'
+        except Exception as e:
+            print(f"Error getting role for user {obj.username}: {str(e)}")
+            return 'student'  # Default role for safety
     
     def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        print(f"User representation: {representation}")
-        # Make sure profile is included
-        if not representation.get('profile') and hasattr(instance, 'userprofile'):
-            representation['profile'] = UserProfileSerializer(instance.userprofile).data
-            print(f"Added profile: {representation['profile']}")
-        return representation
+        try:
+            representation = super().to_representation(instance)
+            
+            # Log complete user data for debugging
+            print(f"User data - id: {instance.id}, username: {instance.username}")
+            print(f"User names - first_name: '{instance.first_name}', last_name: '{instance.last_name}'")
+            
+            # Get or create profile directly from the database - most reliable approach
+            try:
+                profile = UserProfile.objects.get(user=instance)
+            except UserProfile.DoesNotExist:
+                # Create a profile if it doesn't exist
+                role = 'admin' if instance.is_superuser else 'student'
+                profile = UserProfile.objects.create(user=instance, role=role)
+                
+            # Always include profile data from our retrieved/created profile
+            representation['profile'] = UserProfileSerializer(profile).data
+            
+            # Always include role
+            representation['role'] = profile.role
+            if instance.is_superuser and profile.role != 'admin':
+                # Ensure superusers always have admin role
+                representation['role'] = 'admin'
+            
+            # Always include display_name
+            representation['display_name'] = self.get_display_name(instance)
+            
+            # Detailed log for debugging
+            print(f"Final representation: {representation}")
+            return representation
+        except Exception as e:
+            import traceback
+            print(f"Error in to_representation for user {instance.username}: {str(e)}")
+            print(traceback.format_exc())
+            # Return a basic representation to avoid breaking the API
+            return {
+                'id': instance.id,
+                'username': instance.username,
+                'display_name': instance.username,
+                'role': 'admin' if instance.is_superuser else 'student'
+            }
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(write_only=True, required=False)

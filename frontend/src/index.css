@@ -4,7 +4,10 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-gray-50 text-gray-900 transition-colors duration-200;
+  }
+  .dark body {
+    @apply bg-github-dark text-github-darkText;
   }
   h1 {
     @apply text-3xl font-bold;
@@ -18,6 +21,9 @@
   a {
     @apply text-primary-600 hover:text-primary-800;
   }
+  .dark a {
+    @apply text-github-darkLink hover:text-blue-400;
+  }
 }
 
 @layer components {
@@ -27,22 +33,40 @@
   .btn-primary {
     @apply bg-primary-600 text-white hover:bg-primary-700;
   }
+  .dark .btn-primary {
+    @apply bg-github-darkButton text-white hover:bg-green-700;
+  }
   .btn-secondary {
     @apply bg-secondary-600 text-white hover:bg-secondary-700;
+  }
+  .dark .btn-secondary {
+    @apply bg-github-darkAccent text-github-darkText hover:bg-gray-600;
   }
   .btn-outline {
     @apply border border-gray-300 hover:bg-gray-100;
   }
+  .dark .btn-outline {
+    @apply border border-github-darkBorder hover:bg-github-darkAccent text-github-darkText;
+  }
   .card {
     @apply bg-white p-6 rounded-lg shadow-md;
   }
+  .dark .card {
+    @apply bg-github-darkSecondary border border-github-darkBorder shadow-xl;
+  }
   .input {
     @apply w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500;
+  }
+  .dark .input {
+    @apply bg-github-dark border-github-darkBorder text-github-darkText focus:ring-github-darkLink;
   }
 
   /* Custom navigation styles */
   .nav-container {
     @apply bg-white shadow-md rounded-lg mx-auto mt-6 max-w-7xl px-8 transition-shadow;
+  }
+  .dark .nav-container {
+    @apply bg-github-darkSecondary shadow-none border border-github-darkBorder;
   }
 
   .nav-menu {
@@ -56,12 +80,21 @@
   .nav-link {
     @apply h-full px-5 no-underline flex items-center text-gray-800 font-medium rounded-xl transition-colors text-base;
   }
+  .dark .nav-link {
+    @apply text-github-darkText hover:text-white;
+  }
 }
 
 nav a:hover, nav a:focus {
   background: #f3f6fa;
   color: #0077ff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.dark nav a:hover, .dark nav a:focus {
+  background: #21262d;
+  color: #c9d1d9;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
 }
 
 nav li:first-child a {
@@ -72,6 +105,10 @@ nav li:first-child a {
   background: none;
   box-shadow: none;
   padding-left: 0;
+}
+
+.dark nav li:first-child a {
+  color: #58a6ff;
 }
 
 nav li:first-child {

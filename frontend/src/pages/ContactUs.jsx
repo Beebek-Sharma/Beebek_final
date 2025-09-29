@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Header from '../components/Header';
+
 import Footer from '../components/Footer';
 
 const ContactUs = () => {
@@ -27,13 +27,11 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
-      
+    <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">Contact Us</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-github-darkText mb-8">Contact Us</h1>
         
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="bg-white dark:bg-github-dark shadow dark:border-github-darkBorder-md rounded-lg overflow-hidden">
           <div className="md:flex">
             {/* Contact Information Section */}
             <div className="bg-primary-700 text-white p-8 md:w-1/3">
@@ -87,10 +85,10 @@ const ContactUs = () => {
                   <svg className="mx-auto h-12 w-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                   </svg>
-                  <h2 className="mt-4 text-2xl font-semibold text-gray-900">Thank You!</h2>
-                  <p className="mt-2 text-gray-600">Your message has been received. We'll get back to you as soon as possible.</p>
+                  <h2 className="mt-4 text-2xl font-semibold text-gray-900 dark:text-github-darkText">Thank You!</h2>
+                  <p className="mt-2 text-gray-600 dark:text-github-darkText">Your message has been received. We'll get back to you as soon as possible.</p>
                   <button 
-                    className="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    className="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow dark:border-github-darkBorder-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                     onClick={() => setSubmitted(false)}
                   >
                     Send Another Message
@@ -98,10 +96,10 @@ const ContactUs = () => {
                 </div>
               ) : (
                 <>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-github-darkText mb-6">Send us a Message</h2>
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Name</label>
                       <input
                         type="text"
                         id="name"
@@ -109,12 +107,12 @@ const ContactUs = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow dark:border-github-darkBorder-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Email</label>
                       <input
                         type="email"
                         id="email"
@@ -122,12 +120,12 @@ const ContactUs = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow dark:border-github-darkBorder-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="subject" className="block text-sm font-medium text-gray-700">Subject</label>
+                      <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Subject</label>
                       <input
                         type="text"
                         id="subject"
@@ -135,12 +133,12 @@ const ContactUs = () => {
                         value={formData.subject}
                         onChange={handleChange}
                         required
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow dark:border-github-darkBorder-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-gray-700">Message</label>
+                      <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Message</label>
                       <textarea
                         id="message"
                         name="message"
@@ -148,14 +146,14 @@ const ContactUs = () => {
                         value={formData.message}
                         onChange={handleChange}
                         required
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow dark:border-github-darkBorder-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                       ></textarea>
                     </div>
                     
                     <div>
                       <button
                         type="submit"
-                        className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                        className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow dark:border-github-darkBorder-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                       >
                         Send Message
                       </button>
@@ -168,8 +166,8 @@ const ContactUs = () => {
         </div>
         
         {/* Location Map Section */}
-        <div className="mt-12 bg-white shadow-md rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Our Location</h2>
+        <div className="mt-12 bg-white dark:bg-github-dark shadow dark:border-github-darkBorder-md rounded-lg p-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-github-darkText mb-6">Our Location</h2>
           <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
             <iframe 
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14204.848428896799!2d87.28475509999999!3d26.809393499999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ef419934314a0f%3A0x7e972d70469844fa!2sDharan%20Clock%20Tower!5e0!3m2!1sen!2snp!4v1694064621816!5m2!1sen!2snp" 
@@ -184,8 +182,8 @@ const ContactUs = () => {
             ></iframe>
           </div>
           <div className="mt-4">
-            <h3 className="text-lg font-medium text-gray-900">Visit Us</h3>
-            <p className="text-gray-600 mt-2">Dharan Clock Tower, Dharan, Nepal</p>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-github-darkText">Visit Us</h3>
+            <p className="text-gray-600 dark:text-github-darkText mt-2">Dharan Clock Tower, Dharan, Nepal</p>
             <div className="mt-2">
               <a 
                 href="https://www.google.com/maps/place/Dharan+Clock+Tower/@26.8093935,87.2847551,2239m/data=!3m1!1e3!4m15!1m8!3m7!1s0x39ef419fc7271c1d:0x1d1300367590c002!2sDharan,+Nepal!3b1!8m2!3d26.806497!4d87.2847086!16zL20vMDRud3cz!3m5!1s0x39ef419934314a0f:0x7e972d70469844fa!8m2!3d26.8117069!4d87.2852886!16s%2Fm%2F05c36vb!5m1!1e4?entry=ttu&g_ep=EgoyMDI1MDkwMy4wIKXMDSoASAFQAw%3D%3D" 
@@ -203,28 +201,28 @@ const ContactUs = () => {
         </div>
         
         {/* FAQ Section */}
-        <div className="mt-12 bg-white shadow-md rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+        <div className="mt-12 bg-white dark:bg-github-dark shadow dark:border-github-darkBorder-md rounded-lg p-8">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-github-darkText mb-6">Frequently Asked Questions</h2>
           
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-medium text-gray-900">How quickly do you respond to inquiries?</h3>
-              <p className="mt-2 text-gray-600">We aim to respond to all inquiries within 24-48 hours during business days.</p>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-github-darkText">How quickly do you respond to inquiries?</h3>
+              <p className="mt-2 text-gray-600 dark:text-github-darkText">We aim to respond to all inquiries within 24-48 hours during business days.</p>
             </div>
             
             <div>
-              <h3 className="text-lg font-medium text-gray-900">Can I visit your office in person?</h3>
-              <p className="mt-2 text-gray-600">Yes, you're welcome to visit our office during business hours. We recommend scheduling an appointment beforehand.</p>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-github-darkText">Can I visit your office in person?</h3>
+              <p className="mt-2 text-gray-600 dark:text-github-darkText">Yes, you're welcome to visit our office during business hours. We recommend scheduling an appointment beforehand.</p>
             </div>
             
             <div>
-              <h3 className="text-lg font-medium text-gray-900">Do you offer support for technical issues?</h3>
-              <p className="mt-2 text-gray-600">Yes, our technical support team is available Monday through Friday from 9 AM to 5 PM to assist with any platform-related issues.</p>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-github-darkText">Do you offer support for technical issues?</h3>
+              <p className="mt-2 text-gray-600 dark:text-github-darkText">Yes, our technical support team is available Monday through Friday from 9 AM to 5 PM to assist with any platform-related issues.</p>
             </div>
             
             <div>
-              <h3 className="text-lg font-medium text-gray-900">How can universities get listed on your platform?</h3>
-              <p className="mt-2 text-gray-600">Universities interested in being featured on our platform can reach out through this contact form or email us directly at partnerships@educonnect.com.</p>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-github-darkText">How can universities get listed on your platform?</h3>
+              <p className="mt-2 text-gray-600 dark:text-github-darkText">Universities interested in being featured on our platform can reach out through this contact form or email us directly at partnerships@educonnect.com.</p>
             </div>
           </div>
         </div>

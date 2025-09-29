@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       colors: {
@@ -32,6 +33,17 @@ export default {
           800: '#075985',
           900: '#0c4a6e',
           950: '#082f49',
+        },
+        github: {
+          // GitHub Dark Mode Colors
+          dark: '#0d1117',       // Background color
+          darkSecondary: '#161b22', // Navbar/Sidebar color
+          darkAccent: '#21262d',   // Hover states
+          darkBorder: '#30363d',   // Border color
+          darkText: '#c9d1d9',     // Main text color
+          darkTextSecondary: '#8b949e', // Secondary text color
+          darkButton: '#238636',   // Green button 
+          darkLink: '#58a6ff',     // Link color
         },
       },
       fontFamily: {

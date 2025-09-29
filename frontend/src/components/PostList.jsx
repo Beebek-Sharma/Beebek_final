@@ -17,7 +17,7 @@ function PostList() {
       {posts.map(post => (
         <div key={post.id} className="border-b pb-4 mb-4">
           <h3 className="text-lg font-semibold">{post.title}</h3>
-          <p className="text-sm text-gray-600">By {post.author}</p>
+          <p className="text-sm text-gray-600 dark:text-github-darkText">By {post.author}</p>
           <p dangerouslySetInnerHTML={{ __html: post.content }} className="mt-2" />
         </div>
       ))}

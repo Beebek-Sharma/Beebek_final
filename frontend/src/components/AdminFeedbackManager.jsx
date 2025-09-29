@@ -162,7 +162,7 @@ const AdminFeedbackManager = () => {
       ) : (
         <div className="space-y-4">
           {filteredFeedbacks.map((feedback) => (
-            <div key={feedback.id} className="bg-white p-6 rounded-lg shadow-md">
+            <div key={feedback.id} className="bg-white dark:bg-github-dark p-6 rounded-lg shadow dark:border-github-darkBorder-md">
               <div className="flex justify-between items-start">
                 <h3 className="text-xl font-semibold">{feedback.subject}</h3>
                 <span className={`px-3 py-1 rounded-full text-sm ${
@@ -173,13 +173,13 @@ const AdminFeedbackManager = () => {
               </div>
               
               <div className="mt-2">
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 dark:text-github-darkText">
                   From: {feedback.user_email || 'Anonymous'} | 
                   Submitted: {new Date(feedback.created_at).toLocaleDateString()}
                 </span>
               </div>
               
-              <p className="text-gray-700 mt-3 p-3 bg-gray-50 rounded">
+              <p className="text-gray-700 dark:text-github-darkText mt-3 p-3 bg-gray-50 dark:bg-github-dark rounded">
                 {feedback.message}
               </p>
               
@@ -189,7 +189,7 @@ const AdminFeedbackManager = () => {
                   {feedback.responses.map((response) => (
                     <div key={response.id} className="bg-blue-50 p-3 rounded mt-2">
                       <p>{response.message}</p>
-                      <div className="text-sm text-gray-500 mt-1">
+                      <div className="text-sm text-gray-500 dark:text-github-darkText mt-1">
                         Responded on: {new Date(response.created_at).toLocaleDateString()}
                       </div>
                     </div>
@@ -213,7 +213,7 @@ const AdminFeedbackManager = () => {
                 
                 {!feedback.is_resolved && (
                   <div className="mt-4">
-                    <label htmlFor={`response-${feedback.id}`} className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor={`response-${feedback.id}`} className="block text-sm font-medium text-gray-700 dark:text-github-darkText mb-2">
                       Respond to this feedback:
                     </label>
                     <textarea

@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
-    hello, submissions, register_user, login_user, get_user_profile,
+    hello, submissions, register_user, login_user, get_user_profile, update_user_profile,
     list_universities, university_detail, list_courses, course_detail,
     user_saved_courses, list_users, user_detail,
     feedback_list, feedback_detail, feedback_response_create
@@ -19,6 +19,7 @@ urlpatterns = [
     path('auth/login/', login_user, name='login'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/me/', get_user_profile, name='user_profile'),
+    path('auth/update-profile/', update_user_profile, name='update_profile'),
     
     # Admin URLs
     path('users/', list_users, name='list_users'),

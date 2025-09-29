@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.db.models import Q
@@ -11,6 +12,12 @@ from .serializers import (
     UniversitySerializer, CourseSerializer, UserSavedCourseSerializer,
     FeedbackSerializer, FeedbackResponseSerializer
 )
+
+# Custom Pagination Classes
+class StandardResultsPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 @api_view(['GET', 'POST'])
 def hello(request):
@@ -73,25 +80,75 @@ def get_user_profile(request):
     print(f"User profile data: {serializer.data}")
     return Response(serializer.data)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_user_profile(request):
+    """
+    Update user profile with additional information from Clerk
+    This endpoint allows the frontend to send additional user data
+    that isn't available in the JWT token but is available from the Clerk client
+    """
+    import logging
+    logger = logging.getLogger('user_profile')
+    
+    # Log the received data
+    logger.info(f"Profile update request for user {request.user.username}")
+    logger.info(f"Request data: {request.data}")
+    
+    user = request.user
+    profile, created = UserProfile.objects.get_or_create(user=user)
+    
+    # Get the data from the request
+    first_name = request.data.get('first_name')
+    last_name = request.data.get('last_name')
+    email = request.data.get('email')
+    oauth_provider = request.data.get('oauth_provider')
+    oauth_data = request.data.get('oauth_data')
+    
+    # Update the user model
+    updated = False
+    
+    if first_name and user.first_name != first_name:
+        user.first_name = first_name
+        updated = True
+        
+    if last_name and user.last_name != last_name:
+        user.last_name = last_name
+        updated = True
+    
+    if email and user.email != email and '@clerk-users.local' in user.email:
+        # Only update email if current one is a placeholder
+        user.email = email
+        updated = True
+    
+    # If we have OAuth data, store it in some field or additional model
+    # For now, just log it
+    if oauth_provider:
+        logger.info(f"OAuth provider for {user.username}: {oauth_provider}")
+        if oauth_data:
+            logger.info(f"OAuth data for {user.username}: {oauth_data}")
+    
+    if updated:
+        user.save()
+        logger.info(f"Updated user {user.username} profile")
+    
+    # Return the updated user data
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
+
 # University and Course views
 @api_view(['GET', 'POST'])
 def list_universities(request):
-    import logging
-    logger = logging.getLogger("universities_view")
     if request.method == 'GET':
-        logger.info(f"GET universities: user={request.user}, is_authenticated={request.user.is_authenticated}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
         universities = University.objects.all()
         serializer = UniversitySerializer(universities, many=True)
         return Response(serializer.data)
+    
     elif request.method == 'POST':
-        is_admin = request.user.is_authenticated and (
-            (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or 
-            request.user.is_superuser
-        )
-        logger.info(f"POST universities: user={request.user}, is_admin={is_admin}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
-        if not is_admin:
-            logger.warning(f"403 Forbidden: user={request.user}, is_admin={is_admin}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
+        # Check if the user is admin
+        if not request.user.is_authenticated or not request.user.profile.role == 'admin':
             return Response({'error': 'Only admins can create universities'}, status=status.HTTP_403_FORBIDDEN)
+        
         serializer = UniversitySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -109,12 +166,8 @@ def university_detail(request, pk):
         serializer = UniversitySerializer(university)
         return Response(serializer.data)
     
-    # Check if user is admin or superuser for modifying operations
-    is_admin = request.user.is_authenticated and (
-        (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or 
-        request.user.is_superuser
-    )
-    if not is_admin:
+    # Check if user is admin for modifying operations
+    if not request.user.is_authenticated or not request.user.profile.role == 'admin':
         return Response({'error': 'Only admins can modify universities'}, status=status.HTTP_403_FORBIDDEN)
     
     if request.method == 'PUT':
@@ -130,35 +183,34 @@ def university_detail(request, pk):
 
 @api_view(['GET', 'POST'])
 def list_courses(request):
-    import logging
-    logger = logging.getLogger("courses_view")
     if request.method == 'GET':
-        logger.info(f"GET courses: user={request.user}, is_authenticated={request.user.is_authenticated}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
         query = request.query_params.get('query', '')
         university_id = request.query_params.get('university', None)
         level = request.query_params.get('level', None)
+        
         courses = Course.objects.all()
+        
         if query:
             courses = courses.filter(
                 Q(name__icontains=query) | 
                 Q(description__icontains=query) |
                 Q(university__name__icontains=query)
             )
+        
         if university_id:
             courses = courses.filter(university__id=university_id)
+            
         if level:
             courses = courses.filter(level=level)
+        
         serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data)
+    
     elif request.method == 'POST':
-        is_admin = request.user.is_authenticated and (
-            (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or 
-            request.user.is_superuser
-        )
-        logger.info(f"POST courses: user={request.user}, is_admin={is_admin}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
-        if not is_admin:
-            logger.warning(f"403 Forbidden: user={request.user}, is_admin={is_admin}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
+        # Check if the user is admin
+        if not request.user.is_authenticated or not request.user.profile.role == 'admin':
             return Response({'error': 'Only admins can create courses'}, status=status.HTTP_403_FORBIDDEN)
+        
         serializer = CourseSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -176,12 +228,8 @@ def course_detail(request, pk):
         serializer = CourseSerializer(course)
         return Response(serializer.data)
     
-    # Check if user is admin or superuser for modifying operations
-    is_admin = request.user.is_authenticated and (
-        (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or 
-        request.user.is_superuser
-    )
-    if not is_admin:
+    # Check if user is admin for modifying operations
+    if not request.user.is_authenticated or not request.user.profile.role == 'admin':
         return Response({'error': 'Only admins can modify courses'}, status=status.HTTP_403_FORBIDDEN)
     
     if request.method == 'PUT':
@@ -231,24 +279,59 @@ def user_saved_courses(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def list_users(request):
-    import logging
-    logger = logging.getLogger("users_view")
-    is_admin = (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or request.user.is_superuser
-    logger.info(f"GET users: user={request.user}, is_authenticated={request.user.is_authenticated}, is_admin={is_admin}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
-    if not is_admin:
-        logger.warning(f"403 Forbidden: user={request.user}, is_admin={is_admin}, is_superuser={getattr(request.user, 'is_superuser', None)}, profile={getattr(request.user, 'profile', None)}")
-        return Response({'error': 'Only admins can access user list'}, status=status.HTTP_403_FORBIDDEN)
-    users = User.objects.all()
-    serializer = UserSerializer(users, many=True)
-    return Response(serializer.data)
+    # Check if user is admin
+    try:
+        # Fix admin permission check to handle when user doesn't have a profile
+        is_admin = request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.role == 'admin')
+        
+        # Debug info
+        print(f"User requesting user list: {request.user.username}")
+        print(f"Is superuser: {request.user.is_superuser}")
+        print(f"Has profile: {hasattr(request.user, 'profile')}")
+        if hasattr(request.user, 'profile'):
+            print(f"Profile role: {request.user.profile.role}")
+        print(f"Final admin check result: {is_admin}")
+        
+        if not is_admin:
+            print("Access denied: User is not an admin")
+            return Response({'error': 'Only admins can access user list'}, status=status.HTTP_403_FORBIDDEN)
+        
+        # Get all users
+        users = User.objects.all()
+        
+        # Use prefetch_related with the correct related_name 'profile'
+        users = users.prefetch_related('profile')
+        
+        # Manually check if profiles exist and roles are correctly set
+        created_profiles = []
+        for user in users:
+            # Check if we have a profile for this user
+            if not hasattr(user, 'profile'):
+                print(f"Creating missing profile for user {user.username}")
+                role = 'admin' if user.is_superuser else 'student'
+                profile = UserProfile(user=user, role=role)
+                created_profiles.append(profile)
+        
+        # Bulk create any missing profiles
+        if created_profiles:
+            UserProfile.objects.bulk_create(created_profiles)
+            print(f"Created {len(created_profiles)} missing profiles")
+        
+        serializer = UserSerializer(users, many=True)
+        print(f"Sending {len(users)} users to admin dashboard")
+        return Response(serializer.data)
+    except Exception as e:
+        import traceback
+        print(f"Error in list_users: {str(e)}")
+        print(traceback.format_exc())
+        return Response({'error': f'Could not retrieve users: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Admin view to manage individual users
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def user_detail(request, pk):
-    # Check if user is admin or superuser
-    is_admin = (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or request.user.is_superuser
-    if not is_admin:
+    # Check if user is admin
+    if not request.user.profile.role == 'admin':
         return Response({'error': 'Only admins can manage users'}, status=status.HTTP_403_FORBIDDEN)
     
     try:
@@ -345,7 +428,7 @@ def feedback_detail(request, pk):
     
     if request.method == 'DELETE':
         # Allow admin or the feedback creator to delete
-        is_admin = (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or request.user.is_superuser
+        is_admin = hasattr(request.user, 'profile') and request.user.profile.role == 'admin'
         if is_admin or feedback.user == request.user:
             feedback.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -356,7 +439,7 @@ def feedback_detail(request, pk):
 @permission_classes([IsAuthenticated])
 def feedback_response_create(request, feedback_id):
     # Only admins can respond to feedback
-    is_admin = (hasattr(request.user, 'profile') and request.user.profile.role == 'admin') or request.user.is_superuser
+    is_admin = hasattr(request.user, 'profile') and request.user.profile.role == 'admin'
     if not is_admin:
         return Response({'error': 'Only admins can respond to feedback'}, 
                        status=status.HTTP_403_FORBIDDEN)

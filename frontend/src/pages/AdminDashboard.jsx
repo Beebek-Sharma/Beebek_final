@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Header from '../components/Header';
+
 import Footer from '../components/Footer';
 import { useUser, useAuth } from '@clerk/clerk-react';
 
@@ -71,12 +71,16 @@ const AdminDashboard = () => {
         // Fetch real users from our new endpoint
         else if (activeTab === 'users') {
           try {
+            console.log('Fetching users...');
             const response = await axios.get(`${API_URL}/api/users/`, {
               headers: { Authorization: `Bearer ${token}` }
             });
-            setUsers(response.data);
+            console.log('Users API response:', response.data);
+            setUsers(response.data || []);
+            setError(''); // Clear error on successful fetch
           } catch (error) {
             console.error('Error fetching users:', error);
+            setError(`Failed to load users: ${error.response?.data?.error || error.message}`);
             setUsers([]);
           }
         }
@@ -297,16 +301,14 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
-      
+    <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="md:flex md:items-center md:justify-between">
           <div className="flex-1 min-w-0">
-            <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-github-darkText">Admin Dashboard</h1>
           </div>
           <div className="mt-4 flex md:mt-0 md:ml-4">
-            <span className="shadow-sm rounded-md">
+            <span className="shadow dark:border-github-darkBorder-sm rounded-md">
               <button
                 type="button"
                 onClick={() => {
@@ -318,7 +320,7 @@ const AdminDashboard = () => {
                     setFormData(initialFormState[activeTab]);
                   }
                 }}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:shadow-outline-primary transition ease-in-out duration-150"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:shadow dark:border-github-darkBorder-outline-primary transition ease-in-out duration-150"
               >
                 {showForm ? 'Cancel' : 'Add New'}
               </button>
@@ -375,7 +377,7 @@ const AdminDashboard = () => {
               </button>
               <a
                 href="/admin/feedback"
-                className="px-3 py-2 font-medium text-sm rounded-md text-gray-500 hover:text-gray-700"
+                className="px-3 py-2 font-medium text-sm rounded-md text-gray-500 hover:text-gray-700 dark:text-github-darkText"
               >
                 Feedback
               </a>
@@ -395,8 +397,8 @@ const AdminDashboard = () => {
 
         {/* Add Form */}
         {showForm && (
-          <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg p-4">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="mt-6 bg-white dark:bg-github-dark shadow dark:border-github-darkBorder overflow-hidden sm:rounded-lg p-4">
+            <h2 className="text-lg font-medium text-gray-900 dark:text-github-darkText mb-4">
               {editMode ? 'Edit' : 'Add New'} {activeTab === 'universities' ? 'University' : 
                        activeTab === 'courses' ? 'Course' : 'User'}
             </h2>
@@ -407,7 +409,7 @@ const AdminDashboard = () => {
                 <>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700">University Name</label>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">University Name</label>
                       <input
                         type="text"
                         name="name"
@@ -415,12 +417,12 @@ const AdminDashboard = () => {
                         required
                         value={formData.name || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="location" className="block text-sm font-medium text-gray-700">Location</label>
+                      <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Location</label>
                       <input
                         type="text"
                         name="location"
@@ -428,13 +430,13 @@ const AdminDashboard = () => {
                         required
                         value={formData.location || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                   </div>
                   
                   <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Description</label>
                     <textarea
                       name="description"
                       id="description"
@@ -442,45 +444,45 @@ const AdminDashboard = () => {
                       required
                       value={formData.description || ''}
                       onChange={handleFormChange}
-                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                     ></textarea>
                   </div>
                   
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="ranking" className="block text-sm font-medium text-gray-700">Ranking</label>
+                      <label htmlFor="ranking" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Ranking</label>
                       <input
                         type="number"
                         name="ranking"
                         id="ranking"
                         value={formData.ranking || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="website" className="block text-sm font-medium text-gray-700">Website</label>
+                      <label htmlFor="website" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Website</label>
                       <input
                         type="url"
                         name="website"
                         id="website"
                         value={formData.website || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                   </div>
                   
                   <div>
-                    <label htmlFor="image" className="block text-sm font-medium text-gray-700">Image URL</label>
+                    <label htmlFor="image" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Image URL</label>
                     <input
                       type="url"
                       name="image"
                       id="image"
                       value={formData.image || ''}
                       onChange={handleFormChange}
-                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                     />
                   </div>
                 </>
@@ -491,7 +493,7 @@ const AdminDashboard = () => {
                 <>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700">Course Name</label>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Course Name</label>
                       <input
                         type="text"
                         name="name"
@@ -499,19 +501,19 @@ const AdminDashboard = () => {
                         required
                         value={formData.name || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="university" className="block text-sm font-medium text-gray-700">University</label>
+                      <label htmlFor="university" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">University</label>
                       <select
                         name="university"
                         id="university"
                         required
                         value={formData.university || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       >
                         <option value="">Select a university</option>
                         {universities.map(uni => (
@@ -522,7 +524,7 @@ const AdminDashboard = () => {
                   </div>
                   
                   <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Description</label>
                     <textarea
                       name="description"
                       id="description"
@@ -530,13 +532,13 @@ const AdminDashboard = () => {
                       required
                       value={formData.description || ''}
                       onChange={handleFormChange}
-                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                     ></textarea>
                   </div>
                   
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <div>
-                      <label htmlFor="duration" className="block text-sm font-medium text-gray-700">Duration</label>
+                      <label htmlFor="duration" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Duration</label>
                       <input
                         type="text"
                         name="duration"
@@ -545,12 +547,12 @@ const AdminDashboard = () => {
                         placeholder="e.g. 4 years"
                         value={formData.duration || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="fees" className="block text-sm font-medium text-gray-700">Fees</label>
+                      <label htmlFor="fees" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Fees</label>
                       <input
                         type="number"
                         name="fees"
@@ -558,19 +560,19 @@ const AdminDashboard = () => {
                         required
                         value={formData.fees || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="level" className="block text-sm font-medium text-gray-700">Level</label>
+                      <label htmlFor="level" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Level</label>
                       <select
                         name="level"
                         id="level"
                         required
                         value={formData.level || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       >
                         <option value="Undergraduate">Undergraduate</option>
                         <option value="Postgraduate">Postgraduate</option>
@@ -587,7 +589,7 @@ const AdminDashboard = () => {
                 <>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
+                      <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Username</label>
                       <input
                         type="text"
                         name="username"
@@ -595,12 +597,12 @@ const AdminDashboard = () => {
                         required
                         value={formData.username || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Email</label>
                       <input
                         type="email"
                         name="email"
@@ -608,14 +610,14 @@ const AdminDashboard = () => {
                         required
                         value={formData.email || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                   </div>
                   
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                      <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Password</label>
                       <input
                         type="password"
                         name="password"
@@ -623,19 +625,19 @@ const AdminDashboard = () => {
                         required
                         value={formData.password || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
+                      <label htmlFor="role" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Role</label>
                       <select
                         name="role"
                         id="role"
                         required
                         value={formData.role || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
                       >
                         <option value="student">Student</option>
                         <option value="admin">Admin</option>
@@ -649,13 +651,13 @@ const AdminDashboard = () => {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="mr-3 inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  className="mr-3 inline-flex justify-center py-2 px-4 border border-gray-300 shadow dark:border-github-darkBorder-sm text-sm font-medium rounded-md text-gray-700 dark:text-github-darkText bg-white dark:bg-github-dark hover:bg-gray-50 dark:bg-github-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow dark:border-github-darkBorder-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 >
                   Save
                 </button>
@@ -674,20 +676,20 @@ const AdminDashboard = () => {
               <div className="flex flex-col">
                 <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                    <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                    <div className="shadow dark:border-github-darkBorder overflow-hidden border-b border-gray-200 sm:rounded-lg">
                       <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gray-50 dark:bg-github-dark">
                           <tr>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
                               Name
                             </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
                               Location
                             </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
                               Ranking
                             </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
                               Courses
                             </th>
                             <th scope="col" className="relative px-6 py-3">
@@ -695,20 +697,20 @@ const AdminDashboard = () => {
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white dark:bg-github-dark divide-y divide-gray-200">
                           {universities.map((university) => (
                             <tr key={university.id}>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900">{university.name}</div>
+                                <div className="text-sm font-medium text-gray-900 dark:text-github-darkText">{university.name}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500">{university.location}</div>
+                                <div className="text-sm text-gray-500 dark:text-github-darkText">{university.location}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500">{university.ranking || 'N/A'}</div>
+                                <div className="text-sm text-gray-500 dark:text-github-darkText">{university.ranking || 'N/A'}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500">{university.courses?.length || 0}</div>
+                                <div className="text-sm text-gray-500 dark:text-github-darkText">{university.courses?.length || 0}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <button onClick={() => handleEdit(university.id)} className="text-primary-600 hover:text-primary-900 mr-4">Edit</button>
@@ -728,23 +730,23 @@ const AdminDashboard = () => {
               <div className="flex flex-col">
                 <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                    <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                    <div className="shadow dark:border-github-darkBorder overflow-hidden border-b border-gray-200 sm:rounded-lg">
                       <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gray-50 dark:bg-github-dark">
                           <tr>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
                               Name
                             </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
                               University
                             </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
                               Level
                             </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
                               Duration
                             </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
                               Fees
                             </th>
                             <th scope="col" className="relative px-6 py-3">
@@ -752,23 +754,23 @@ const AdminDashboard = () => {
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white dark:bg-github-dark divide-y divide-gray-200">
                           {courses.map((course) => (
                             <tr key={course.id}>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900">{course.name}</div>
+                                <div className="text-sm font-medium text-gray-900 dark:text-github-darkText">{course.name}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500">{course.university_name}</div>
+                                <div className="text-sm text-gray-500 dark:text-github-darkText">{course.university_name}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500">{course.level}</div>
+                                <div className="text-sm text-gray-500 dark:text-github-darkText">{course.level}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500">{course.duration}</div>
+                                <div className="text-sm text-gray-500 dark:text-github-darkText">{course.duration}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500">${course.fees}</div>
+                                <div className="text-sm text-gray-500 dark:text-github-darkText">${course.fees}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <button onClick={() => handleEdit(course.id)} className="text-primary-600 hover:text-primary-900 mr-4">Edit</button>
@@ -788,17 +790,17 @@ const AdminDashboard = () => {
               <div className="flex flex-col">
                 <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                    <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                    <div className="shadow dark:border-github-darkBorder overflow-hidden border-b border-gray-200 sm:rounded-lg">
                       <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gray-50 dark:bg-github-dark">
                           <tr>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Username
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
+                              Name
                             </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
                               Email
                             </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
                               Role
                             </th>
                             <th scope="col" className="relative px-6 py-3">
@@ -806,14 +808,26 @@ const AdminDashboard = () => {
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white dark:bg-github-dark divide-y divide-gray-200">
                           {users.map((user) => (
                             <tr key={user.id}>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900">{user.username}</div>
+                                <div className="text-sm font-medium text-gray-900 dark:text-github-darkText">
+                                  {user.display_name || 
+                                    (user.first_name && user.last_name 
+                                      ? `${user.first_name} ${user.last_name}` 
+                                      : user.username)}
+                                </div>
+                                <div className="text-xs text-gray-500 dark:text-github-darkText">
+                                  {user.email && !user.email.includes('@clerk-users.local') 
+                                    ? user.email 
+                                    : user.username && user.username.length > 10 
+                                      ? `@${user.username.substring(0, 10)}...` 
+                                      : `@${user.username}`}
+                                </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500">{user.email}</div>
+                                <div className="text-sm text-gray-500 dark:text-github-darkText">{user.email}</div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
