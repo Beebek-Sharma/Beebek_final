@@ -21,17 +21,17 @@ export default function Header({ toggleSidebar }) {
   const isAdmin = user?.publicMetadata?.role === 'admin';
 
   return (
-    <header className="sticky top-0 w-full bg-white dark:bg-github-dark shadow-md z-30 transition-all duration-300">
+    <header className="fixed top-0 left-0 right-0 w-full bg-white dark:bg-github-dark shadow-md z-50 transition-all duration-300">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 
           {/* Left Section: Menu Toggle + Logo */}
           <div className="flex items-center flex-shrink-0 space-x-4">
-            {/* Menu Toggle Button - visible on all screen sizes */}
+            {/* Menu Toggle Button - Medium.com style */}
             <button
               id="mobile-menu-button"
               onClick={toggleSidebar}
-              className="p-2 rounded-md text-gray-700 dark:text-github-darkText hover:bg-gray-100 dark:hover:bg-github-darkAccent focus:outline-none"
+              className="p-2 rounded-full text-gray-700 dark:text-github-darkText hover:bg-gray-100 dark:hover:bg-github-darkAccent focus:outline-none"
               aria-label="Toggle menu"
             >
               <FiMenu className="h-6 w-6" />

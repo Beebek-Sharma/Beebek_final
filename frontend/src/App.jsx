@@ -28,10 +28,10 @@ function App() {
     }
   }, []);
   
-  // Handle responsive sidebar behavior
+  // Close sidebar on resize and when clicking outside
   useEffect(() => {
+    // Close sidebar on window resize
     const handleResize = () => {
-      // Only close the sidebar when on mobile
       if (window.innerWidth < 768) {
         setIsSidebarOpen(false);
       }
@@ -47,31 +47,32 @@ function App() {
   return (
     <BrowserRouter>
       <ClerkAuthListener />
-      <div className="flex h-screen bg-gray-50 dark:bg-github-dark">
-        {/* Sidebar - Toggleable on all screen sizes */}
-        <div className={`fixed md:relative inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:w-64 md:flex-shrink-0`}>
-          <div className="h-full w-64">
+      <div className="flex flex-col h-screen bg-gray-50 dark:bg-github-dark">
+        {/* Fixed Header - Always at the top, doesn't move with sidebar */}
+        <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+        
+        {/* Content Area - Contains both the sidebar and main content */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Sidebar - Overlay style like Medium.com */}
+          <div 
+            className={`fixed top-0 left-0 w-64 h-full z-40 transform transition-transform duration-300 ease-in-out ${
+              isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+            } pt-16`} // pt-16 to position below header
+          >
             <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
           </div>
-        </div>
-        
-        {/* Overlay - Only shown when sidebar is open */}
-        {isSidebarOpen && (
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50 z-30 transition-opacity duration-300 md:hidden"
-            aria-hidden="true"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-        )}
-        
-        {/* Main content area - adjusts based on sidebar state */}
-        <div className={`flex flex-col flex-1 overflow-hidden transition-all duration-300 ${
-          isSidebarOpen ? 'md:ml-64' : 'md:ml-0'
-        }`}>
-          <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-          <main className="flex-1 overflow-y-auto p-4 pt-16 md:p-6">
+          
+          {/* Overlay - Only shown when sidebar is open, covers the whole screen except header */}
+          {isSidebarOpen && (
+            <div 
+              className="fixed inset-0 top-16 bg-black bg-opacity-50 z-30 transition-opacity duration-300"
+              aria-hidden="true"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+          
+          {/* Main content area - Doesn't shift when sidebar opens/closes - Medium-style */}
+          <main className="flex-1 overflow-y-auto p-4 pt-20 md:p-8 md:pt-20">
             <Routes />
           </main>
         </div>
