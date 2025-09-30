@@ -36,7 +36,7 @@ const Home = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Main Content */}
-          <main className="flex-1 lg:pr-96">
+          <main className="flex-1 lg:pr-[260px]">
             {/* Hero Section */}
             <div className="text-center">
               <h1 className="text-4xl font-extrabold text-gray-900 dark:text-github-darkText sm:text-5xl sm:tracking-tight lg:text-6xl">
