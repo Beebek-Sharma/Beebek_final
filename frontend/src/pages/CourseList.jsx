@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-
+import { motion } from 'framer-motion';
 import Footer from '../components/Footer';
 import CompareButton from '../components/CompareButton';
 import CompareFloatingButton from '../components/CompareFloatingButton';
@@ -201,15 +201,25 @@ const CourseList = () => {
             </div>
           ) : (
             <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {courses.map((course) => (
-                <div key={course.id} className="bg-white dark:bg-github-dark overflow-hidden shadow dark:border-github-darkBorder rounded-lg">
+              {courses.map((course, index) => (
+                <motion.div
+                  key={course.id}
+                  className="bg-white dark:bg-github-dark overflow-hidden shadow dark:border-github-darkBorder rounded-lg transition-all duration-300"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
+                  whileHover={{ y: -8, boxShadow: "0 12px 24px rgba(0, 0, 0, 0.15)" }}
+                >
                   <div className="p-6">
                     <h2 className="text-xl font-semibold text-gray-900 dark:text-github-darkText">{course.name}</h2>
                     <p className="mt-1 text-sm text-gray-500 dark:text-github-darkText">{course.university_name}</p>
                     <div className="mt-2 flex items-center">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                      <motion.span
+                        className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800"
+                        whileHover={{ scale: 1.05 }}
+                      >
                         {course.level}
-                      </span>
+                      </motion.span>
                       <span className="ml-2 text-sm text-gray-500 dark:text-github-darkText">
                         {course.duration}
                       </span>
@@ -223,16 +233,18 @@ const CourseList = () => {
                       </span>
                       <div className="flex space-x-3">
                         <CompareButton courseId={course.id} />
-                        <Link
-                          to={`/courses/${course.id}`}
-                          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
-                        >
-                          View Details
-                        </Link>
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                          <Link
+                            to={`/courses/${course.id}`}
+                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 transition-all duration-200"
+                          >
+                            View Details
+                          </Link>
+                        </motion.div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           )}
