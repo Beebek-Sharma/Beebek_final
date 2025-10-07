@@ -9,7 +9,8 @@ from .views import (
 )
 from .views_auth import (
     register_view, login_view, logout_view, current_user_view, 
-    refresh_token_view, get_csrf_token
+    refresh_token_view, get_csrf_token, upload_profile_picture,
+    change_password, edit_username, update_name
 )
 from .views_search import search
 from .views_popular import popular_items
@@ -28,6 +29,10 @@ urlpatterns = [
     path('auth/refresh/', refresh_token_view, name='token_refresh'),
     path('auth/csrf/', get_csrf_token, name='csrf_token'),
     path('auth/verify/', verify_auth, name='verify_auth'),
+    path('auth/upload-profile-picture/', upload_profile_picture, name='upload_profile_picture'),
+    path('auth/change-password/', change_password, name='change_password'),
+    path('auth/edit-username/', edit_username, name='edit_username'),
+    path('auth/update-name/', update_name, name='update_name'),
     
     # Social auth (django-allauth)
     path('auth/social/', include('dj_rest_auth.urls')),

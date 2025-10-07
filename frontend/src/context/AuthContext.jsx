@@ -942,6 +942,21 @@ export const AuthProvider = ({ children }) => {
     };
   }, [isAuthenticated]);
   
+  // Function to refresh user data from the server
+  const refreshUser = async () => {
+    try {
+      const response = await axiosInstance.get('/auth/user/');
+      // Store user in localStorage as well for immediate access on page reload
+      localStorage.setItem('auth_user', JSON.stringify(response.data));
+      
+      setUser(response.data);
+      return response.data;
+    } catch (error) {
+      console.error('[Auth] Failed to refresh user data:', error);
+      return null;
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -953,6 +968,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     refreshToken,
     checkAuth,
+    refreshUser,
   };
 
   return (

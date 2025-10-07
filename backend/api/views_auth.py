@@ -5,11 +5,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, update_session_auth_hash
 from django.conf import settings
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
-from .models import CustomUser
+import os
+from .models import CustomUser, UserProfile
 from .serializers import RegisterSerializer, UserSerializer
 
 
@@ -327,4 +328,169 @@ def get_csrf_token(request):
     """
     return Response({
         'csrfToken': get_token(request)
+    })
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def upload_profile_picture(request):
+    """
+    Upload a profile picture for the current user
+    """
+    import logging
+    logger = logging.getLogger('django')
+    
+    if 'image' not in request.FILES:
+        return Response({'error': 'No image provided'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    user = request.user
+    
+    try:
+        # Get or create user profile
+        profile, created = UserProfile.objects.get_or_create(user=user)
+        
+        # Delete old image if exists to save storage
+        if profile.profile_picture and hasattr(profile.profile_picture, 'path'):
+            try:
+                if os.path.isfile(profile.profile_picture.path):
+                    os.remove(profile.profile_picture.path)
+            except Exception as e:
+                logger.error(f"[upload_profile_picture] Error deleting old profile picture: {e}")
+        
+        # Also check the legacy image field
+        if profile.image and hasattr(profile.image, 'path'):
+            try:
+                if os.path.isfile(profile.image.path):
+                    os.remove(profile.image.path)
+            except Exception as e:
+                logger.error(f"[upload_profile_picture] Error deleting old image: {e}")
+        
+        # Clear both image fields
+        profile.image = None
+        
+        # Save new image
+        profile.profile_picture = request.FILES['image']
+        profile.save()
+        
+        # Return the URL of the new profile picture
+        profile_url = profile.profile_picture.url if profile.profile_picture else None
+        logger.info(f"[upload_profile_picture] New profile picture URL: {profile_url}")
+        
+        response_data = {
+            'success': True, 
+            'message': 'Profile picture uploaded successfully',
+            'profile_picture_url': profile_url
+        }
+        
+        return Response(response_data)
+    except Exception as e:
+        logger.error(f"[upload_profile_picture] Error: {e}")
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    """
+    Change the password for the current user
+    """
+    import logging
+    logger = logging.getLogger('django')
+    
+    current_password = request.data.get('current_password')
+    new_password = request.data.get('new_password')
+    
+    if not current_password or not new_password:
+        return Response({
+            'error': 'Current password and new password are required'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    user = request.user
+    
+    # Check if current password is correct
+    if not user.check_password(current_password):
+        return Response({
+            'error': 'Current password is incorrect'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Password validation
+    if len(new_password) < 8:
+        return Response({
+            'error': 'Password must be at least 8 characters long'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    if not any(c.isalpha() for c in new_password) or not any(c.isdigit() for c in new_password):
+        return Response({
+            'error': 'Password must contain at least one letter and one number'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Set new password
+    user.set_password(new_password)
+    user.save()
+    
+    # Update session auth hash to keep user logged in
+    update_session_auth_hash(request, user)
+    
+    return Response({'success': True, 'message': 'Password changed successfully'})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def edit_username(request):
+    """
+    Edit username for the current user
+    """
+    import logging
+    logger = logging.getLogger('django')
+    
+    new_username = request.data.get('username')
+    
+    if not new_username:
+        return Response({
+            'error': 'Username is required'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    user = request.user
+    
+    # Check if username is already taken
+    if CustomUser.objects.filter(username=new_username).exclude(pk=user.pk).exists():
+        return Response({
+            'error': 'Username is already taken'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Update username
+    user.username = new_username
+    user.save()
+    
+    return Response({
+        'success': True,
+        'message': 'Username updated successfully',
+        'username': new_username
+    })
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_name(request):
+    """
+    Update first name and last name for the current user
+    """
+    import logging
+    logger = logging.getLogger('django')
+    
+    first_name = request.data.get('first_name')
+    last_name = request.data.get('last_name')
+    
+    user = request.user
+    
+    # Update first name and last name if provided
+    if first_name is not None:
+        user.first_name = first_name
+    
+    if last_name is not None:
+        user.last_name = last_name
+    
+    user.save()
+    
+    return Response({
+        'success': True,
+        'message': 'Name updated successfully',
+        'first_name': user.first_name,
+        'last_name': user.last_name
     })

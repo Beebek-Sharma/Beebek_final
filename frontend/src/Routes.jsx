@@ -54,14 +54,7 @@ const Routes = () => {
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/compare-courses" element={<ProtectedRoute><CourseComparison /></ProtectedRoute>} />
           <Route path="/feedback" element={<ProtectedRoute><UserFeedback /></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>}>
-            <Route path="profile" element={<ProfileSettings />} />
-            <Route path="account" element={<AccountSettings />} />
-            <Route path="security" element={<SecuritySettings />} />
-          </Route>
-          <Route path="/settings/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
-          <Route path="/settings/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
-          <Route path="/settings/edit-username" element={<ProtectedRoute><EditUsername /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           
           {/* Admin routes */}
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

@@ -1,10 +1,12 @@
 // src/components/Register.jsx
 import React from 'react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const { getCSRFToken } = require('../utils/csrf');
   const handleRegister = async (e) => {
@@ -22,6 +24,7 @@ function Register() {
 
     if (response.ok) {
       alert('Registration successful!');
+      navigate('/login'); // Redirect to login page
     } else {
       alert('Registration failed');
     }

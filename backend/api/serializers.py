@@ -6,11 +6,33 @@ class SubmissionSerializer(serializers.ModelSerializer):
         model = Submission
         fields = '__all__'
 
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['bio', 'profile_picture']
+
 class UserSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.SerializerMethodField()
+    bio = serializers.SerializerMethodField()
+    
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'role']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'role', 'profile_picture', 'bio']
         read_only_fields = ['id']
+    
+    def get_profile_picture(self, obj):
+        if hasattr(obj, 'profile') and obj.profile:
+            # Check both profile_picture and image fields (for backward compatibility)
+            if obj.profile.profile_picture:
+                return obj.profile.profile_picture.url
+            elif obj.profile.image:
+                return obj.profile.image.url
+        return None
+    
+    def get_bio(self, obj):
+        if hasattr(obj, 'profile') and obj.profile:
+            return obj.profile.bio
+        return None
 
 
 class RegisterSerializer(serializers.ModelSerializer):

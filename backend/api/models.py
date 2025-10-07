@@ -32,10 +32,26 @@ class Submission(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField('CustomUser', on_delete=models.CASCADE, related_name='profile')
     created_at = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    image = models.ImageField(upload_to='profile_pics/', null=True, blank=True)  # Legacy field, use profile_picture instead
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    bio = models.TextField(max_length=140, blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username}'s profile"
+        
+    def save(self, *args, **kwargs):
+        # Ensure the media directories exist
+        import os
+        from django.conf import settings
+        
+        if not os.path.exists(settings.MEDIA_ROOT):
+            os.makedirs(settings.MEDIA_ROOT)
+            
+        profile_pics_dir = os.path.join(settings.MEDIA_ROOT, 'profile_pics')
+        if not os.path.exists(profile_pics_dir):
+            os.makedirs(profile_pics_dir)
+            
+        super().save(*args, **kwargs)
 
 class University(models.Model):
     name = models.CharField(max_length=200)
