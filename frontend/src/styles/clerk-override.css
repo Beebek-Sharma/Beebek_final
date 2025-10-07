@@ -1,0 +1,41 @@
+/* Clerk Override Styles */
+.cl-rootBox {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.cl-card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.cl-headerTitle {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.cl-socialButtonsBlockButton {
+  border: 1px solid #d1d5db;
+}
+
+.cl-formButtonPrimary {
+  background-color: #3b82f6;
+}
+
+.cl-formButtonPrimary:hover {
+  background-color: #2563eb;
+}
+
+.cl-footerActionLink {
+  color: #3b82f6;
+}
+
+.cl-footerActionLink:hover {
+  color: #2563eb;
+}
+
+/* Hide development mode indicator */
+.cl-devModeIcon {
+  display: none;
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" class="no-scrollbar">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>EduConnect</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="src/index.css">
+        <!-- Initialize dark mode from local storage -->
+        <script>
+            // On page load, check if user has a preference stored in localStorage
+            // If they prefer dark mode or have no preference but their OS prefers dark mode, we load dark mode
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        </script>
+    </head>
+    <body class="bg-gray-50 dark:bg-github-dark text-gray-900 dark:text-github-darkText no-scrollbar">
+        <div id="root" class="min-h-screen"></div>
+        <script src="src/index.jsx" type="module"></script>
+    </body>
+</html>

@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide scrollbar but keep functionality */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
+
+@layer base {
+  html {
+    height: 100%;
+  }
+  body {
+    @apply bg-gray-50 text-gray-900 transition-colors duration-200 min-h-screen;
+    overflow-x: hidden;
+  }
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .dark body {
+    @apply bg-github-dark text-github-darkText;
+  }
+  h1 {
+    @apply text-3xl font-bold;
+  }
+  h2 {
+    @apply text-2xl font-bold;
+  }
+  h3 {
+    @apply text-xl font-bold;
+  }
+  a {
+    @apply text-primary-600 hover:text-primary-800;
+  }
+  .dark a {
+    @apply text-github-darkLink hover:text-blue-400;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-colors;
+  }
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700;
+  }
+  .dark .btn-primary {
+    @apply bg-github-darkButton text-white hover:bg-green-700;
+  }
+  .btn-secondary {
+    @apply bg-secondary-600 text-white hover:bg-secondary-700;
+  }
+  .dark .btn-secondary {
+    @apply bg-github-darkAccent text-github-darkText hover:bg-gray-600;
+  }
+  .btn-outline {
+    @apply border border-gray-300 hover:bg-gray-100;
+  }
+  .dark .btn-outline {
+    @apply border border-github-darkBorder hover:bg-github-darkAccent text-github-darkText;
+  }
+  .card {
+    @apply bg-white p-6 rounded-lg shadow-md;
+  }
+  .dark .card {
+    @apply bg-github-darkSecondary border border-github-darkBorder shadow-xl;
+  }
+  .input {
+    @apply w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500;
+  }
+  .dark .input {
+    @apply bg-github-dark border-github-darkBorder text-github-darkText focus:ring-github-darkLink;
+  }
+
+  /* Custom navigation styles */
+  .nav-container {
+    @apply bg-white shadow-md rounded-lg mx-auto mt-6 max-w-7xl px-8 transition-shadow;
+  }
+  .dark .nav-container {
+    @apply bg-github-darkSecondary shadow-none border border-github-darkBorder;
+  }
+
+  .nav-menu {
+    @apply w-full list-none flex justify-end items-center gap-2;
+  }
+
+  .nav-item {
+    @apply h-12 flex items-center mx-1.5;
+  }
+
+  .nav-link {
+    @apply h-full px-5 no-underline flex items-center text-gray-800 font-medium rounded-xl transition-colors text-base;
+  }
+  .dark .nav-link {
+    @apply text-github-darkText hover:text-white;
+  }
+}
+
+nav a:hover, nav a:focus {
+  background: #f3f6fa;
+  color: #0077ff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.dark nav a:hover, .dark nav a:focus {
+  background: #21262d;
+  color: #c9d1d9;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+nav li:first-child a {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0077ff;
+  letter-spacing: 0.04em;
+  background: none;
+  box-shadow: none;
+  padding-left: 0;
+}
+
+.dark nav li:first-child a {
+  color: #58a6ff;
+}
+
+nav li:first-child {
+  margin-right: auto;
+}
+
+.menu-button {
+  display: none;
+  background: #0077ff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.menu-button:hover {
+  background: #005fcc;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 260px;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(16px);
+  box-shadow: -12px 0 24px rgba(0,0,0,0.13);
+  border-top-left-radius: 18px;
+  border-bottom-left-radius: 18px;
+  list-style: none;
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 32px 18px 18px 18px;
+  z-index: 100;
+}
+
+.sidebar li {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.sidebar a {
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 10px;
+  color: #222;
+  font-weight: 500;
+  font-size: 1.08rem;
+  transition: background 0.18s, color 0.18s;
+}
+
+.sidebar a:hover, .sidebar a:focus {
+  background: #f3f6fa;
+  color: #0077ff;
+}
+
+@media (max-width: 800px) {
+  nav {
+    padding: 0 10px;
+    border-radius: 0;
+    max-width: 100%;
+  }
+  .hideOnMobile {
+    display: none;
+  }
+  .menu-button {
+    display: block;
+  }
+}
+
+@media (max-width: 400px) {
+  .sidebar {
+    width: 100%;
+    border-radius: 0;
+    padding: 24px 8px 8px 8px;
+  }
+}
