@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
+  const [loginId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -54,11 +54,22 @@ const Login = () => {
       console.error("[Login] Error clearing URL params:", e);
     }
 
-    console.log("[Login] Attempting login with email:", email);
+    console.log("[Login] Attempting login with:", loginId);
 
     // Basic validation
-    if (!email || !password) {
-      setError('Email and password are required');
+    if (!loginId || !password) {
+      setError('Username/Email and password are required');
+      setLoading(false);
+      return;
+    }
+    // Password validation: at least 8 chars, at least one letter and one number
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      setLoading(false);
+      return;
+    }
+    if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+      setError('Password must contain at least one letter and one number');
       setLoading(false);
       return;
     }
@@ -71,7 +82,7 @@ const Login = () => {
       }
 
       // Attempt to login
-      const response = await login(email, password);
+  const response = await login(loginId, password);
       console.log("[Login] Login successful:", response);
 
       // Redirect to last visited page or home after a longer delay
@@ -110,7 +121,7 @@ const Login = () => {
 
       // Detailed error handling
       if (err.response?.status === 401) {
-        setError('Invalid credentials. Please check your email and password.');
+        setError('Invalid credentials. Please check your email or username and password.');
       } else if (err.response?.status === 400) {
         setError(err.response.data.error || 'Invalid form data. Please check your inputs.');
       } else if (err.message?.includes('Authentication verification failed')) {
@@ -124,8 +135,8 @@ const Login = () => {
   };
 
   const handleSocialLogin = (provider) => {
-    // Redirect to Django allauth social login
-    window.location.href = `http://localhost:8000/api/auth/social/${provider}/`;
+  // Redirect to Django allauth social login
+  window.location.href = `http://localhost:8000/accounts/${provider}/login/`;
   };
 
   return (
@@ -152,15 +163,15 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Email Address
+            <label htmlFor="loginId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Email or Username
             </label>
             <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="loginId"
+              type="text"
+              placeholder="Enter your email or username"
+              value={loginId}
+              onChange={(e) => setLoginId(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
               required
               disabled={loading}

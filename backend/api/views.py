@@ -110,12 +110,20 @@ def register_user(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_user(request):
-    username = request.data.get('username')
+    login_id = request.data.get('username')  # could be username or email
     password = request.data.get('password')
-    
-    print(f"Login attempt: {username}")
-    
-    user = authenticate(username=username, password=password)
+
+    print(f"Login attempt: {login_id}")
+
+    user = authenticate(username=login_id, password=password)
+    if not user:
+        # Try email lookup
+        try:
+            user_obj = CustomUser.objects.get(email=login_id)
+            user = authenticate(username=user_obj.username, password=password)
+        except CustomUser.DoesNotExist:
+            user = None
+
     if user:
         print(f"User authenticated: {user.username}")
         refresh = RefreshToken.for_user(user)
@@ -126,7 +134,7 @@ def login_user(request):
             'access': str(refresh.access_token),
             'user': user_data
         })
-    print(f"Authentication failed for user: {username}")
+    print(f"Authentication failed for user: {login_id}")
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['GET'])

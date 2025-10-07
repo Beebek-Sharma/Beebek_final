@@ -543,7 +543,7 @@ export const AuthProvider = ({ children }) => {
       await new Promise(resolve => setTimeout(resolve, 100));
       
       setLoading(true);
-      console.log('[Auth] Attempting login with email:', email);
+  console.log('[Auth] Attempting login with username/email:', email);
       
       // Ensure we get a fresh CSRF token before login
       try {
@@ -559,7 +559,7 @@ export const AuthProvider = ({ children }) => {
       // For better reliability, always request both cookie and token authentication
       // This ensures we have a fallback regardless of browser settings
       const response = await axiosInstance.post('/auth/login/', {
-        email,
+        username: email,
         password,
         include_token: true // Always request a token as backup
       });

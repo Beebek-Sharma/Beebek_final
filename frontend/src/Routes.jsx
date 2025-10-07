@@ -11,7 +11,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Logout from "./pages/Logout";
 import NotFound from "./pages/NotFound";
-import UserDashboard from "./pages/UserDashboard";
+import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/AdminDashboard";
 import UniversityList from "./pages/UniversityList";
 import UniversityDetail from "./pages/UniversityDetail";
@@ -44,7 +44,7 @@ const Routes = () => {
           <Route path="/search" element={<SearchPage />} />
           
           {/* Protected routes */}
-          <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/compare-courses" element={<ProtectedRoute><CourseComparison /></ProtectedRoute>} />
           <Route path="/feedback" element={<ProtectedRoute><UserFeedback /></ProtectedRoute>} />
           

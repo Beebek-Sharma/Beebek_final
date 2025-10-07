@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
+import "../index.css";
 
-const UserDashboard = () => {
+const Profile = () => {
   const { user, loading: authLoading } = useAuth();
   const [savedCourses, setSavedCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,9 +57,9 @@ const UserDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
+    <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col" style={{ backgroundColor: '#181A20', color: '#E0E0E0' }}>
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-github-darkText">Your Dashboard</h1>
+  <h1 className="text-3xl font-bold text-gray-900 dark:text-github-darkText">Your Profile</h1>
         <div className="mt-8 bg-white dark:bg-github-dark shadow dark:border-github-darkBorder overflow-hidden sm:rounded-lg">
           <div className="px-4 py-5 sm:px-6">
             <h2 className="text-lg leading-6 font-medium text-gray-900 dark:text-github-darkText">
@@ -235,4 +236,4 @@ const UserDashboard = () => {
   );
 };
 
-export default UserDashboard;
+export default Profile;

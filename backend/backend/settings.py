@@ -1,3 +1,5 @@
+# Enable Django Sites framework for social authentication
+SITE_ID = 1
 # Custom user model
 AUTH_USER_MODEL = 'api.CustomUser'
 """
@@ -39,6 +41,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -278,6 +281,10 @@ JWT_AUTH_HTTPONLY = True
 JWT_AUTH_SECURE = False  # Always False for dev, so cookies work on localhost
 JWT_AUTH_SAMESITE = 'Lax'  # Lax for dev, so cookies are sent reliably
 JWT_AUTH_DOMAIN = None  # None for dev, so cookies are not restricted
+
+
+# Redirect users to home page after login (fixes 404 on /accounts/profile/)
+LOGIN_REDIRECT_URL = 'http://localhost:5173/'
 
 # Override settings for production
 if IS_PRODUCTION:

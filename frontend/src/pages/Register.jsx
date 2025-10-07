@@ -58,8 +58,8 @@ const Register = () => {
   };
 
   const handleSocialLogin = (provider) => {
-    // Redirect to Django allauth social login
-    window.location.href = `http://localhost:8000/api/auth/social/${provider}/`;
+  // Redirect to Django allauth social login
+  window.location.href = `http://localhost:8000/accounts/${provider}/login/`;
   };
 
   return (

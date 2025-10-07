@@ -5,10 +5,9 @@ const CourseCard = ({ course }) => {
   if (!course) return null;
 
   return (
-    <div className="bg-github-lightAccent dark:bg-github-darkAccent rounded-lg shadow p-6 flex flex-col items-center transition-colors duration-300">
-  <h3 className="text-xl font-semibold mb-2">{course.name}</h3>
-  <p className="text-gray-600 mb-2">{course.university_name}</p>
-      <p className="text-white-700 mb-4">{course.description}</p>
+    <div className="panel p-6 rounded-xl shadow-lg" style={{ backgroundColor: '#23242B', color: '#E0E0E0' }}>
+      <h4 className="text-lg font-bold mb-2">{course.name}</h4>
+      <p className="opacity-80">{course.description}</p>
       <div className="flex justify-between space-x-4 mb-4 items-center">
         <span className="text-sm text-gray-500">{course.duration}</span>
         <span className="text-lg font-bold text-blue-600">{course.fees}</span>

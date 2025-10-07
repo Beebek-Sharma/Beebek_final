@@ -54,6 +54,9 @@ export default {
           darkButton: '#238636',      // Green button
           darkLink: '#58a6ff',        // Link color
         },
+          replitBg: '#181A20',
+          replitPanel: '#23242B',
+          replitBorder: '#23242B',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

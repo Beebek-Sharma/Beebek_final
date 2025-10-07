@@ -19,7 +19,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   ];
 
   const authenticatedItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: FiUser },
+  { path: '/profile', label: 'Profile', icon: FiUser },
   ...(isAdmin ? [{ path: '/admin', label: 'Admin', icon: FiSettings }] : []),
   ];
 
