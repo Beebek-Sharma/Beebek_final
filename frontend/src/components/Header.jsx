@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-// ...existing code...
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import UserRoleIndicator from './UserRoleIndicator';
 import SearchBar from './SearchBar';
@@ -13,6 +12,7 @@ export default function Header({ toggleSidebar }) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showBellDropdown, setShowBellDropdown] = useState(false);
   const { user, isSignedIn, logout } = useAuth();
+  const navigate = useNavigate();
   const isAdmin = user?.role === 'superuser_admin';
 
   return (
@@ -56,17 +56,51 @@ export default function Header({ toggleSidebar }) {
               {isSignedIn ? (
                 <>
                   <button onClick={() => setShowProfileMenu(!showProfileMenu)} className="flex items-center focus:outline-none">
-                    <span className="inline-block w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold mr-2">
-                      {user?.username?.charAt(0)?.toUpperCase() || 'U'}
-                    </span>
-                    <span className="hidden md:inline text-sm font-medium text-gray-900 dark:text-white">{user?.username}</span>
+                    {/* Only show avatar/profile picture */}
+                    {user?.profile_picture ? (
+                      <img src={user.profile_picture} alt="Profile" className="inline-block w-8 h-8 rounded-full object-cover border-2 border-primary-600" />
+                    ) : (
+                      <span className="inline-block w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold">
+                        {user?.username?.charAt(0)?.toUpperCase() || 'U'}
+                      </span>
+                    )}
                   </button>
                   {showProfileMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-github-darkSecondary rounded-lg shadow-lg border border-github-lightBorder dark:border-github-darkBorder z-50">
-                      <Link to="/profile" className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-github-darkAccent">Profile</Link>
-                      <Link to="/settings" className="block px-4 py-2 text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-github-darkAccent">Settings</Link>
-                      {isAdmin && <Link to="/admin" className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-github-darkAccent">Admin Dashboard</Link>}
-                      <Link to="/logout" className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-github-darkAccent">Logout</Link>
+                    <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-github-darkSecondary rounded-xl shadow-lg border border-github-lightBorder dark:border-github-darkBorder z-50 overflow-hidden">
+                      <div className="flex flex-col items-center py-6 px-6 border-b border-gray-100 dark:border-github-darkBorder">
+                        {user?.profile_picture ? (
+                          <img src={user.profile_picture} alt="Profile" className="w-16 h-16 rounded-full object-cover mb-2 border-2 border-primary-600" />
+                        ) : (
+                          <span className="w-16 h-16 rounded-full bg-primary-600 text-white flex items-center justify-center font-bold mb-2 text-2xl">
+                            {user?.username?.charAt(0)?.toUpperCase() || 'U'}
+                          </span>
+                        )}
+                        <div className="font-semibold text-lg text-gray-900 dark:text-white">{user?.full_name || user?.username}</div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">{user?.email}</div>
+                        <Link to="/profile" className="text-blue-600 dark:text-blue-400 hover:underline text-sm mb-2">View profile</Link>
+                      </div>
+                      <div className="py-2 border-b border-gray-100 dark:border-github-darkBorder">
+                        <button onClick={() => { setShowProfileMenu(false); navigate('/settings'); }} className="flex items-center w-full px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-github-darkAccent text-left">
+                          <span className="mr-2">⚙️</span> Settings
+                        </button>
+                        <button onClick={() => { setShowProfileMenu(false); navigate('/help'); }} className="flex items-center w-full px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-github-darkAccent text-left">
+                          <span className="mr-2">❓</span> Help
+                        </button>
+                      </div>
+                      <div className="py-2 border-b border-gray-100 dark:border-github-darkBorder">
+                        <button onClick={() => { setShowProfileMenu(false); navigate('/membership'); }} className="flex items-center w-full px-6 py-3 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-github-darkAccent text-left">
+                          <span className="mr-2">⭐</span> Become a member
+                        </button>
+                        <button onClick={() => { setShowProfileMenu(false); navigate('/partner-program'); }} className="flex items-center w-full px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-github-darkAccent text-left">
+                          Apply to the Partner Program
+                        </button>
+                      </div>
+                      <div className="py-2">
+                        <button onClick={logout} className="flex items-center w-full px-6 py-3 text-red-600 hover:bg-gray-100 dark:hover:bg-github-darkAccent text-left">
+                          Sign out
+                        </button>
+                        <div className="px-6 py-2 text-xs text-gray-500 dark:text-gray-400">{user?.email && `${user.email.replace(/(.{2}).+(@.+)/, '$1********$2')}`}</div>
+                      </div>
                     </div>
                   )}
                 </>
