@@ -32,6 +32,7 @@ class Submission(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField('CustomUser', on_delete=models.CASCADE, related_name='profile')
     created_at = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username}'s profile"

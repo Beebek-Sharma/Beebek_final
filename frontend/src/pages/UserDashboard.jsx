@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
@@ -11,6 +11,7 @@ const Profile = () => {
   const [savedCourses, setSavedCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSavedCourses = async () => {
@@ -59,7 +60,17 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col" style={{ backgroundColor: '#181A20', color: '#E0E0E0' }}>
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-  <h1 className="text-3xl font-bold text-gray-900 dark:text-github-darkText">Your Profile</h1>
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-github-darkText">Your Profile</h1>
+          <button
+            className="px-4 py-2 rounded-lg shadow-md font-semibold"
+            style={{ backgroundColor: '#23242B', color: '#E0E0E0' }}
+            onClick={() => navigate('/settings/profile')}
+          >
+            Edit Profile
+          </button>
+        </div>
+        
         <div className="mt-8 bg-white dark:bg-github-dark shadow dark:border-github-darkBorder overflow-hidden sm:rounded-lg">
           <div className="px-4 py-5 sm:px-6">
             <h2 className="text-lg leading-6 font-medium text-gray-900 dark:text-github-darkText">

@@ -558,11 +558,16 @@ export const AuthProvider = ({ children }) => {
       
       // For better reliability, always request both cookie and token authentication
       // This ensures we have a fallback regardless of browser settings
-      const response = await axiosInstance.post('/auth/login/', {
-        username: email,
-        password,
-        include_token: true // Always request a token as backup
-      });
+      
+      // Determine if login is using email or username
+      const isEmail = email.includes('@');
+      const loginData = isEmail 
+        ? { email, password, include_token: true }
+        : { username: email, password, include_token: true };
+      
+      console.log('[Auth] Login request data:', { ...loginData, password: '***' });
+      
+      const response = await axiosInstance.post('/auth/login/', loginData);
       
       console.log('[Auth] Login response:', response.data);
       

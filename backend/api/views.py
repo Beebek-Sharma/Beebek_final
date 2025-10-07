@@ -1,24 +1,71 @@
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
-from rest_framework_simplejwt.tokens import RefreshToken
+# Import Django modules
 from django.contrib.auth import authenticate
 from django.db.models import Q
-from .models import Submission, CustomUser, UserProfile, University, Course, UserSavedCourse, Feedback, FeedbackResponse
+
+# Import REST framework modules
+from rest_framework.decorators import api_view, permission_classes, parser_classes, action
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
+from rest_framework import status, generics
+from rest_framework.pagination import PageNumberPagination
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.parsers import MultiPartParser, FormParser
+
+# Import local models and serializers
+from .models import Submission, CustomUser, UserProfile, University, Course, UserSavedCourse, Feedback, FeedbackResponse, Notification
 from .serializers import (
     SubmissionSerializer, UserSerializer, RegisterSerializer,
     UniversitySerializer, CourseSerializer, UserSavedCourseSerializer,
     FeedbackSerializer, FeedbackResponseSerializer, NotificationSerializer
 )
+
+# User profile management views
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def edit_username(request):
+    user = request.user
+    new_username = request.data.get('username')
+    if not new_username:
+        return Response({'error': 'Username is required.'}, status=400)
+    if CustomUser.objects.filter(username=new_username).exclude(pk=user.pk).exists():
+        return Response({'error': 'Username already taken.'}, status=400)
+    user.username = new_username
+    user.save()
+    return Response({'success': True, 'message': 'Username updated successfully.', 'username': user.username})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    user = request.user
+    old_password = request.data.get('old_password')
+    new_password = request.data.get('new_password')
+    confirm_password = request.data.get('confirm_password')
+    if not user.check_password(old_password):
+        return Response({'error': 'Old password is incorrect.'}, status=400)
+    if new_password != confirm_password:
+        return Response({'error': 'New passwords do not match.'}, status=400)
+    user.set_password(new_password)
+    user.save()
+    return Response({'success': True, 'message': 'Password changed successfully.'})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def upload_profile_picture(request):
+    user = request.user
+    profile, created = UserProfile.objects.get_or_create(user=user)
+    image = request.FILES.get('image')
+    if image:
+        profile.image = image
+        profile.save()
+        serializer = UserProfileSerializer(profile)
+        return Response(serializer.data)
+    return Response({'error': 'No image uploaded'}, status=400)
+
 # Feedback views
 
 # Notification API endpoints
-from .models import Notification
-
-from rest_framework.decorators import action
-from rest_framework import generics
+from rest_framework.parsers import MultiPartParser, FormParser
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

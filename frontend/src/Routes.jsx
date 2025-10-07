@@ -24,6 +24,13 @@ import About from "./pages/About";
 import ContactUs from "./pages/ContactUs";
 import SearchPage from "./pages/SearchPage";
 import AccessDenied from "./pages/AccessDenied";
+import Settings from "./pages/Settings";
+import EditProfile from "./pages/EditProfile";
+import ChangePassword from "./pages/ChangePassword";
+import EditUsername from "./pages/EditUsername";
+import ProfileSettings from "./pages/ProfileSettings";
+import AccountSettings from "./pages/AccountSettings";
+import SecuritySettings from "./pages/SecuritySettings";
 
 const Routes = () => {
   return (
@@ -47,6 +54,14 @@ const Routes = () => {
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/compare-courses" element={<ProtectedRoute><CourseComparison /></ProtectedRoute>} />
           <Route path="/feedback" element={<ProtectedRoute><UserFeedback /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>}>
+            <Route path="profile" element={<ProfileSettings />} />
+            <Route path="account" element={<AccountSettings />} />
+            <Route path="security" element={<SecuritySettings />} />
+          </Route>
+          <Route path="/settings/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+          <Route path="/settings/change-password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
+          <Route path="/settings/edit-username" element={<ProtectedRoute><EditUsername /></ProtectedRoute>} />
           
           {/* Admin routes */}
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
