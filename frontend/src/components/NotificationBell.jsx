@@ -5,6 +5,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FiBell } from 'react-icons/fi';
 
 const NotificationBell = () => {
+  // Clear all notifications
+  const clearNotifications = async () => {
+    try {
+      await axios.post('/notifications/clear-all/');
+      await fetchNotifications(); // Refetch to update UI
+    } catch (err) {
+      console.log('[NotificationBell] Failed to clear notifications:', err.message);
+    }
+  };
+
+  // Redirect on notification click
+  const handleNotificationClick = (notification) => {
+    if (!user) return;
+    if (user.role === 'admin' || user.role === 'superuser_admin') {
+      window.location.href = 'http://localhost:5173/admin/feedback';
+    } else {
+      window.location.href = 'http://localhost:5173/feedback';
+    }
+  };
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -41,8 +60,30 @@ const NotificationBell = () => {
     } catch (err) {}
   };
 
+  // Helper to highlight feedback notifications
+  const getNotificationStyle = (notification) => {
+    if (notification.type === 'feedback_response') {
+      return 'border-l-4 border-green-500 bg-green-50 dark:bg-green-900';
+    }
+    if (notification.type === 'feedback') {
+      return 'border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900';
+    }
+    return 'bg-gray-50 dark:bg-github-darkAccent';
+  };
+
+  // Helper to show sender/recipient info for admins/users
+  const getNotificationMeta = (notification) => {
+    if (notification.type === 'feedback') {
+      return `From: ${notification.sender_username || 'System'}`;
+    }
+    if (notification.type === 'feedback_response') {
+      return `Admin: ${notification.sender_username || 'Admin'}`;
+    }
+    return '';
+  };
+
   return (
-    <div className="relative">
+  <div className="relative">
       <motion.button
         onClick={() => setShowNotifications(!showNotifications)}
         className="relative p-2 text-gray-600 dark:text-github-darkText hover:text-gray-900 dark:hover:text-white focus:outline-none"
@@ -66,31 +107,40 @@ const NotificationBell = () => {
             transition={{ duration: 0.2 }}
           >
             <div className="p-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-github-darkText mb-3">
-                Notifications
-              </h3>
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-github-darkText">
+                  Notifications
+                </h3>
+                <button
+                  className="px-2 py-1 text-xs bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded hover:bg-red-200 dark:hover:bg-red-800"
+                  onClick={clearNotifications}
+                  disabled={notifications.length === 0}
+                >Clear All</button>
+              </div>
               {loading ? (
                 <p className="text-sm text-gray-500 dark:text-github-darkTextSecondary text-center py-4">Loading...</p>
               ) : notifications.length === 0 ? (
                 <p className="text-sm text-gray-500 dark:text-github-darkTextSecondary text-center py-4">No new notifications</p>
               ) : (
                 <div className="space-y-2">
-                  {notifications.map((notification) => (
+                  {notifications.filter((n) => !n.is_read).map((notification) => (
                     <div
                       key={notification.id}
-                      className={`p-3 bg-gray-50 dark:bg-github-darkAccent rounded-lg ${!notification.is_read ? 'border-l-4 border-primary-500' : ''}`}
+                      className={`p-3 rounded-lg cursor-pointer ${getNotificationStyle(notification)}`}
+                      onClick={() => handleNotificationClick(notification)}
                     >
                       <div className="flex justify-between items-center">
                         <div>
                           <p className="text-sm text-gray-900 dark:text-github-darkText">{notification.message}</p>
                           <p className="text-xs text-gray-500 dark:text-github-darkTextSecondary mt-1">{new Date(notification.created_at).toLocaleString()}</p>
+                          {getNotificationMeta(notification) && (
+                            <p className="text-xs text-gray-400 dark:text-gray-300 mt-1 italic">{getNotificationMeta(notification)}</p>
+                          )}
                         </div>
-                        {!notification.is_read && (
-                          <button
-                            className="ml-2 px-2 py-1 text-xs bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded hover:bg-primary-200 dark:hover:bg-primary-800"
-                            onClick={() => markAsRead(notification.id)}
-                          >Mark as read</button>
-                        )}
+                        <button
+                          className="ml-2 px-2 py-1 text-xs bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded hover:bg-primary-200 dark:hover:bg-primary-800"
+                          onClick={(e) => { e.stopPropagation(); markAsRead(notification.id); }}
+                        >Mark as read</button>
                       </div>
                     </div>
                   ))}

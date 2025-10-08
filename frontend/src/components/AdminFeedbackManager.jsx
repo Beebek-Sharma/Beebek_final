@@ -65,7 +65,7 @@ const AdminFeedbackManager = () => {
 
   const markAsResolved = async (feedbackId, currentStatus) => {
     try {
-      const response = await axiosInstance.patch(
+      const response = await axiosInstance.put(
         `/feedback/${feedbackId}/`,
         { is_resolved: !currentStatus }
       );
@@ -134,7 +134,7 @@ const AdminFeedbackManager = () => {
               
               <div className="mt-2">
                 <span className="text-sm text-gray-600 dark:text-github-darkText">
-                  From: {feedback.user_email || 'Anonymous'} | 
+                  From: {feedback.username || feedback.user_email || 'Anonymous'} | 
                   Submitted: {new Date(feedback.created_at).toLocaleDateString()}
                 </span>
               </div>

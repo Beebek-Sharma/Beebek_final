@@ -1,6 +1,8 @@
 import React from "react";
 import { Routes as RouterRoutes, Route } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
+import BecomeMember from "./pages/BecomeMember";
+import PartnerProgram from "./pages/PartnerProgram";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
@@ -36,7 +38,7 @@ const Routes = () => {
   return (
     <ErrorBoundary>
       <ScrollToTop />
-      <RouterRoutes>
+  <RouterRoutes>
           {/* Public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -49,6 +51,8 @@ const Routes = () => {
           <Route path="/courses" element={<CourseList />} />
           <Route path="/courses/:id" element={<CourseDetail />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/become-member" element={<BecomeMember />} />
+          <Route path="/partner-program" element={<PartnerProgram />} />
           
           {/* Protected routes */}
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

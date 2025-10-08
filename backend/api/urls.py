@@ -5,7 +5,7 @@ from .views import (
     promote_to_admin, list_universities, university_detail, list_courses, course_detail,
     user_saved_courses, list_users, user_detail,
     feedback_list, feedback_detail, feedback_response_create, featured_feedback,
-    notifications_list, notifications_create, notifications_mark_read, me
+    notifications_list, notifications_create, notifications_mark_read, notifications_clear_all, me
 )
 from .views_auth import (
     register_view, login_view, logout_view, current_user_view, 
@@ -68,6 +68,7 @@ urlpatterns = [
     path('notifications/', notifications_list, name='notifications_list'),
     path('notifications/create/', notifications_create, name='notifications_create'),
     path('notifications/<int:pk>/mark-read/', notifications_mark_read, name='notifications_mark_read'),
+    path('notifications/clear-all/', notifications_clear_all, name='notifications_clear_all'),
     
     # Search
     path('search/', search, name='search'),

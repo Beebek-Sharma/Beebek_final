@@ -1,4 +1,3 @@
-# Import Django modules
 from django.contrib.auth import authenticate
 from django.db.models import Q
 
@@ -10,6 +9,15 @@ from rest_framework import status, generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.parsers import MultiPartParser, FormParser
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def notifications_clear_all(request):
+    """
+    Mark all notifications as read for the authenticated user.
+    """
+    Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
+    return Response({'success': True})
 
 # Import local models and serializers
 from .models import Submission, CustomUser, UserProfile, University, Course, UserSavedCourse, Feedback, FeedbackResponse, Notification
@@ -522,7 +530,16 @@ def feedback_list(request):
         # Create new feedback
         serializer = FeedbackSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            feedback = serializer.save(user=request.user)
+            # Notify all admins when feedback is submitted
+            admins = CustomUser.objects.filter(role__in=['admin', 'superuser_admin'])
+            for admin in admins:
+                Notification.objects.create(
+                    recipient=admin,
+                    sender=request.user,
+                    message=f"New feedback submitted by {request.user.username}: {feedback.subject}",
+                    type='feedback'
+                )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -535,7 +552,7 @@ def feedback_detail(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
     
     # Check permissions: admin can access all feedback, students only their own
-    is_admin = hasattr(request.user, 'profile') and request.user.profile.role == 'admin'
+    is_admin = hasattr(request.user, 'role') and request.user.role in ['admin', 'superuser_admin']
     if not is_admin and feedback.user != request.user:
         return Response({'error': 'You do not have permission to access this feedback'}, 
                         status=status.HTTP_403_FORBIDDEN)
@@ -545,11 +562,11 @@ def feedback_detail(request, pk):
         return Response(serializer.data)
     
     if request.method == 'PUT':
-        # Only allow the user who created the feedback to update it
-        if feedback.user != request.user:
-            return Response({'error': 'You can only update your own feedback'}, 
+        # Allow admin or the feedback creator to update feedback (e.g., mark as resolved)
+        is_admin = hasattr(request.user, 'role') and request.user.role in ['admin', 'superuser_admin']
+        if not (is_admin or feedback.user == request.user):
+            return Response({'error': 'You can only update your own feedback or you must be an admin'}, 
                            status=status.HTTP_403_FORBIDDEN)
-            
         serializer = FeedbackSerializer(feedback, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -558,7 +575,7 @@ def feedback_detail(request, pk):
     
     if request.method == 'DELETE':
         # Allow admin or the feedback creator to delete
-        is_admin = hasattr(request.user, 'profile') and request.user.profile.role == 'admin'
+        is_admin = hasattr(request.user, 'role') and request.user.role in ['admin', 'superuser_admin']
         if is_admin or feedback.user == request.user:
             feedback.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -569,7 +586,7 @@ def feedback_detail(request, pk):
 @permission_classes([IsAuthenticated])
 def feedback_response_create(request, feedback_id):
     # Only admins can respond to feedback
-    is_admin = hasattr(request.user, 'profile') and request.user.profile.role == 'admin'
+    is_admin = hasattr(request.user, 'role') and request.user.role in ['admin', 'superuser_admin']
     if not is_admin:
         return Response({'error': 'Only admins can respond to feedback'}, 
                        status=status.HTTP_403_FORBIDDEN)
@@ -583,11 +600,16 @@ def feedback_response_create(request, feedback_id):
     if serializer.is_valid():
         # Save the response with admin user and feedback
         response = serializer.save(admin=request.user, feedback=feedback)
-        
         # Mark the feedback as resolved and save it
         feedback.is_resolved = True
         feedback.save()
-        
+        # Notify the feedback owner when admin responds
+        Notification.objects.create(
+            recipient=feedback.user,
+            sender=request.user,
+            message=f"Your feedback '{feedback.subject}' has a new response from admin.",
+            type='feedback_response'
+        )
         # Return the serialized response data
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -92,7 +92,7 @@ export default function Header({ toggleSidebar }) {
                         </button>
                       </div>
                       <div className="py-2 border-b border-gray-100 dark:border-github-darkBorder">
-                        <button onClick={() => { setShowProfileMenu(false); navigate('/membership'); }} className="flex items-center w-full px-6 py-3 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-github-darkAccent text-left">
+                        <button onClick={() => { setShowProfileMenu(false); navigate('/become-member'); }} className="flex items-center w-full px-6 py-3 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-github-darkAccent text-left">
                           <span className="mr-2">⭐</span> Become a member
                         </button>
                         <button onClick={() => { setShowProfileMenu(false); navigate('/partner-program'); }} className="flex items-center w-full px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-github-darkAccent text-left">

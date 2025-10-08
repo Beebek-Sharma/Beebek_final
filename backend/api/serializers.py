@@ -99,7 +99,10 @@ class FeedbackResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeedbackResponse
         fields = ['id', 'feedback', 'admin', 'admin_username', 'message', 'created_at']
-        extra_kwargs = {'admin': {'required': False}}  # Will be set from the request user
+        extra_kwargs = {
+            'admin': {'required': False},  # Will be set from the request user
+            'feedback': {'required': False}  # Will be set from backend, not POST data
+        }
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
