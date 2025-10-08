@@ -118,3 +118,33 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification to {self.recipient.username}: {self.message[:30]}"
+        
+# Models for the AI Chat Widget
+class ChatSession(models.Model):
+    """Model to track chat sessions"""
+    session_id = models.CharField(max_length=64, unique=True)
+    user = models.ForeignKey('CustomUser', on_delete=models.SET_NULL, null=True, blank=True, related_name='chat_sessions')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"Chat Session: {self.session_id[:8]}"
+
+class ChatMessage(models.Model):
+    """Model to store individual chat messages"""
+    ROLE_CHOICES = [
+        ('user', 'User'),
+        ('assistant', 'Assistant'),
+        ('system', 'System'),
+    ]
+    
+    session = models.ForeignKey(ChatSession, on_delete=models.CASCADE, related_name='messages')
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['timestamp']
+    
+    def __str__(self):
+        return f"{self.role} message in {self.session.session_id[:8]}"

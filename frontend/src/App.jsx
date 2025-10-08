@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import RouteChangeListener from './components/RouteChangeListener';
+import ChatWidget from './components/ChatWidget';
 // ...existing code...
 
 function App() {
@@ -74,6 +75,9 @@ function App() {
             <Footer />
           </div>
         </div>
+        
+        {/* AI Chat Widget */}
+        <ChatWidget />
       </div>
     </BrowserRouter>
   );

@@ -5,7 +5,10 @@ const CourseCard = ({ course }) => {
   if (!course) return null;
 
   return (
-    <div className="panel p-6 rounded-xl shadow-lg" style={{ backgroundColor: '#23242B', color: '#E0E0E0' }}>
+    <div className="p-6 rounded-xl shadow-md 
+                               bg-github-lightAccent dark:bg-github-darkAccent 
+                               text-github-lightText dark:text-github-darkText 
+                               transition-colors duration-300" style={{ transform: "none" }}>
       <h4 className="text-lg font-bold mb-2">{course.name}</h4>
       <p className="opacity-80">{course.description}</p>
       <div className="flex justify-between space-x-4 mb-4 items-center">

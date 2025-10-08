@@ -21,7 +21,7 @@ const Home = () => {
     const fetchPopularItems = async () => {
       try {
         const response = await axiosInstance.get('/popular/');
-  setPopularItems(response.data);
+        setPopularItems(response.data);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching popular items:', err);
@@ -31,6 +31,7 @@ const Home = () => {
     };
     fetchPopularItems();
   }, []);
+
   return (
     <div className="flex flex-col">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -53,7 +54,7 @@ const Home = () => {
                 Find Your Perfect University
               </motion.h1>
               <motion.p
-                className="mt-5 max-w-xl mx-auto text-xl text-gray-500 dark:text-github-darkText"
+                className="mt-5 max-w-xl mx-auto text-xl text-gray-500 dark:text-github-darkTextSecondary"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -85,7 +86,7 @@ const Home = () => {
                 >
                   <Link
                     to="/courses"
-                    className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-white dark:bg-github-dark hover:bg-gray-50 dark:bg-github-dark transition-all duration-200"
+                    className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-white dark:bg-github-darkSecondary hover:bg-gray-50 dark:hover:bg-github-darkAccent transition-all duration-200"
                   >
                     Explore Courses
                   </Link>
@@ -97,7 +98,7 @@ const Home = () => {
                 >
                   <Link
                     to="/compare-courses"
-                    className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-white dark:bg-github-dark hover:bg-gray-50 dark:bg-github-dark transition-all duration-200"
+                    className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-white dark:bg-github-darkSecondary hover:bg-gray-50 dark:hover:bg-github-darkAccent transition-all duration-200"
                   >
                     Compare Courses
                   </Link>
@@ -122,25 +123,37 @@ const Home = () => {
               >
                 How It Works
               </motion.h2>
+
               <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
                 {[
                   {
                     icon: <span className="text-4xl">🔍</span>,
                     title: 'Search',
-                    description: 'Browse through our comprehensive database of universities and courses.',
+                    description: 'Browse through our comprehensive database of universities and courses.'
                   },
                   {
                     icon: <span className="text-4xl">⚖️</span>,
                     title: 'Compare',
-                    description: 'Compare different courses and universities side by side.',
+                    description: 'Compare different courses and universities side by side.'
                   },
                   {
                     icon: <span className="text-4xl">🎓</span>,
                     title: 'Apply',
-                    description: 'Save your favorite courses and get application guidance.',
+                    description: 'Save your favorite courses and get application guidance.'
                   }
                 ].map((item, index) => (
-                  <InfoCard key={index} icon={item.icon} title={item.title} description={item.description} />
+                  <motion.div
+                    key={index}
+                    whileHover={{ scale: 1.05 }}
+                    className="p-6 rounded-xl shadow-md 
+                               bg-github-lightAccent dark:bg-github-darkAccent 
+                               text-github-lightText dark:text-github-darkText 
+                               transition-colors duration-300"
+                  >
+                    <div className="text-4xl mb-3">{item.icon}</div>
+                    <h3 className="text-lg font-semibold">{item.title}</h3>
+                    <p className="mt-2 text-github-lightTextSecondary dark:text-github-darkTextSecondary">{item.description}</p>
+                  </motion.div>
                 ))}
               </div>
             </motion.div>
@@ -163,13 +176,10 @@ const Home = () => {
                 >
                   Popular Universities
                 </motion.h2>
-                <motion.div
-                  whileHover={{ x: 5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
+                <motion.div whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 300 }}>
                   <Link
                     to="/universities"
-                    className="text-primary-600 hover:text-primary-800 font-medium flex items-center group transition-all duration-200"
+                    className="text-primary-600 hover:text-primary-800 dark:hover:text-primary-400 font-medium flex items-center group transition-all duration-200"
                   >
                     View all
                     <motion.svg
@@ -177,7 +187,11 @@ const Home = () => {
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      />
                     </motion.svg>
                   </Link>
                 </motion.div>
@@ -210,14 +224,18 @@ const Home = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: index * 0.1 }}
+                        className="rounded-2xl shadow-md hover:shadow-lg transition-all duration-300
+                       bg-white dark:bg-github-darkSecondary 
+                       text-gray-900 dark:text-gray-100
+                       border border-gray-200 dark:border-github-darkBorder"
                       >
-                        <div className="bg-white dark:bg-github-darkCard rounded-lg shadow">
-                          <UniversityCard university={university} />
-                        </div>
+                        <UniversityCard university={university} />
                       </motion.div>
                     ))
                   ) : (
-                    <p className="col-span-3 text-center text-gray-500 dark:text-github-darkText py-10">No popular universities found.</p>
+                    <p className="col-span-3 text-center text-gray-500 dark:text-github-darkText py-10">
+                      No popular universities found.
+                    </p>
                   )}
                 </div>
               )}
@@ -241,13 +259,10 @@ const Home = () => {
                 >
                   Popular Courses
                 </motion.h2>
-                <motion.div
-                  whileHover={{ x: 5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
+                <motion.div whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 300 }}>
                   <Link
                     to="/courses"
-                    className="text-primary-600 hover:text-primary-800 font-medium flex items-center group transition-all duration-200"
+                    className="text-primary-600 hover:text-primary-800 dark:hover:text-primary-400 font-medium flex items-center group transition-all duration-200"
                   >
                     View all
                     <motion.svg
@@ -255,7 +270,11 @@ const Home = () => {
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      />
                     </motion.svg>
                   </Link>
                 </motion.div>
@@ -288,21 +307,25 @@ const Home = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: index * 0.1 }}
+                        className="rounded-2xl shadow-md hover:shadow-lg transition-all duration-300
+                       bg-white dark:bg-github-darkSecondary 
+                       text-gray-900 dark:text-gray-100
+                       border border-gray-200 dark:border-github-darkBorder"
                       >
-                        <div className="bg-white dark:bg-github-darkCard rounded-lg shadow">
-                          <CourseCard course={course} />
-                        </div>
+                        <CourseCard course={course} />
                       </motion.div>
                     ))
                   ) : (
-                    <p className="col-span-3 text-center text-gray-500 dark:text-github-darkText py-10">No popular courses found.</p>
+                    <p className="col-span-3 text-center text-gray-500 dark:text-github-darkText py-10">
+                      No popular courses found.
+                    </p>
                   )}
                 </div>
               )}
             </motion.div>
           </main>
 
-          {/* Right Sidebar - Only visible on desktop */}
+          {/* Right Sidebar */}
           <div className="hidden lg:block lg:w-80" style={{ position: 'absolute', right: 30, top: '100px' }}>
             <div className="sticky top-20">
               <FeedbackSidebar />
@@ -310,13 +333,8 @@ const Home = () => {
           </div>
         </div>
       </div>
-
-      {/* Footer removed: now only rendered in App.jsx */}
-
-      {/* Floating comparison button */}
       <CompareFloatingButton />
     </div>
   );
-
-}
+};
 export default Home;

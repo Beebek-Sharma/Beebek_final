@@ -1,4 +1,10 @@
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+env_path = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) / '.env'
+load_dotenv(dotenv_path=env_path)
 
 # Enable Django Sites framework for social authentication
 SITE_ID = 1
@@ -81,6 +87,14 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.linkedin_oauth2',
     'api.apps.ApiConfig',  # Ensure this is the correct path to your app
 ]
+
+# Grok API settings
+GROK_API_KEY = os.environ.get('GROK_API_KEY')
+GROK_API_ENDPOINT = os.environ.get('GROK_API_ENDPOINT', 'https://api.openai.com/v1/chat/completions')
+GROK_MODEL_NAME = os.environ.get('GROK_MODEL_NAME', 'grok-1')
+if GROK_API_KEY:
+    os.environ['GROK_API_KEY'] = GROK_API_KEY
+os.environ['DJANGO_DEBUG'] = 'True'
 
 # dj-rest-auth and allauth settings
 ACCOUNT_LOGIN_METHODS = {'username', 'email'}
@@ -272,8 +286,8 @@ LOGGING = {
 }
 # JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=6),     # Extended from 60 minutes to 6 hours
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),    # Extended from 7 days to 30 days
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=3650),   # Effectively unlimited: 10 years
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=36500), # Effectively unlimited: 100 years
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': False,
     'UPDATE_LAST_LOGIN': True,

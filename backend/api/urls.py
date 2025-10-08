@@ -16,6 +16,7 @@ from .views_search import search
 from .views_popular import popular_items
 from .views_notifications import feedback_unread, feedback_mark_read, feedback_mark_all_read
 from .views_verify import verify_auth
+from .views_chat import chat_message, chat_history, chat_clear, chat_summary
 
 urlpatterns = [
     path('hello/', hello, name='hello'),
@@ -76,4 +77,10 @@ urlpatterns = [
     
     # Featured feedback for homepage
     path('featured-feedback/', featured_feedback, name='featured_feedback'),
+    
+    # Chat endpoints
+    path('chat/', chat_message, name='chat_message'),
+    path('chat/history/<str:session_id>/', chat_history, name='chat_history'),
+    path('chat/clear/<str:session_id>/', chat_clear, name='chat_clear'),
+    path('chat/summary/', chat_summary, name='chat_summary'),
 ]
