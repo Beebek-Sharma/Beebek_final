@@ -56,10 +56,16 @@ const Profile = () => {
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-github-darkText">Your Profile</h1>
         <div className="mt-8 bg-white dark:bg-github-dark shadow dark:border-github-darkBorder overflow-hidden sm:rounded-lg">
-          <div className="px-4 py-5 sm:px-6">
+          <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
             <h2 className="text-lg leading-6 font-medium text-gray-900 dark:text-github-darkText">
               Personal Information
             </h2>
+            <Link
+              to="/settings"
+              className="inline-flex items-center px-3 py-1 border border-primary-600 text-sm font-medium rounded-md text-primary-600 bg-white hover:bg-primary-50 dark:bg-github-dark dark:text-primary-400 dark:border-primary-400 dark:hover:bg-github-darkSecondary"
+            >
+              Edit
+            </Link>
           </div>
           <div className="border-t border-gray-200">
             <dl>
@@ -78,7 +84,7 @@ const Profile = () => {
               <div className="bg-gray-50 dark:bg-github-dark px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-500 dark:text-github-darkText">Email address</dt>
                 <dd className="mt-1 text-sm text-gray-900 dark:text-github-darkText sm:mt-0 sm:col-span-2">
-                  {user?.primaryEmailAddress?.emailAddress}
+                  {user?.email || user?.primaryEmailAddress?.emailAddress || user?.gmail || user?.mail}
                 </dd>
               </div>
               <div className="bg-white dark:bg-github-dark px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

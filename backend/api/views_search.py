@@ -42,5 +42,5 @@ def search(request):
             for course in courses
         ]
     }
-    
-    return Response(result)
+    response = {'results': result}
+    return Response(response)

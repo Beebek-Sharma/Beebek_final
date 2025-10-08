@@ -19,8 +19,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   ];
 
   const authenticatedItems = [
-  { path: '/profile', label: 'Profile', icon: FiUser },
-  ...(isAdmin ? [{ path: '/admin', label: 'Admin', icon: FiSettings }] : []),
+    { path: '/profile', label: 'Profile', icon: FiUser },
+    { path: '/settings', label: 'Settings', icon: FiSettings },
+    ...(isAdmin ? [{ path: '/admin', label: 'Admin', icon: FiSettings }] : []),
   ];
 
   return (

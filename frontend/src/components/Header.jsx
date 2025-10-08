@@ -29,11 +29,10 @@ export default function Header({ toggleSidebar }) {
             >
               <FiMenu className="h-6 w-6" />
             </button>
-            <div className="flex items-center">
-              <Link to="/" className="text-2xl font-bold text-github-lightText dark:text-github-darkText">
-                EduConnect
-              </Link>
-            </div>
+            <Link to="/" className="flex items-center space-x-2">
+              <img src="/app-logo.png" alt="App Logo" className="h-7 w-7 rounded-md" style={{marginRight: '4px'}} />
+              <span className="text-2xl font-bold text-github-lightText dark:text-github-darkText">EduConnect</span>
+            </Link>
           </div>
           {/* Search Bar - Desktop */}
           <div className="hidden md:block max-w-md flex-1 mx-6">
@@ -66,7 +65,7 @@ export default function Header({ toggleSidebar }) {
                     )}
                   </button>
                   {showProfileMenu && (
-                    <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-github-darkSecondary rounded-xl shadow-lg border border-github-lightBorder dark:border-github-darkBorder z-50 overflow-hidden">
+                    <div className="absolute right-0 mt-2 w-72 max-h-[80vh] overflow-y-auto bg-white/60 dark:bg-github-darkSecondary/60 backdrop-blur-md rounded-xl shadow-lg border border-github-lightBorder dark:border-github-darkBorder z-50">
                       <div className="flex flex-col items-center py-6 px-6 border-b border-gray-100 dark:border-github-darkBorder">
                         {user?.profile_picture ? (
                           <img src={user.profile_picture} alt="Profile" className="w-16 h-16 rounded-full object-cover mb-2 border-2 border-primary-600" />
@@ -83,6 +82,11 @@ export default function Header({ toggleSidebar }) {
                         <button onClick={() => { setShowProfileMenu(false); navigate('/settings'); }} className="flex items-center w-full px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-github-darkAccent text-left">
                           <span className="mr-2">⚙️</span> Settings
                         </button>
+                        {user?.role === 'admin' || user?.role === 'superuser_admin' ? (
+                          <button onClick={() => { setShowProfileMenu(false); navigate('/admin'); }} className="flex items-center w-full px-6 py-3 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-github-darkAccent text-left">
+                            <span className="mr-2">🛡️</span> Admin
+                          </button>
+                        ) : null}
                         <button onClick={() => { setShowProfileMenu(false); navigate('/help'); }} className="flex items-center w-full px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-github-darkAccent text-left">
                           <span className="mr-2">❓</span> Help
                         </button>
