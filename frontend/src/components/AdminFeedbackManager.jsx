@@ -122,7 +122,7 @@ const AdminFeedbackManager = () => {
       ) : (
         <div className="space-y-4">
           {filteredFeedbacks.map((feedback) => (
-            <div key={feedback.id} className="bg-white dark:bg-github-dark p-6 rounded-lg shadow dark:border-github-darkBorder-md">
+            <div key={feedback.id} className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-darkText transition-colors duration-300">
               <div className="flex justify-between items-start">
                 <h3 className="text-xl font-semibold">{feedback.subject}</h3>
                 <span className={`px-3 py-1 rounded-full text-sm ${

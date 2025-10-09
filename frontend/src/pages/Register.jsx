@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Register = () => {
-  const { register } = useAuth();
+  const { register, login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -41,17 +41,26 @@ const Register = () => {
     setLoading(true);
 
     try {
+      // Register the user
       await register(formData.email, formData.password, formData.username);
-      // After registration, redirect to last visited page or home after a small delay
-      // This gives the browser time to process cookies and token state
-      setTimeout(() => {
-        const lastVisited = localStorage.getItem('last_visited_page');
-        const from = location.state?.from || lastVisited || '/';
-        console.log("[Register] Redirecting to:", from, "state:", location.state, "lastVisited:", lastVisited);
+
+      // Attempt automatic login with the same credentials
+      try {
+        await login(formData.email, formData.password);
+        // After login, redirect to last visited page or home
+        setTimeout(() => {
+          const lastVisited = localStorage.getItem('last_visited_page');
+          const from = location.state?.from || lastVisited || '/';
+          setLoading(false);
+          navigate(from, { replace: true });
+        }, 300);
+      } catch (loginErr) {
+        // If login fails, show error and stay on register page
+        setError('Registration succeeded, but automatic sign-in failed. Please log in manually.');
         setLoading(false);
-        navigate(from, { replace: true });
-      }, 300);
+      }
     } catch (err) {
+      // Registration error
       setError(err.response?.data?.error || err.response?.data?.username?.[0] || err.response?.data?.email?.[0] || 'Registration failed. Please try again.');
       setLoading(false);
     }
@@ -151,7 +160,7 @@ const Register = () => {
             disabled={loading}
             className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Creating account...' : 'Create Account'}
+            {loading ? 'Creating account & signing in...' : 'Create Account'}
           </button>
         </form>
 

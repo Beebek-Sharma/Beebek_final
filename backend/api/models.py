@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
+from datetime import timedelta
 
 class CustomUser(AbstractUser):
     ROLE_CHOICES = [
@@ -52,6 +54,22 @@ class UserProfile(models.Model):
             os.makedirs(profile_pics_dir)
             
         super().save(*args, **kwargs)
+
+class PasswordResetCode(models.Model):
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    code = models.CharField(max_length=6)  # 6-digit verification code
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"Reset code for {self.user.username}"
+    
+    def is_expired(self):
+        """
+        Returns True if the code is more than 15 minutes old
+        """
+        expiry_time = self.created_at + timedelta(minutes=15)
+        return timezone.now() > expiry_time
 
 class University(models.Model):
     name = models.CharField(max_length=200)

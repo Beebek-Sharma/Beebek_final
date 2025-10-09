@@ -19,7 +19,10 @@ const FeedbackSidebar = () => {
 
   return (
     <motion.div
-      className="bg-white dark:bg-github-dark rounded-lg shadow-md p-6 mb-6"
+      className="p-6 rounded-xl shadow-md 
+                               bg-github-lightAccent dark:bg-github-darkAccent 
+                               text-github-lightText dark:text-github-darkText 
+                               transition-colors duration-300" style={{ transform: "none" }}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -38,19 +41,23 @@ const FeedbackSidebar = () => {
         ) : (
           <ul className="space-y-3">
             {recentFeedbacks.map(fb => (
-              <li key={fb.id} className="border rounded-lg p-3 bg-gray-50 dark:bg-github-darkAccent">
-                <div className="font-medium text-gray-800 dark:text-gray-100">
+              <li
+                key={fb.id}
+                className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-darkText transition-colors duration-300"
+                style={{ transform: "none" }}
+              >
+                <div className="font-medium text-base mb-1">
                   {fb.user?.username
                     ? `@${fb.user.username}`
                     : fb.user_name
                       ? `@${fb.user_name}`
                       : fb.username
                         ? `@${fb.username}`
-                        : 'User'}:
+                        : 'User'}
                 </div>
-                <div className="text-gray-700 dark:text-gray-200 text-sm mb-1">{fb.subject}</div>
+                <div className="text-lg font-bold mb-1">{fb.subject}</div>
                 {fb.responses && fb.responses.length > 0 && (
-                  <div className="text-xs text-primary-600 dark:text-primary-400">Admin: {fb.responses[0].message}</div>
+                  <div className="text-sm text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900 rounded px-2 py-1 inline-block mt-1">Admin: {fb.responses[0].message}</div>
                 )}
               </li>
             ))}
@@ -64,9 +71,13 @@ const FeedbackSidebar = () => {
         ) : (
           <ul className="space-y-3">
             {popularFeedbacks.map(fb => (
-              <li key={fb.id} className="border rounded-lg p-3 bg-blue-50 dark:bg-blue-900">
-                <div className="font-medium text-blue-700 dark:text-blue-300">{fb.issue_title}</div>
-                <div className="text-gray-700 dark:text-blue-100 text-sm">{fb.description}</div>
+              <li
+                key={fb.id}
+                className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-darkText transition-colors duration-300"
+                style={{ transform: "none" }}
+              >
+                <div className="font-medium text-lg text-blue-700 dark:text-blue-300 mb-1">{fb.issue_title}</div>
+                <div className="text-base opacity-80 mb-1">{fb.description}</div>
                 <div className="text-xs text-blue-500 dark:text-blue-400">Reported by {fb.count} users</div>
               </li>
             ))}

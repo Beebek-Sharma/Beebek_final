@@ -52,29 +52,36 @@ const UserFeedbackList = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <h2 className="text-2xl font-bold mb-4">Your Feedback History</h2>
       {feedbacks.map((feedback) => (
-        <div key={feedback.id} className="bg-white dark:bg-github-dark p-4 rounded-lg shadow dark:border-github-darkBorder-md">
-          <div className="flex justify-between items-start">
-            <h3 className="text-lg font-semibold">{feedback.subject}</h3>
-            <span className={`px-2 py-1 rounded text-xs ${
-              feedback.is_resolved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-            }`}>
+        <div
+          key={feedback.id}
+          className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-darkText transition-colors duration-300"
+          style={{ transform: "none" }}
+        >
+          <div className="flex justify-between items-start mb-2">
+            <h3 className="text-lg font-bold">{feedback.subject}</h3>
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                feedback.is_resolved
+                  ? 'bg-green-100 text-green-800 border border-green-300'
+                  : 'bg-yellow-100 text-yellow-800 border border-yellow-300'
+              }`}
+            >
               {feedback.is_resolved ? 'Resolved' : 'Pending'}
             </span>
           </div>
-          <p className="text-gray-600 dark:text-github-darkText mt-2">{feedback.message}</p>
-          <div className="text-sm text-gray-500 dark:text-github-darkText mt-2">
+          <p className="opacity-80 mb-2">{feedback.message}</p>
+          <div className="text-sm text-gray-500 dark:text-github-darkText mb-2">
             Submitted on: {new Date(feedback.created_at).toLocaleDateString()}
           </div>
-          
           {feedback.responses && feedback.responses.length > 0 && (
-            <div className="mt-4 border-t pt-4">
+            <div className="mt-4 border-t border-gray-200 dark:border-github-darkBorder-md pt-4">
               <h4 className="text-md font-semibold mb-2">Admin Responses:</h4>
               {feedback.responses.map((response) => (
-                <div key={response.id} className="bg-blue-50 p-3 rounded mt-2">
-                  <p>{response.message}</p>
+                <div key={response.id} className="bg-blue-50 dark:bg-blue-900 p-3 rounded-lg mt-2">
+                  <p className="text-blue-800 dark:text-blue-200">{response.message}</p>
                   <div className="text-sm text-gray-500 dark:text-github-darkText mt-1">
                     Responded on: {new Date(response.created_at).toLocaleDateString()}
                   </div>

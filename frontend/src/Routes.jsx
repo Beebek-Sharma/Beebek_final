@@ -11,6 +11,8 @@ import AdminRoute from "./components/AdminRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import RequestReset from "./pages/RequestReset";
+import ResetPassword from "./pages/ResetPassword";
 import Logout from "./pages/Logout";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
@@ -43,6 +45,8 @@ const Routes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<RequestReset />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<ContactUs />} />

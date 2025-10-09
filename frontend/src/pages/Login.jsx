@@ -239,6 +239,12 @@ const Login = () => {
               Sign up
             </Link>
           </p>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Forgot password?{' '}
+            <Link to="/forgot-password" className="text-blue-600 hover:text-blue-700 font-medium">
+              Reset it here
+            </Link>
+          </p>
         </div>
       </div>
     </div>

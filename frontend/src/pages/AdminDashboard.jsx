@@ -272,82 +272,61 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
-      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="md:flex md:items-center md:justify-between">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-github-darkText">Admin Dashboard</h1>
-          </div>
-          <div className="mt-4 flex md:mt-0 md:ml-4">
-            <span className="shadow dark:border-github-darkBorder-sm rounded-md">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowForm(!showForm);
-                  if (showForm) {
-                    // Reset edit mode when closing the form
-                    setEditMode(false);
-                    setEditItemId(null);
-                    setFormData(initialFormState[activeTab]);
-                  }
-                }}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:shadow dark:border-github-darkBorder-outline-primary transition ease-in-out duration-150"
-              >
-                {showForm ? 'Cancel' : 'Add New'}
-              </button>
-            </span>
-          </div>
+      <main className="flex-grow max-w-5xl mx-auto px-4 py-12">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-bold">Admin Dashboard</h1>
+          <button
+            type="button"
+            onClick={() => {
+              setShowForm(!showForm);
+              if (showForm) {
+                setEditMode(false);
+                setEditItemId(null);
+                setFormData(initialFormState[activeTab]);
+              }
+            }}
+            className="px-6 py-2 rounded-lg bg-[#4f46e5] text-white font-semibold shadow hover:bg-[#4338ca] transition-all"
+          >
+            {showForm ? 'Cancel' : 'Add New'}
+          </button>
         </div>
         
         <div className="mt-6">
-          <div className="sm:hidden">
-            <select
-              id="tabs"
-              name="tabs"
-              className="block w-full border-gray-300 rounded-md"
-              value={activeTab}
-              onChange={(e) => setActiveTab(e.target.value)}
-            >
-              <option value="universities">Universities</option>
-              <option value="courses">Courses</option>
-              <option value="users">Users</option>
-              <option value="feedback">Feedback</option>
-            </select>
-          </div>
-          <div className="hidden sm:block">
-            <nav className="flex space-x-4">
+          <div className="mb-8">
+            <nav className="flex gap-4">
               <button
                 onClick={() => setActiveTab('universities')}
-                className={`px-3 py-2 font-medium text-sm rounded-md ${
+                className={`px-5 py-2 rounded-full font-semibold shadow transition-all ${
                   activeTab === 'universities'
-                    ? 'bg-primary-100 text-primary-700'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'bg-[#4f46e5] text-white'
+                    : 'bg-white text-gray-700 hover:bg-[#eef2ff]'
                 }`}
               >
                 Universities
               </button>
               <button
                 onClick={() => setActiveTab('courses')}
-                className={`px-3 py-2 font-medium text-sm rounded-md ${
+                className={`px-5 py-2 rounded-full font-semibold shadow transition-all ${
                   activeTab === 'courses'
-                    ? 'bg-primary-100 text-primary-700'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'bg-[#4f46e5] text-white'
+                    : 'bg-white text-gray-700 hover:bg-[#eef2ff]'
                 }`}
               >
                 Courses
               </button>
               <button
                 onClick={() => setActiveTab('users')}
-                className={`px-3 py-2 font-medium text-sm rounded-md ${
+                className={`px-5 py-2 rounded-full font-semibold shadow transition-all ${
                   activeTab === 'users'
-                    ? 'bg-primary-100 text-primary-700'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'bg-[#4f46e5] text-white'
+                    : 'bg-white text-gray-700 hover:bg-[#eef2ff]'
                 }`}
               >
                 Users
               </button>
               <a
                 href="/admin/feedback"
-                className="px-3 py-2 font-medium text-sm rounded-md text-gray-500 hover:text-gray-700 dark:text-github-darkText"
+                className="px-5 py-2 rounded-full font-semibold shadow transition-all bg-white text-gray-700 hover:bg-[#eef2ff]"
               >
                 Feedback
               </a>
@@ -369,7 +348,7 @@ const AdminDashboard = () => {
 
         {/* Show errors only for admins who encounter backend issues */}
         {isLoaded && isAdmin && error && (
-          <div className="mt-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400 p-4">
+          <div className="mt-4 p-6 rounded-xl shadow-md bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400 text-red-700 dark:text-red-400">
             <div className="flex">
               <div className="ml-3">
                 <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
@@ -383,12 +362,10 @@ const AdminDashboard = () => {
           <>
             {/* Add Form */}
             {showForm && (
-              <div className="mt-6 bg-white dark:bg-github-dark shadow dark:border-github-darkBorder overflow-hidden sm:rounded-lg p-4">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-github-darkText mb-4">
-                  {editMode ? 'Edit' : 'Add New'} {activeTab === 'universities' ? 'University' : 
-                           activeTab === 'courses' ? 'Course' : 'User'}
+              <div className="mt-6 p-6 rounded-2xl shadow bg-white">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                  {editMode ? 'Edit' : 'Add New'} {activeTab === 'universities' ? 'University' : activeTab === 'courses' ? 'Course' : 'User'}
                 </h2>
-                
                 <form onSubmit={handleSubmit} className="space-y-4">
               {/* University Form */}
               {activeTab === 'universities' && (
@@ -403,7 +380,7 @@ const AdminDashboard = () => {
                         required
                         value={formData.name || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       />
                     </div>
                     
@@ -416,7 +393,7 @@ const AdminDashboard = () => {
                         required
                         value={formData.location || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       />
                     </div>
                   </div>
@@ -430,7 +407,7 @@ const AdminDashboard = () => {
                       required
                       value={formData.description || ''}
                       onChange={handleFormChange}
-                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                      className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                     ></textarea>
                   </div>
                   
@@ -443,7 +420,7 @@ const AdminDashboard = () => {
                         id="ranking"
                         value={formData.ranking || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       />
                     </div>
                     
@@ -455,7 +432,7 @@ const AdminDashboard = () => {
                         id="website"
                         value={formData.website || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       />
                     </div>
                   </div>
@@ -468,7 +445,7 @@ const AdminDashboard = () => {
                       id="image"
                       value={formData.image || ''}
                       onChange={handleFormChange}
-                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                      className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                     />
                   </div>
                 </>
@@ -487,7 +464,7 @@ const AdminDashboard = () => {
                         required
                         value={formData.name || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       />
                     </div>
                     
@@ -499,7 +476,7 @@ const AdminDashboard = () => {
                         required
                         value={formData.university || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       >
                         <option value="">Select a university</option>
                         {universities.map(uni => (
@@ -518,7 +495,7 @@ const AdminDashboard = () => {
                       required
                       value={formData.description || ''}
                       onChange={handleFormChange}
-                      className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                      className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                     ></textarea>
                   </div>
                   
@@ -533,7 +510,7 @@ const AdminDashboard = () => {
                         placeholder="e.g. 4 years"
                         value={formData.duration || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       />
                     </div>
                     
@@ -546,7 +523,7 @@ const AdminDashboard = () => {
                         required
                         value={formData.fees || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       />
                     </div>
                     
@@ -558,7 +535,7 @@ const AdminDashboard = () => {
                         required
                         value={formData.level || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       >
                         <option value="Undergraduate">Undergraduate</option>
                         <option value="Postgraduate">Postgraduate</option>
@@ -583,7 +560,7 @@ const AdminDashboard = () => {
                         required
                         value={formData.username || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       />
                     </div>
                     
@@ -596,7 +573,7 @@ const AdminDashboard = () => {
                         required
                         value={formData.email || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       />
                     </div>
                   </div>
@@ -611,7 +588,7 @@ const AdminDashboard = () => {
                         required
                         value={formData.password || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       />
                     </div>
                     
@@ -623,7 +600,7 @@ const AdminDashboard = () => {
                         required
                         value={formData.role || ''}
                         onChange={handleFormChange}
-                        className="mt-1 focus:ring-primary-500 focus:border-primary-500 block w-full shadow dark:border-github-darkBorder-sm sm:text-sm border-gray-300 rounded-md"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                       >
                         <option value="student">Student</option>
                         <option value="admin">Admin</option>
@@ -637,13 +614,13 @@ const AdminDashboard = () => {
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="mr-3 inline-flex justify-center py-2 px-4 border border-gray-300 shadow dark:border-github-darkBorder-sm text-sm font-medium rounded-md text-gray-700 dark:text-github-darkText bg-white dark:bg-github-dark hover:bg-gray-50 dark:bg-github-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  className="mr-3 px-6 py-2 rounded-lg bg-gray-100 text-gray-700 font-semibold shadow hover:bg-gray-200 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow dark:border-github-darkBorder-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  className="px-6 py-2 rounded-lg bg-[#4f46e5] text-white font-semibold shadow hover:bg-[#4338ca] transition-all"
                 >
                   Save
                 </button>
@@ -659,182 +636,121 @@ const AdminDashboard = () => {
         ) : (
           <div className="mt-8">
             {activeTab === 'universities' && (
-              <div className="flex flex-col">
-                <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                  <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                    <div className="shadow dark:border-github-darkBorder overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50 dark:bg-github-dark">
-                          <tr>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
-                              Name
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
-                              Location
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
-                              Ranking
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
-                              Courses
-                            </th>
-                            <th scope="col" className="relative px-6 py-3">
-                              <span className="sr-only">Edit</span>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white dark:bg-github-dark divide-y divide-gray-200">
-                          {universities.map((university) => (
-                            <tr key={university.id}>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900 dark:text-github-darkText">{university.name}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500 dark:text-github-darkText">{university.location}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500 dark:text-github-darkText">{university.ranking || 'N/A'}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500 dark:text-github-darkText">{university.courses?.length || 0}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button onClick={() => handleEdit(university.id)} className="text-primary-600 hover:text-primary-900 mr-4">Edit</button>
-                                <button onClick={() => handleDelete(university.id)} className="text-red-600 hover:text-red-900">Delete</button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
+              <div className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-lightText transition-colors duration-300">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-github-darkBorder">
+                  <thead className="bg-[#f7f8fa] dark:bg-github-darkBorder">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-white uppercase tracking-wider">Name</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-white uppercase tracking-wider">Location</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-white uppercase tracking-wider">Ranking</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-white uppercase tracking-wider">Courses</th>
+                      <th scope="col" className="relative px-6 py-3"><span className="sr-only dark:text-white">Edit</span></th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-github-dark divide-y divide-gray-200 dark:divide-github-darkBorder">
+                    {universities.map((university) => (
+                      <tr key={university.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-base font-semibold text-gray-900 dark:text-white">{university.name}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-base text-gray-700 dark:text-white">{university.location}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 py-1 rounded-full bg-blue-100 dark:bg-github-darkBorder text-blue-800 dark:text-white text-xs font-semibold">{university.ranking || 'N/A'}</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 py-1 rounded-full bg-gray-100 dark:bg-github-darkBorder text-gray-800 dark:text-white text-xs font-semibold">{university.courses?.length || 0}</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <button onClick={() => handleEdit(university.id)} className="text-[#4f46e5] hover:text-[#4338ca] font-semibold mr-4 dark:text-blue-400 dark:hover:text-blue-200">Edit</button>
+                          <button onClick={() => handleDelete(university.id)} className="text-red-600 hover:text-red-900 font-semibold dark:text-red-400 dark:hover:text-red-200">Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
             
             {activeTab === 'courses' && (
-              <div className="flex flex-col">
-                <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                  <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                    <div className="shadow dark:border-github-darkBorder overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50 dark:bg-github-dark">
-                          <tr>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
-                              Name
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
-                              University
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
-                              Level
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
-                              Duration
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
-                              Fees
-                            </th>
-                            <th scope="col" className="relative px-6 py-3">
-                              <span className="sr-only">Edit</span>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white dark:bg-github-dark divide-y divide-gray-200">
-                          {courses.map((course) => (
-                            <tr key={course.id}>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900 dark:text-github-darkText">{course.name}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500 dark:text-github-darkText">{course.university_name}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500 dark:text-github-darkText">{course.level}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500 dark:text-github-darkText">{course.duration}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500 dark:text-github-darkText">${course.fees}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button onClick={() => handleEdit(course.id)} className="text-primary-600 hover:text-primary-900 mr-4">Edit</button>
-                                <button onClick={() => handleDelete(course.id)} className="text-red-600 hover:text-red-900">Delete</button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
+              <div className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-lightText transition-colors duration-300 w-full max-w-none">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-github-darkBorder">
+                  <thead className="bg-[#f7f8fa] dark:bg-github-darkBorder">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-white uppercase tracking-wider">Name</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-white uppercase tracking-wider">University</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-white uppercase tracking-wider">Level</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-white uppercase tracking-wider">Duration</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-white uppercase tracking-wider">Fees</th>
+                      <th scope="col" className="relative px-6 py-3"><span className="sr-only dark:text-white">Edit</span></th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-github-dark divide-y divide-gray-200 dark:divide-github-darkBorder">
+                    {courses.map((course) => (
+                      <tr key={course.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-base font-semibold text-gray-900 dark:text-white">{course.name}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-base text-gray-700 dark:text-white">{course.university_name}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 py-1 rounded-full bg-green-100 dark:bg-github-darkBorder text-green-800 dark:text-white text-xs font-semibold">{course.level}</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 py-1 rounded-full bg-gray-100 dark:bg-github-darkBorder text-gray-800 dark:text-white text-xs font-semibold">{course.duration}</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 py-1 rounded-full bg-blue-100 dark:bg-github-darkBorder text-blue-800 dark:text-white text-xs font-semibold">${course.fees}</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <button onClick={() => handleEdit(course.id)} className="text-[#4f46e5] hover:text-[#4338ca] font-semibold mr-4 dark:text-blue-400 dark:hover:text-blue-200">Edit</button>
+                          <button onClick={() => handleDelete(course.id)} className="text-red-600 hover:text-red-900 font-semibold dark:text-red-400 dark:hover:text-red-200">Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
             
             {activeTab === 'users' && (
-              <div className="flex flex-col">
-                <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                  <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                    <div className="shadow dark:border-github-darkBorder overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50 dark:bg-github-dark">
-                          <tr>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
-                              Name
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
-                              Email
-                            </th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-github-darkText uppercase tracking-wider">
-                              Role
-                            </th>
-                            <th scope="col" className="relative px-6 py-3">
-                              <span className="sr-only">Edit</span>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white dark:bg-github-dark divide-y divide-gray-200">
-                          {users.map((user) => (
-                            <tr key={user.id}>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900 dark:text-github-darkText">
-                                  {user.display_name || 
-                                    (user.first_name && user.last_name 
-                                      ? `${user.first_name} ${user.last_name}` 
-                                      : user.username)}
-                                </div>
-                                <div className="text-xs text-gray-500 dark:text-github-darkText">
-                                  {user.email 
-                                    ? user.email 
-                                    : user.username && user.username.length > 10 
-                                      ? `@${user.username.substring(0, 10)}...` 
-                                      : `@${user.username}`}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500 dark:text-github-darkText">{user.email}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                  user.role === 'admin' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-blue-100 text-blue-800'
-                                }`}>
-                                  {user.role}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button onClick={() => handleEdit(user.id)} className="text-primary-600 hover:text-primary-900 mr-4">Edit</button>
-                                <button onClick={() => handleDelete(user.id)} className="text-red-600 hover:text-red-900">Delete</button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
+              <div className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-lightText transition-colors duration-300">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-github-darkBorder">
+                  <thead className="bg-[#f7f8fa] dark:bg-github-darkBorder">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-white uppercase tracking-wider">Name</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-white uppercase tracking-wider">Email</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-white uppercase tracking-wider">Role</th>
+                      <th scope="col" className="relative px-6 py-3"><span className="sr-only dark:text-white">Edit</span></th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-github-dark divide-y divide-gray-200 dark:divide-github-darkBorder">
+                    {users.map((user) => (
+                      <tr key={user.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-base font-semibold text-gray-900 dark:text-white">
+                            {user.display_name || (user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : user.username)}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-white">
+                            {user.email ? user.email : user.username && user.username.length > 10 ? `@${user.username.substring(0, 10)}...` : `@${user.username}`}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-base text-gray-700 dark:text-white">{user.email}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${user.role === 'admin' ? 'bg-green-100 dark:bg-github-darkBorder text-green-800 dark:text-white' : 'bg-blue-100 dark:bg-github-darkBorder text-blue-800 dark:text-white'}`}>{user.role}</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <button onClick={() => handleEdit(user.id)} className="text-[#4f46e5] hover:text-[#4338ca] font-semibold mr-4 dark:text-blue-400 dark:hover:text-blue-200">Edit</button>
+                          <button onClick={() => handleDelete(user.id)} className="text-red-600 hover:text-red-900 font-semibold dark:text-red-400 dark:hover:text-red-200">Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
           </div>

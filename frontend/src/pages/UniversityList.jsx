@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axiosInstance from '../utils/axiosConfig';
 
 import Footer from '../components/Footer';
+import UniversityCard from '../components/UniversityCard';
 
 // API_URL not needed, use axiosInstance
 
@@ -83,28 +84,7 @@ const UniversityList = () => {
         ) : (
           <div className="mt-8 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {filteredUniversities.map((university) => (
-              <div key={university.id} className="bg-white dark:bg-github-dark overflow-hidden shadow dark:border-github-darkBorder rounded-lg">
-                <div className="p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-github-darkText">{university.name}</h2>
-                  <p className="mt-2 text-sm text-gray-500 dark:text-github-darkText">{university.location}</p>
-                  {university.ranking && (
-                    <p className="mt-2 text-sm text-gray-700 dark:text-github-darkText">
-                      Ranking: <span className="font-medium">#{university.ranking}</span>
-                    </p>
-                  )}
-                  <p className="mt-3 text-sm text-gray-600 dark:text-github-darkText line-clamp-3">
-                    {university.description}
-                  </p>
-                  <div className="mt-4">
-                    <Link
-                      to={`/universities/${university.id}`}
-                      className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
-                    >
-                      View Details
-                    </Link>
-                  </div>
-                </div>
-              </div>
+              <UniversityCard key={university.id} university={university} />
             ))}
           </div>
         )}

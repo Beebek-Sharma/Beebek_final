@@ -17,6 +17,7 @@ from .views_popular import popular_items
 from .views_notifications import feedback_unread, feedback_mark_read, feedback_mark_all_read
 from .views_verify import verify_auth
 from .views_chat import chat_message, chat_history, chat_clear, chat_summary
+from .views_password_reset import request_reset, verify_code_reset
 
 urlpatterns = [
     path('hello/', hello, name='hello'),
@@ -62,6 +63,7 @@ urlpatterns = [
     path('feedback/', feedback_list, name='feedback_list'),
     path('feedback/<int:pk>/', feedback_detail, name='feedback_detail'),
     path('feedback/<int:feedback_id>/respond/', feedback_response_create, name='feedback_response_create'),
+    path('feedbacks/popular/', featured_feedback, name='feedbacks_popular'),
     
 
     # Notification system
@@ -84,4 +86,8 @@ urlpatterns = [
     path('chat/history/<str:session_id>/', chat_history, name='chat_history'),
     path('chat/clear/<str:session_id>/', chat_clear, name='chat_clear'),
     path('chat/summary/', chat_summary, name='chat_summary'),
+    
+    # Password reset endpoints
+    path('request-reset/', request_reset, name='request_reset'),
+    path('verify-code-reset/', verify_code_reset, name='verify_code_reset'),
 ]
