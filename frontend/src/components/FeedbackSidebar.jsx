@@ -1,31 +1,78 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiMessageSquare } from 'react-icons/fi';
+import axios from 'axios';
 
 const FeedbackSidebar = () => {
+  const [recentFeedbacks, setRecentFeedbacks] = useState([]);
+  const [popularFeedbacks, setPopularFeedbacks] = useState([]);
+
+  useEffect(() => {
+    // Fetch recent feedbacks with admin responses (featured)
+    axios.get('/api/featured-feedback/')
+      .then(res => setRecentFeedbacks(res.data))
+      .catch(() => setRecentFeedbacks([]));
+    // Fetch popular feedbacks (commonly reported issues)
+    axios.get('/api/feedbacks/popular?limit=3')
+      .then(res => setPopularFeedbacks(res.data))
+      .catch(() => setPopularFeedbacks([]));
+  }, []);
+
   return (
     <motion.div
-      className="bg-white dark:bg-github-darkSecondary rounded-lg shadow-lg border border-gray-200 dark:border-github-darkBorder p-6"
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: 0.3 }}
+      className="bg-white dark:bg-github-dark rounded-lg shadow-md p-6 mb-6"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
     >
       <div className="flex items-center mb-4">
-        <FiMessageSquare className="w-6 h-6 text-primary-600 dark:text-primary-400 mr-2" />
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-github-darkText">Feedback</h3>
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-primary-600 mr-2">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V10a2 2 0 012-2h2m10-4v4m0 0L12 3m5 3L12 3" />
+        </svg>
+        <h3 className="text-lg font-bold text-primary-600 dark:text-primary-400">Feedbacks</h3>
       </div>
-      <p className="text-sm text-gray-600 dark:text-github-darkText mb-4">
-        Have suggestions or found an issue? We'd love to hear from you!
-      </p>
-      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-        <Link
-          to="/feedback"
-          className="block w-full px-4 py-2 text-center text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-md transition-all duration-200"
-        >
-          Submit Feedback
-        </Link>
-      </motion.div>
+      <div className="mb-6">
+        <h4 className="text-md font-semibold text-gray-700 dark:text-gray-200 mb-2">Recent Feedbacks (with Admin Response)</h4>
+        {recentFeedbacks.length === 0 ? (
+          <p className="text-gray-500 text-sm">No recent feedbacks yet.</p>
+        ) : (
+          <ul className="space-y-3">
+            {recentFeedbacks.map(fb => (
+              <li key={fb.id} className="border rounded-lg p-3 bg-gray-50 dark:bg-github-darkAccent">
+                <div className="font-medium text-gray-800 dark:text-gray-100">
+                  {fb.user?.username
+                    ? `@${fb.user.username}`
+                    : fb.user_name
+                      ? `@${fb.user_name}`
+                      : fb.username
+                        ? `@${fb.username}`
+                        : 'User'}:
+                </div>
+                <div className="text-gray-700 dark:text-gray-200 text-sm mb-1">{fb.subject}</div>
+                {fb.responses && fb.responses.length > 0 && (
+                  <div className="text-xs text-primary-600 dark:text-primary-400">Admin: {fb.responses[0].message}</div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <div>
+        <h4 className="text-md font-semibold text-gray-700 dark:text-gray-200 mb-2">Popular Feedbacks</h4>
+        {popularFeedbacks.length === 0 ? (
+          <p className="text-gray-500 text-sm">No popular feedbacks yet.</p>
+        ) : (
+          <ul className="space-y-3">
+            {popularFeedbacks.map(fb => (
+              <li key={fb.id} className="border rounded-lg p-3 bg-blue-50 dark:bg-blue-900">
+                <div className="font-medium text-blue-700 dark:text-blue-300">{fb.issue_title}</div>
+                <div className="text-gray-700 dark:text-blue-100 text-sm">{fb.description}</div>
+                <div className="text-xs text-blue-500 dark:text-blue-400">Reported by {fb.count} users</div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </motion.div>
   );
 };

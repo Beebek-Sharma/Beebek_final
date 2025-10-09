@@ -29,7 +29,7 @@ export default function Header({ toggleSidebar }) {
             >
               <FiMenu className="h-6 w-6" />
             </button>
-            <Link to="/" className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-0">
               <img src="/app-logo.png" alt="App Logo" className="h-7 w-7 rounded-md" style={{marginRight: '4px'}} />
               <span className="text-2xl font-bold text-github-lightText dark:text-github-darkText">EduConnect</span>
             </Link>
