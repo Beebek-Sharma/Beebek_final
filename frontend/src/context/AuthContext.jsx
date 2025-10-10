@@ -945,10 +945,9 @@ export const AuthProvider = ({ children }) => {
   // Function to refresh user data from the server
   const refreshUser = async () => {
     try {
-      const response = await axiosInstance.get('/auth/user/');
-      // Store user in localStorage as well for immediate access on page reload
+      // Use /auth/me/ endpoint to always get latest profile info including bio
+      const response = await axiosInstance.get('/auth/me/');
       localStorage.setItem('auth_user', JSON.stringify(response.data));
-      
       setUser(response.data);
       return response.data;
     } catch (error) {

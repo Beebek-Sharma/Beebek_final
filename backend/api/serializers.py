@@ -30,9 +30,10 @@ class UserSerializer(serializers.ModelSerializer):
         return None
     
     def get_bio(self, obj):
-        if hasattr(obj, 'profile') and obj.profile:
-            return obj.profile.bio
-        return None
+        # Always get or create the profile to ensure bio is present
+        from .models import UserProfile
+        profile, created = UserProfile.objects.get_or_create(user=obj)
+        return profile.bio
 
 
 class RegisterSerializer(serializers.ModelSerializer):

@@ -45,14 +45,14 @@ export default {
           lightButton: '#2ea44f',     // Green button
           lightLink: '#60a7f8ff',       // Link color
           // GitHub Dark Mode Colors
-          dark: '#0d1117',            // Page background
-          darkSecondary: '#161b22',   // Header/Footer
+          dark: '#191f28ff',            // Page background
+          darkSecondary: '#1b2330ff',   // Header/Footer
           darkAccent: '#21262d',      // Card/Container backgrounds
           darkBorder: '#30363d',      // Border color
           darkText: '#c9d1d9',        // Main text color
           darkTextSecondary: '#8b949e', // Secondary text color
-          darkButton: '#238636',      // Green button
-          darkLink: '#58a6ff',        // Link color
+          darkButton: '#427c4dff',      // Green button
+          darkLink: '#5b98f3ff',        // Link color
         },
           replitBg: '#181A20',
           replitPanel: '#23242B',

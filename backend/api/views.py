@@ -221,35 +221,41 @@ def update_user_profile(request):
     first_name = request.data.get('first_name')
     last_name = request.data.get('last_name')
     email = request.data.get('email')
+    bio = request.data.get('bio')
     oauth_provider = request.data.get('oauth_provider')
     oauth_data = request.data.get('oauth_data')
-    
+
     # Update the user model
     updated = False
-    
+
     if first_name and user.first_name != first_name:
         user.first_name = first_name
         updated = True
-        
+
     if last_name and user.last_name != last_name:
         user.last_name = last_name
         updated = True
-    
+
     if email and user.email != email:
         user.email = email
         updated = True
-    
+
+    # Update bio in UserProfile (allow empty string)
+    if bio and user.bio != bio:
+        user.bio = bio
+        updated = True
+
     # If we have OAuth data, store it in some field or additional model
     # For now, just log it
     if oauth_provider:
         logger.info(f"OAuth provider for {user.username}: {oauth_provider}")
         if oauth_data:
             logger.info(f"OAuth data for {user.username}: {oauth_data}")
-    
+
     if updated:
         user.save()
         logger.info(f"Updated user {user.username} profile")
-    
+
     # Return the updated user data
     serializer = UserSerializer(user)
     return Response(serializer.data)

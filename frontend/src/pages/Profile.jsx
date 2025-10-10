@@ -70,7 +70,11 @@ const Profile = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="mb-2">
                   <span className="text-sm font-medium opacity-80">Full name</span>
-                  <div className="font-semibold">{user?.firstName} {user?.lastName}</div>
+                  <div className="font-semibold">{user?.first_name} {user?.last_name}</div>
+                </div>
+                <div className="mb-2">
+                  <span className="text-sm font-medium opacity-80">Bio</span>
+                  <div className="font-normal italic text-gray-600 dark:text-gray-400">{user?.bio ? user.bio : 'No bio set yet.'}</div>
                 </div>
                 <div className="mb-2">
                   <span className="text-sm font-medium opacity-80">Username</span>
