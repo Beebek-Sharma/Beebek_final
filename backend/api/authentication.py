@@ -1,3 +1,44 @@
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.conf import settings
+import logging
+
+logger = logging.getLogger('django.auth')
+
+class CookieJWTAuthentication(JWTAuthentication):
+    def authenticate(self, request):
+        """
+        Attempt JWT auth via httpOnly cookie, but NEVER block other auth backends
+        (e.g., SessionAuthentication) if the JWT is missing/invalid. This is
+        critical for social logins (Google) which rely on the Django session.
+        """
+        # Try to get JWT from cookie first
+        access_token = request.COOKIES.get(getattr(settings, 'JWT_AUTH_COOKIE', 'access_token'))
+        if access_token:
+            try:
+                validated_token = self.get_validated_token(access_token)
+                return self.get_user(validated_token), validated_token
+            except Exception as e:
+                # Do not raise; fall through so SessionAuthentication can succeed
+                logger.warning(f"[CookieJWTAuthentication] Invalid JWT cookie, falling back to other auth backends: {e}")
+                # continue to header attempt below
+
+        # Next, try Authorization header, but never raise on failure
+        try:
+            header = self.get_header(request)
+            if header is None:
+                return None
+            raw_token = self.get_raw_token(header)
+            if raw_token is None:
+                return None
+            try:
+                validated_token = self.get_validated_token(raw_token)
+                return self.get_user(validated_token), validated_token
+            except Exception as e:
+                logger.warning(f"[CookieJWTAuthentication] Invalid JWT in Authorization header, ignoring: {e}")
+                return None
+        except Exception as e:
+            logger.warning(f"[CookieJWTAuthentication] Header processing error, ignoring: {e}")
+            return None
 from rest_framework_simplejwt.authentication import JWTAuthentication as BaseJWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken
 from django.conf import settings

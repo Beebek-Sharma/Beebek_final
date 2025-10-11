@@ -7,6 +7,7 @@ from .views import (
     feedback_list, feedback_detail, feedback_response_create, featured_feedback,
     notifications_list, notifications_create, notifications_mark_read, notifications_clear_all, me
 )
+from .views_google_auth import google_login_callback
 from .views_auth import (
     register_view, login_view, logout_view, current_user_view, 
     refresh_token_view, get_csrf_token, upload_profile_picture,
@@ -18,15 +19,16 @@ from .views_notifications import feedback_unread, feedback_mark_read, feedback_m
 from .views_verify import verify_auth
 from .views_chat import chat_message, chat_history, chat_clear, chat_summary
 from .views_password_reset import request_reset, verify_code_reset
+from .views_social import logout_view as social_logout_view
 
 urlpatterns = [
     path('hello/', hello, name='hello'),
     path('submissions/', submissions, name='submissions'),
     
-    # JWT Authentication URLs (custom with cookies)
+    # Authentication URLs (session-based)
     path('auth/register/', register_view, name='register'),
     path('auth/login/', login_view, name='login'),
-    path('auth/logout/', logout_view, name='logout'),
+    path('auth/logout/', social_logout_view, name='logout'),
     path('auth/user/', current_user_view, name='current_user'),
     path('auth/refresh/', refresh_token_view, name='token_refresh'),
     path('auth/csrf/', get_csrf_token, name='csrf_token'),
@@ -35,10 +37,6 @@ urlpatterns = [
     path('auth/change-password/', change_password, name='change_password'),
     path('auth/edit-username/', edit_username, name='edit_username'),
     path('auth/update-name/', update_name, name='update_name'),
-    
-    # Social auth (django-allauth)
-    path('auth/social/', include('dj_rest_auth.urls')),
-    path('auth/social/registration/', include('dj_rest_auth.registration.urls')),
     
     # Legacy endpoints (keep for backward compatibility)
     path('auth/me/', get_user_profile, name='user_profile'),
@@ -90,4 +88,7 @@ urlpatterns = [
     # Password reset endpoints
     path('request-reset/', request_reset, name='request_reset'),
     path('verify-code-reset/', verify_code_reset, name='verify_code_reset'),
+    
+    # Google OAuth callback handler
+    path('auth/google/callback/', google_login_callback, name='google_login_callback'),
 ]

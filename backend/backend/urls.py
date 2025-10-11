@@ -26,6 +26,7 @@ urlpatterns = [
     path('auth/', include('dj_rest_auth.urls')),
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
     path('auth/social/', include('allauth.socialaccount.urls')),
+    # Use allauth for all social providers (including Google)
     path('accounts/', include('allauth.urls')),
     path('', lambda request: HttpResponse('React/Vite frontend app should be served here.'), name='home'),
 ]

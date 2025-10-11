@@ -1,12 +1,18 @@
 import axios from 'axios';
 
+// Get backend URL from environment or use default
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+
+// Prefer Vite proxy in dev to keep requests same-origin (so cookies behave consistently)
+const useDevProxy = typeof window !== 'undefined' && /localhost:517(3|4)$/.test(window.location.host);
+
 const axiosInstance = axios.create({
-  baseURL: '/api',  // Use relative URL to leverage Vite proxy
+  baseURL: useDevProxy ? '/api' : `${BACKEND_URL}/api`,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Important: Send cookies with requests
+  withCredentials: true, // Critical for cross-domain cookies
   xsrfCookieName: 'csrftoken',
   xsrfHeaderName: 'X-CSRFToken',
 });
@@ -39,14 +45,14 @@ axiosInstance.interceptors.request.use(
       }
     }
     
-    // Always add Authorization header if we have a token (for all requests)
-    // This provides a reliable fallback for all browsers, especially those with strict cookie policies
-    // But don't override if the header was already set in the request
-    if (!config.headers['Authorization']) {
+    // Only add Authorization header if explicitly requested via flag.
+    // Default to cookie-based auth to prevent stale/invalid bearer from blocking session auth.
+    const useBearer = localStorage.getItem('use_bearer_auth') === 'true';
+    if (!config.headers['Authorization'] && useBearer) {
       const token = localStorage.getItem('auth_token');
       if (token) {
         config.headers['Authorization'] = `Bearer ${token}`;
-        console.log('[Axios] Adding Authorization token to request');
+        console.log('[Axios] Adding Authorization token to request (explicit mode)');
       }
     }
     

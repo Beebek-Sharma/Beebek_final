@@ -13,3 +13,24 @@ export function getCSRFToken() {
   }
   return cookieValue;
 }
+
+// Function to fetch a fresh CSRF token from the server
+export async function fetchCSRFToken() {
+  try {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+    const response = await fetch(`${backendUrl}/api/auth/csrf/`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch CSRF token: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.csrfToken;
+  } catch (error) {
+    console.error('Error fetching CSRF token:', error);
+    return null;
+  }
+}

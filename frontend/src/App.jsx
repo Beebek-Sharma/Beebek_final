@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import { useAuth } from './context/AuthContext';
 import { BrowserRouter } from 'react-router-dom';
 import Routes from './Routes';
 import Footer from './components/Footer';
@@ -11,6 +12,7 @@ import ChatWidget from './components/ChatWidget';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { checkAuth } = useAuth();
   
   // Initialize theme from localStorage or system preference
   useEffect(() => {
@@ -40,11 +42,16 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-    // Ensure CSRF cookie is set on app load
+    // Ensure CSRF cookie is set on app load (AuthContext handles auth verification)
     useEffect(() => {
-      fetch('http://localhost:8000/api/auth/csrf/', {
-        method: 'GET',
-        credentials: 'include'
+      import('./utils/csrf').then(({ fetchCSRFToken }) => {
+        fetchCSRFToken()
+          .then(() => {
+            console.log('[App] CSRF token fetched successfully');
+          })
+          .catch(error => {
+            console.error('[App] Error fetching CSRF token:', error);
+          });
       });
     }, []);
   return (

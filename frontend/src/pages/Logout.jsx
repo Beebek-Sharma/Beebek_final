@@ -12,32 +12,39 @@ const LogoutPage = () => {
   useEffect(() => {
     const attemptLogout = async () => {
       try {
-        // First, perform normal logout
+        // Clear client-side auth state first
         await logout();
         setLogoutAttempted(true);
         
-        // Check after a delay if we're still authenticated
-        setTimeout(async () => {
-          // Add a verification request to double-check auth status
-          try {
-            // Try to access a protected endpoint
-            await axiosInstance.get('/auth/user/');
-            // If we get here, we're still authenticated
-            console.error("Still authenticated after logout attempt!");
-            setLogoutFailed(true);
-          } catch (err) {
-            if (err.response?.status === 401) {
-              // 401 means we're properly logged out
-              console.log("Logout successful - verified with 401 response");
-              // Redirect to home page
-              window.location.href = '/';
-            } else {
-              // Other errors - assume logout failed
-              console.error("Error verifying logout:", err);
-              setLogoutFailed(true);
-            }
-          }
-        }, 1000);
+        // Send a direct request to backend logout endpoint
+        try {
+          // Use axiosInstance for consistent URL handling
+          const axiosInstance = require('../utils/axiosConfig').default;
+          await axiosInstance.post('/auth/logout/');
+          
+          console.log("Server-side logout completed successfully");
+          
+          // Clear all auth-related storage
+          localStorage.removeItem('auth_user');
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('last_auth_time');
+          
+          // Clear all cookies that might be related to auth
+          document.cookie.split(";").forEach(function(c) {
+            const cookie = c.trim();
+            const name = cookie.split("=")[0].trim();
+            document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;`;
+          });
+          
+          // Redirect to home page after a short delay
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 500);
+          
+        } catch (err) {
+          console.error("Error during server-side logout:", err);
+          setLogoutFailed(true);
+        }
       } catch (error) {
         console.error("Logout failed with error:", error);
         setLogoutFailed(true);
@@ -69,10 +76,13 @@ const LogoutPage = () => {
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
     document.body.appendChild(iframe);
-    iframe.src = '/api/auth/csrf/';  // Access API endpoint to clear cookies
+    
+    // Use the full backend URL to ensure correct domain
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+    iframe.src = `${backendUrl}/api/auth/csrf/`;  // Access API endpoint to clear cookies
     
     // Send a direct request to logout endpoint as backup
-    fetch('/api/auth/logout/', {
+    fetch(`${backendUrl}/api/auth/logout/`, {
       method: 'POST',
       credentials: 'include'
     }).finally(() => {

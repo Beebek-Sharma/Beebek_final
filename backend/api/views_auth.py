@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, update_session_auth_hash
 from django.conf import settings
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
 import os
 from .models import CustomUser, UserProfile
 from .serializers import RegisterSerializer, UserSerializer
@@ -320,15 +321,33 @@ def refresh_token_view(request):
         )
 
 
-@api_view(['GET'])
 @ensure_csrf_cookie
+@api_view(['GET'])
+@permission_classes([AllowAny])
 def get_csrf_token(request):
     """
     Get CSRF token for cookie-based authentication
     """
-    return Response({
-        'csrfToken': get_token(request)
+    # Get the CSRF token
+    token = get_token(request)
+    
+    # Create response with the token
+    response = Response({
+        'csrfToken': token,
+        'detail': 'CSRF cookie set'
     })
+    
+    # Manually set the CSRF cookie
+    response.set_cookie(
+        'csrftoken', 
+        token,
+        max_age=3600 * 24 * 7,  # 7 days
+        httponly=False,         # JavaScript needs to access this
+        samesite='Lax',         # Less strict than 'Strict'
+        secure=False,           # Set to True in production with HTTPS
+    )
+    
+    return response
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

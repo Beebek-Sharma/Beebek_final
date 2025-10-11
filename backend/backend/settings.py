@@ -98,21 +98,21 @@ os.environ['DJANGO_DEBUG'] = 'True'
 
 # dj-rest-auth and allauth settings
 ACCOUNT_LOGIN_METHODS = {'username', 'email'}
-# Remove deprecated ACCOUNT_EMAIL_REQUIRED and ACCOUNT_USERNAME_REQUIRED
-# Use SIGNUP_FIELDS for required fields
-SIGNUP_FIELDS = {
-    'username': {'required': True},
-    'email': {'required': True},
-    'password1': {'required': True},
-    'password2': {'required': True},
-}
-ACCOUNT_EMAIL_VERIFICATION = 'optional'
-REST_USE_JWT = True
-JWT_AUTH_COOKIE = 'access_token'
-JWT_AUTH_REFRESH_COOKIE = 'refresh_token'
+
+# New allauth signup field configuration (replaces deprecated settings)
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+
+# Session-based authentication (no JWT)
+REST_USE_JWT = False
+
+# Custom user serializer
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'api.serializers.UserSerializer',
 }
+
+# Social authentication providers
+# Note: App credentials (client_id, secret) are stored in database via SocialApp model
+# Run: python manage.py setup_google_oauth
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': ['profile', 'email'],
@@ -124,29 +124,10 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 }
 
-CORS_ALLOW_ALL_ORIGINS = True  # More permissive for development
-CORS_ALLOW_CREDENTIALS = True  # Critical for cookie-based auth
+# Note: Additional allauth settings (SOCIALACCOUNT_ADAPTER, SOCIALACCOUNT_AUTO_SIGNUP, etc.) 
+# are configured below with other authentication settings
 
-# CORS additional settings for Brave compatibility
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-]
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-]
+# CORS settings are now defined at the bottom of this file
 
 # CSRF settings for cookie-based auth
 CSRF_TRUSTED_ORIGINS = [
@@ -162,9 +143,10 @@ CSRF_COOKIE_DOMAIN = None  # Don't restrict domain in development
 
 # Session cookie settings
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = 'Lax'  # Use 'Lax' for Django admin compatibility
+SESSION_COOKIE_SAMESITE = 'Lax'  # Use 'Lax' for cross-site request compatibility
 SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
 SESSION_COOKIE_DOMAIN = None  # Don't restrict domain in development
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 14  # 14 days session expiry
 
 
 MIDDLEWARE = [
@@ -276,8 +258,9 @@ if DEBUG:
 # Rest Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'api.authentication.JWTCookieAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'api.authentication.CookieJWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
@@ -297,6 +280,88 @@ LOGGING = {
         'level': 'DEBUG',
     },
 }
+
+# Authentication Backends
+AUTHENTICATION_BACKENDS = (
+    # Django's default auth backend for username/password login
+    'django.contrib.auth.backends.ModelBackend',
+    # django-allauth backend for social logins and other features
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+# Note: Google OAuth settings are now configured exclusively through
+# django-allauth in the Django admin or via SocialApp model
+# Run: python manage.py setup_google_oauth
+
+# Set all-auth settings (consolidated)
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+# Note: ACCOUNT_USERNAME_REQUIRED and ACCOUNT_EMAIL_REQUIRED are deprecated
+# They are now handled by ACCOUNT_SIGNUP_FIELDS defined above
+# Removed ACCOUNT_AUTHENTICATION_METHOD - using ACCOUNT_LOGIN_METHODS instead
+
+# Social account settings (consolidated - no duplicates)
+SOCIALACCOUNT_ADAPTER = 'api.adapters.CustomSocialAccountAdapter'
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_LOGIN_ON_GET = True  # Skip intermediate auth page
+SOCIALACCOUNT_QUERY_EMAIL = True   # Request email from providers
+
+# Additional allauth settings for better OAuth flow
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'  # Use 'https' in production
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # Allow both username and email login
+ACCOUNT_PRESERVE_USERNAME_CASING = False  # Usernames stored in lowercase
+
+# Set redirect after login
+LOGIN_REDIRECT_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
+# Make sure we handle port 5174 as well for development
+if LOGIN_REDIRECT_URL == 'http://localhost:5173' and os.environ.get('DJANGO_ENV') != 'production':
+    # Check which port is actually being used by the frontend
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.bind(('localhost', 5173))
+        # If we can bind to 5173, it means it's not in use, so frontend is probably on 5174
+        LOGIN_REDIRECT_URL = 'http://localhost:5174'
+    except:
+        # Port 5173 is in use, so it's likely the frontend is using it
+        pass
+    finally:
+        s.close()
+
+LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL
+
+# Force the frontend URL to be added with google_auth_success parameter
+SOCIALACCOUNT_ADAPTER = 'api.adapters.CustomSocialAccountAdapter'
+
+# CORS Settings
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    os.environ.get('FRONTEND_URL', 'http://localhost:5173'),
+    'http://localhost:5174',  # Allow port 5174 which is being used in your dev environment
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
+]
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 # JWT settings
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=3650),   # Effectively unlimited: 10 years
