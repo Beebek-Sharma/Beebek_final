@@ -23,9 +23,6 @@ instance/
 # Static and build files
 build/
 dist/
-downloads/
-docs/_build/
-site/
 
 # Packaging
 .Python
@@ -51,9 +48,6 @@ coverage.xml
 cover/
 
 # Jupyter/IPython
-.ipynb_checkpoints
-profile_default/
-ipython_config.py
 
 # Environments
 .env

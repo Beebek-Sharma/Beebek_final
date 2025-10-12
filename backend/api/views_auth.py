@@ -362,7 +362,15 @@ def upload_profile_picture(request):
         return Response({'error': 'No image provided'}, status=status.HTTP_400_BAD_REQUEST)
     
     user = request.user
-    
+    # Fallback: If user is not authenticated, try to authenticate via JWT in cookie
+    if not user or not user.is_authenticated:
+        from rest_framework_simplejwt.authentication import JWTAuthentication
+        jwt_auth = JWTAuthentication()
+        auth_result = jwt_auth.authenticate(request)
+        if auth_result:
+            user = auth_result[0]
+        else:
+            return Response({'error': 'Authentication required'}, status=status.HTTP_403_FORBIDDEN)
     try:
         # Get or create user profile
         profile, created = UserProfile.objects.get_or_create(user=user)
@@ -497,16 +505,21 @@ def update_name(request):
     last_name = request.data.get('last_name')
     
     user = request.user
-    
+    # Fallback: If user is not authenticated, try to authenticate via JWT in cookie
+    if not user or not user.is_authenticated:
+        from rest_framework_simplejwt.authentication import JWTAuthentication
+        jwt_auth = JWTAuthentication()
+        auth_result = jwt_auth.authenticate(request)
+        if auth_result:
+            user = auth_result[0]
+        else:
+            return Response({'error': 'Authentication required'}, status=status.HTTP_403_FORBIDDEN)
     # Update first name and last name if provided
     if first_name is not None:
         user.first_name = first_name
-    
     if last_name is not None:
         user.last_name = last_name
-    
     user.save()
-    
     return Response({
         'success': True,
         'message': 'Name updated successfully',

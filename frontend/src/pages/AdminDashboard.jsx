@@ -299,7 +299,7 @@ const AdminDashboard = () => {
                 className={`px-5 py-2 rounded-full font-semibold shadow transition-all ${
                   activeTab === 'universities'
                     ? 'bg-[#4f46e5] text-white'
-                    : 'bg-white text-gray-700 hover:bg-[#eef2ff]'
+                    : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:hover:bg-github-darkBorder'
                 }`}
               >
                 Universities
@@ -309,7 +309,7 @@ const AdminDashboard = () => {
                 className={`px-5 py-2 rounded-full font-semibold shadow transition-all ${
                   activeTab === 'courses'
                     ? 'bg-[#4f46e5] text-white'
-                    : 'bg-white text-gray-700 hover:bg-[#eef2ff]'
+                    : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:hover:bg-github-darkBorder'
                 }`}
               >
                 Courses
@@ -319,7 +319,7 @@ const AdminDashboard = () => {
                 className={`px-5 py-2 rounded-full font-semibold shadow transition-all ${
                   activeTab === 'users'
                     ? 'bg-[#4f46e5] text-white'
-                    : 'bg-white text-gray-700 hover:bg-[#eef2ff]'
+                    : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:hover:bg-github-darkBorder'
                 }`}
               >
                 Users

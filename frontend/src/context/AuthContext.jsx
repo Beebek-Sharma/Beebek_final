@@ -132,6 +132,7 @@ export const AuthProvider = ({ children }) => {
   };
   
   // First-time initialization effect to set up authentication
+  const location = useLocation();
   useEffect(() => {
     console.log('[Auth] Application initializing, performing initial auth verification');
 
@@ -179,6 +180,17 @@ export const AuthProvider = ({ children }) => {
 
     initializeAuth();
   }, []);
+
+  // Google login success detection effect
+    useEffect(() => {
+      const params = new URLSearchParams(location.search);
+      if (params.get('google_auth_success') === 'true') {
+        console.log('[Auth] Detected google_auth_success in URL, triggering immediate auth check');
+        checkAuth(false, false);
+        // After Google login, instantly navigate to course compare page
+        window.location.replace('/course-comparison');
+      }
+    }, [location.search]);
 
   const checkAuth = async (shouldRedirect = true) => {
     const checkId = Math.random().toString(36).substring(2, 8);

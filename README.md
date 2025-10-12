@@ -49,15 +49,85 @@ The project is organized into two main folders:
 - Vite 6+
 
 ## Setup Instructions
+## Setup Instructions
 
-### Backend Setup
+### 1. Clone the repository
+```bash
+git clone https://github.com/Beebek-Sharma/Beebek_final.git
+cd Beebek_final
+```
 
-1. Navigate to the backend directory:
-	```bash
-	cd backend
-	```
+### 2. Backend Setup
 
-2. Create a virtual environment:
+```bash
+cd backend
+# (Recommended) Create a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+# Copy .env.example to .env and fill in your secrets
+cp .env.example .env
+# Run migrations
+python manage.py migrate
+# (Optional) Populate sample data
+python manage.py populate_db
+# Start the server
+python manage.py runserver
+```
+
+### 3. Frontend Setup
+
+```bash
+cd frontend
+npm install
+# Copy .env.example to .env and fill in your API URL
+cp .env.example .env
+npm run dev
+```
+
+### 4. Authentication Setup
+
+- **Google OAuth2**: Follow `GOOGLE_OAUTH_SETUP.md` for Google authentication setup. Add your Google client ID/secret to the backend `.env`.
+- **Email/Password**: Register via `/api/register/` and login via `/api/token/`.
+
+### 5. Environment Variables
+
+See `.env.example` in both `backend/` and `frontend/` for all required variables. Example:
+
+#### Backend `.env.example`
+```env
+GROK_API_KEY=your_grok_api_key_here
+DJANGO_SECRET_KEY=your_django_secret_key_here
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+# DATABASE_URL=postgres://user:password@localhost:5432/dbname
+# CORS_ALLOWED_ORIGINS=https://yourdomain.com
+# CSRF_TRUSTED_ORIGINS=https://yourdomain.com
+```
+
+#### Frontend `.env.example`
+```env
+VITE_API_URL=http://localhost:8000/api
+NODE_ENV=development
+```
+
+### 6. Production Notes
+
+- Set `DJANGO_DEBUG=False` and configure allowed hosts in production.
+- Use a production database and secure secrets.
+- Set up HTTPS and proper CORS/CSRF settings.
+
+---
+
+## Cleaning Up
+
+- Unused files and folders should be removed before deployment.
+- Ensure `.env.example` is versioned, but never commit `.env` files with secrets.
+
+## Support
+
+For Google OAuth setup, see `GOOGLE_OAUTH_SETUP.md` and `GOOGLE_OAUTH_SIMPLIFIED.md`.
+For troubleshooting, see `AI_CHAT_README.md` and `backend/CHAT_WIDGET_SUMMARY.md`.
 	```bash
 	python -m venv venv
 	```

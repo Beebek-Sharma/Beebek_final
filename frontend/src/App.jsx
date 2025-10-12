@@ -1,7 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import { BrowserRouter } from 'react-router-dom';
+// import { BrowserRouter } from 'react-router-dom';
 import Routes from './Routes';
 import Footer from './components/Footer';
 import Sidebar from './components/Sidebar';
@@ -12,7 +13,15 @@ import ChatWidget from './components/ChatWidget';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { checkAuth } = useAuth();
+  const location = useLocation();
+
+  // Track last visited page except login/register
+  useEffect(() => {
+    const publicPaths = ['/login', '/register'];
+    if (!publicPaths.some(p => location.pathname.startsWith(p))) {
+      localStorage.setItem('last_visited_page', location.pathname + location.search);
+    }
+  }, [location.pathname, location.search]);
   
   // Initialize theme from localStorage or system preference
   useEffect(() => {
@@ -55,38 +64,35 @@ function App() {
       });
     }, []);
   return (
-    <BrowserRouter>
-// ...existing code...
-      <div className="flex flex-col min-h-screen bg-github-light dark:bg-github-dark transition-colors duration-300">
-        <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-        <div className="flex flex-1 overflow-hidden">
-          <div 
-            className={`fixed top-0 left-0 w-64 h-full z-40 transform transition-transform duration-300 ease-in-out ${
-              isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-            } pt-16`}
-          >
-            <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-          </div>
-          {isSidebarOpen && (
-            <div 
-              className="fixed inset-0 top-16 bg-black bg-opacity-50 z-30 transition-opacity duration-300"
-              aria-hidden="true"
-              onClick={() => setIsSidebarOpen(false)}
-            />
-          )}
-          <div className="flex flex-col flex-1">
-            <RouteChangeListener />
-            <main className="flex-1 overflow-y-auto no-scrollbar p-4 pt-20 md:p-8 md:pt-20">
-              <Routes />
-            </main>
-            <Footer />
-          </div>
+    <div className="flex flex-col min-h-screen bg-github-light dark:bg-github-dark transition-colors duration-300">
+      <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      <div className="flex flex-1 overflow-hidden">
+        <div 
+          className={`fixed top-0 left-0 w-64 h-full z-40 transform transition-transform duration-300 ease-in-out ${
+            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } pt-16`}
+        >
+          <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
         </div>
-        
-        {/* AI Chat Widget */}
-        <ChatWidget />
+        {isSidebarOpen && (
+          <div 
+            className="fixed inset-0 top-16 bg-black bg-opacity-50 z-30 transition-opacity duration-300"
+            aria-hidden="true"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+        <div className="flex flex-col flex-1">
+          <RouteChangeListener />
+          <main className="flex-1 overflow-y-auto no-scrollbar p-4 pt-20 md:p-8 md:pt-20">
+            <Routes />
+          </main>
+          {location.pathname !== '/login' && location.pathname !== '/register' && <Footer />}
+        </div>
       </div>
-    </BrowserRouter>
+      
+      {/* AI Chat Widget */}
+      <ChatWidget />
+    </div>
   );
 }
 

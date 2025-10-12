@@ -11,7 +11,7 @@ const AdminFeedback = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
       {/* Heading and Tabs OUTSIDE the card */}
       <div className="w-full max-w-3xl mx-auto mt-10">
-  <h1 className="text-4xl font-bold mb-8 dark:text-github-lightText">Admin Feedback Management</h1>
+  <h1 className="text-4xl font-bold mb-8">Admin Feedback Management</h1>
         <div className="flex justify-start mb-8">
           <nav className="flex gap-6">
             <button
@@ -19,7 +19,7 @@ const AdminFeedback = () => {
               className={`px-6 py-2 rounded-full font-semibold shadow transition-all text-lg ${
                 activeTab === 'universities'
                   ? 'bg-[#4f46e5] text-white dark:bg-[#4f46e5] dark:text-white'
-                  : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:bg-github-darkAccent dark:text-github-lightText dark:hover:bg-github-darkBorder'
+                  : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:hover:bg-github-darkBorder'
               }`}
             >
               Universities
@@ -29,7 +29,7 @@ const AdminFeedback = () => {
               className={`px-6 py-2 rounded-full font-semibold shadow transition-all text-lg ${
                 activeTab === 'courses'
                   ? 'bg-[#4f46e5] text-white dark:bg-[#4f46e5] dark:text-white'
-                  : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:bg-github-darkAccent dark:text-github-lightText dark:hover:bg-github-darkBorder'
+                  : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:hover:bg-github-darkBorder'
               }`}
             >
               Courses
@@ -39,7 +39,7 @@ const AdminFeedback = () => {
               className={`px-6 py-2 rounded-full font-semibold shadow transition-all text-lg ${
                 activeTab === 'users'
                   ? 'bg-[#4f46e5] text-white dark:bg-[#4f46e5] dark:text-white'
-                  : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:bg-github-darkAccent dark:text-github-lightText dark:hover:bg-github-darkBorder'
+                  : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:hover:bg-github-darkBorder'
               }`}
             >
               Users
