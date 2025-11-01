@@ -1,0 +1,26 @@
+[
+  {
+    "Course Name": "Civil Engineering",
+    "description": "Comprehensive program in civil engineering covering structural design, construction, and infrastructure development",
+    "university": "Institute of Engineering (IOE), Tribhuvan University",
+    "Fees": "$3,500",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Electrical Engineering",
+    "description": "Study electrical systems, power generation, and electronic circuits",
+    "university": "Institute of Engineering (IOE), Tribhuvan University",
+    "Fees": "$3,500",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Computer Engineering",
+    "description": "Comprehensive computer engineering program covering software, hardware, and systems design",
+    "university": "Institute of Engineering (IOE), Tribhuvan University",
+    "Fees": "$3,500",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  }
+]

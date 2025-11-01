@@ -1,0 +1,82 @@
+[
+  {
+    "Course Name": "Aeronautics and Astronautics",
+    "description": "Shape the next century of flight.",
+    "university": "MIT",
+    "Fees": "$48,000",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Biological Engineering",
+    "description": "Crack the code of biology.",
+    "university": "MIT",
+    "Fees": "$50,000",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Chemical Engineering",
+    "description": "Put molecules into action.",
+    "university": "MIT",
+    "Fees": "$49,500",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Civil and Environmental Engineering",
+    "description": "Create smarter, better, faster infrastructures.",
+    "university": "MIT",
+    "Fees": "$47,800",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Electrical Engineering and Computer Science",
+    "description": "Design, invent, or hack digital technologies.",
+    "university": "MIT",
+    "Fees": "$51,200",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Institute for Data, Systems, and Society",
+    "description": "Solve complex societal challenges with data",
+    "university": "MIT",
+    "Fees": "$46,500",
+    "Duration": "2 years",
+    "Level": "Graduate"
+  },
+  {
+    "Course Name": "Institute for Medical Engineering and Science",
+    "description": "Go from the lab bench to the patient bedside.",
+    "university": "MIT",
+    "Fees": "$52,000",
+    "Duration": "2 years",
+    "Level": "Graduate"
+  },
+  {
+    "Course Name": "Materials Science and Engineering",
+    "description": "Redefine the material world.",
+    "university": "MIT",
+    "Fees": "$48,700",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Mechanical Engineering",
+    "description": "Be at the heart of the maker movement.",
+    "university": "MIT",
+    "Fees": "$49,900",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Nuclear Science and Engineering",
+    "description": "Advance nuclear technologies.",
+    "university": "MIT",
+    "Fees": "$50,300",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  }
+]

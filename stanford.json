@@ -1,0 +1,82 @@
+[
+  {
+    "Course Name": "Aeronautics and Astronautics",
+    "description": "Advanced study of aerospace engineering, flight mechanics, and space systems",
+    "university": "Stanford University",
+    "Fees": "$53,000",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "African and African American Studies",
+    "description": "Interdisciplinary study of African and African American history, culture, and society",
+    "university": "Stanford University",
+    "Fees": "$51,500",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "African Studies",
+    "description": "Comprehensive study of African cultures, languages, politics, and development",
+    "university": "Stanford University",
+    "Fees": "$50,800",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "American Studies",
+    "description": "Interdisciplinary study of American culture, history, and society",
+    "university": "Stanford University",
+    "Fees": "$52,200",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Anthropology",
+    "description": "Study of human societies, cultures, and biological evolution",
+    "university": "Stanford University",
+    "Fees": "$51,900",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Applied Physics",
+    "description": "Physics principles applied to engineering and technology challenges",
+    "university": "Stanford University",
+    "Fees": "$54,000",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Archaeology",
+    "description": "Scientific study of human history through material remains and artifacts",
+    "university": "Stanford University",
+    "Fees": "$50,300",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Art History",
+    "description": "Critical study of visual arts throughout history and across cultures",
+    "university": "Stanford University",
+    "Fees": "$49,800",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Art Practice",
+    "description": "Studio-based program in contemporary art making and theory",
+    "university": "Stanford University",
+    "Fees": "$50,600",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Asian American Studies",
+    "description": "Study of Asian American communities, identity, and cultural experiences",
+    "university": "Stanford University",
+    "Fees": "$51,300",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  }
+]

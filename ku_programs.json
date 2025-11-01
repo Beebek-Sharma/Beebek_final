@@ -1,0 +1,138 @@
+[
+  {
+    "Course Name": "Bachelor of Engineering in Computer Engineering",
+    "description": "Comprehensive computer engineering program with focus on software development, AI, and systems design",
+    "university": "Kathmandu University",
+    "Fees": "$4,500",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Bachelor of Information Technology",
+    "description": "Modern IT program covering software development, networking, and information systems",
+    "university": "Kathmandu University",
+    "Fees": "$4,200",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Master of Engineering in Computer Engineering",
+    "description": "Advanced computer engineering with specializations in AI, cybersecurity, and cloud computing",
+    "university": "Kathmandu University",
+    "Fees": "$6,000",
+    "Duration": "2 years",
+    "Level": "Postgraduate"
+  },
+  {
+    "Course Name": "Master of Technology in Information Technology",
+    "description": "Advanced IT program focusing on emerging technologies and research",
+    "university": "Kathmandu University",
+    "Fees": "$5,800",
+    "Duration": "2 years",
+    "Level": "Postgraduate"
+  },
+  {
+    "Course Name": "Bachelor of Engineering in Civil Engineering",
+    "description": "Civil engineering program covering structural design, construction management, and infrastructure",
+    "university": "Kathmandu University",
+    "Fees": "$4,500",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Bachelor of Engineering in Electrical and Electronics Engineering",
+    "description": "Comprehensive program in electrical power systems, electronics, and control systems",
+    "university": "Kathmandu University",
+    "Fees": "$4,500",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "PhD in Electrical and Electronics Engineering",
+    "description": "Research-focused doctoral program in electrical and electronics engineering",
+    "university": "Kathmandu University",
+    "Fees": "$8,000",
+    "Duration": "3-5 years",
+    "Level": "Doctorate"
+  },
+  {
+    "Course Name": "Bachelor of Engineering in Mechanical Engineering",
+    "description": "Mechanical engineering with specializations in automobile, design, energy, and hydropower",
+    "university": "Kathmandu University",
+    "Fees": "$4,500",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "Master of Mechanical Engineering",
+    "description": "Advanced mechanical engineering program with research opportunities",
+    "university": "Kathmandu University",
+    "Fees": "$6,000",
+    "Duration": "2 years",
+    "Level": "Postgraduate"
+  },
+  {
+    "Course Name": "MS by Research in Mechanical Engineering",
+    "description": "Research-based master's program in mechanical engineering",
+    "university": "Kathmandu University",
+    "Fees": "$5,500",
+    "Duration": "2 years",
+    "Level": "Postgraduate"
+  },
+  {
+    "Course Name": "PhD in Mechanical Engineering",
+    "description": "Doctoral research program in mechanical engineering and related fields",
+    "university": "Kathmandu University",
+    "Fees": "$8,000",
+    "Duration": "3-5 years",
+    "Level": "Doctorate"
+  },
+  {
+    "Course Name": "Bachelor of Engineering in Geomatics Engineering",
+    "description": "Geospatial technology, surveying, GIS, and remote sensing engineering",
+    "university": "Kathmandu University",
+    "Fees": "$4,500",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "PhD in Geomatics Engineering",
+    "description": "Research-focused doctoral program in geomatics and geospatial sciences",
+    "university": "Kathmandu University",
+    "Fees": "$8,000",
+    "Duration": "3-5 years",
+    "Level": "Doctorate"
+  },
+  {
+    "Course Name": "Bachelor of Architecture",
+    "description": "Professional architecture program covering design, planning, and sustainable development",
+    "university": "Kathmandu University",
+    "Fees": "$5,000",
+    "Duration": "5 years",
+    "Level": "Undergraduate"
+  },
+  {
+    "Course Name": "MS by Research in Architecture",
+    "description": "Research-based master's program in architecture and urban design",
+    "university": "Kathmandu University",
+    "Fees": "$5,500",
+    "Duration": "2 years",
+    "Level": "Postgraduate"
+  },
+  {
+    "Course Name": "PhD in Architecture",
+    "description": "Doctoral research program in architecture, urban planning, and design",
+    "university": "Kathmandu University",
+    "Fees": "$8,000",
+    "Duration": "3-5 years",
+    "Level": "Doctorate"
+  },
+  {
+    "Course Name": "Bachelor of Engineering in Chemical Engineering",
+    "description": "Chemical engineering program covering process design, industrial chemistry, and biotechnology",
+    "university": "Kathmandu University",
+    "Fees": "$4,500",
+    "Duration": "4 years",
+    "Level": "Undergraduate"
+  }
+]
