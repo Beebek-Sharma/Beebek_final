@@ -168,6 +168,13 @@ def login_user(request):
     login_id = request.data.get('username')  # could be username or email
     password = request.data.get('password')
 
+    # Validate input
+    if not login_id or not password:
+        return Response({'error': 'Username/email and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if not login_id.strip() or not password.strip():
+        return Response({'error': 'Username/email and password cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
+
     print(f"Login attempt: {login_id}")
 
     user = authenticate(username=login_id, password=password)
@@ -208,6 +215,7 @@ def update_user_profile(request):
     This endpoint allows the frontend to send additional user data
     """
     import logging
+    import re
     logger = logging.getLogger('user_profile')
     
     # Log the received data
@@ -225,15 +233,55 @@ def update_user_profile(request):
     oauth_provider = request.data.get('oauth_provider')
     oauth_data = request.data.get('oauth_data')
 
+    # Validate inputs
+    errors = {}
+    
+    # Validate first name
+    if first_name is not None:
+        first_name = first_name.strip()
+        if not first_name:
+            errors['first_name'] = 'First name cannot be empty'
+        elif len(first_name) < 2:
+            errors['first_name'] = 'First name must be at least 2 characters long'
+        elif not re.match(r'^[A-Za-z]+$', first_name):
+            errors['first_name'] = 'First name must contain only letters'
+    
+    # Validate last name
+    if last_name is not None:
+        last_name = last_name.strip()
+        if not last_name:
+            errors['last_name'] = 'Last name cannot be empty'
+        elif len(last_name) < 2:
+            errors['last_name'] = 'Last name must be at least 2 characters long'
+        elif not re.match(r'^[A-Za-z]+$', last_name):
+            errors['last_name'] = 'Last name must contain only letters'
+    
+    # Validate email
+    if email is not None:
+        email = email.strip().lower()
+        if not email:
+            errors['email'] = 'Email cannot be empty'
+        elif not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            errors['email'] = 'Please enter a valid email address'
+        elif email != user.email and CustomUser.objects.filter(email=email).exists():
+            errors['email'] = 'This email is already registered'
+    
+    # Validate bio
+    if bio is not None and len(bio) > 500:
+        errors['bio'] = 'Bio must not exceed 500 characters'
+    
+    if errors:
+        return Response({'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
+
     # Update the user model
     updated = False
 
     if first_name and user.first_name != first_name:
-        user.first_name = first_name
+        user.first_name = first_name.capitalize()
         updated = True
 
     if last_name and user.last_name != last_name:
-        user.last_name = last_name
+        user.last_name = last_name.capitalize()
         updated = True
 
     if email and user.email != email:
@@ -241,9 +289,10 @@ def update_user_profile(request):
         updated = True
 
     # Update bio in UserProfile (allow empty string)
-    if bio and user.bio != bio:
-        user.bio = bio
-        updated = True
+    bio_updated = False
+    if bio is not None and profile.bio != bio:  # Check against None to allow empty string
+        profile.bio = bio
+        bio_updated = True
 
     # If we have OAuth data, store it in some field or additional model
     # For now, just log it
@@ -255,6 +304,10 @@ def update_user_profile(request):
     if updated:
         user.save()
         logger.info(f"Updated user {user.username} profile")
+    
+    if bio_updated:
+        profile.save()
+        logger.info(f"Updated bio for {user.username}")
 
     # Return the updated user data
     serializer = UserSerializer(user)
@@ -308,8 +361,14 @@ def list_universities(request):
     
     elif request.method == 'POST':
         # Check if the user is admin
-        if not request.user.is_authenticated or not request.user.profile.role == 'admin':
-            return Response({'error': 'Only admins can create universities'}, status=status.HTTP_403_FORBIDDEN)
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        try:
+            if request.user.role != 'admin':
+                return Response({'error': 'Only admins can create universities'}, status=status.HTTP_403_FORBIDDEN)
+        except Exception as e:
+            return Response({'error': f'Permission error: {str(e)}'}, status=status.HTTP_403_FORBIDDEN)
         
         serializer = UniversitySerializer(data=request.data)
         if serializer.is_valid():
@@ -322,21 +381,29 @@ def university_detail(request, pk):
     try:
         university = University.objects.get(pk=pk)
     except University.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'University not found'}, status=status.HTTP_404_NOT_FOUND)
     
     if request.method == 'GET':
         serializer = UniversitySerializer(university)
         return Response(serializer.data)
     
     # Check if user is admin for modifying operations
-    if not request.user.is_authenticated or not request.user.profile.role == 'admin':
-        return Response({'error': 'Only admins can modify universities'}, status=status.HTTP_403_FORBIDDEN)
+    if not request.user.is_authenticated:
+        return Response({'error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    try:
+        if request.user.role != 'admin':
+            return Response({'error': 'Only admins can modify courses'}, status=status.HTTP_403_FORBIDDEN)
+    except Exception as e:
+        return Response({'error': f'Permission error: {str(e)}'}, status=status.HTTP_403_FORBIDDEN)
     
     if request.method == 'PUT':
+        print(f"[DEBUG] PUT request data: {request.data}")
         serializer = UniversitySerializer(university, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
+        print(f"[DEBUG] Serializer errors: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     elif request.method == 'DELETE':
@@ -370,8 +437,14 @@ def list_courses(request):
     
     elif request.method == 'POST':
         # Check if the user is admin
-        if not request.user.is_authenticated or not request.user.profile.role == 'admin':
-            return Response({'error': 'Only admins can create courses'}, status=status.HTTP_403_FORBIDDEN)
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        try:
+            if request.user.role != 'admin':
+                return Response({'error': 'Only admins can create courses'}, status=status.HTTP_403_FORBIDDEN)
+        except Exception as e:
+            return Response({'error': f'Permission error: {str(e)}'}, status=status.HTTP_403_FORBIDDEN)
         
         serializer = CourseSerializer(data=request.data)
         if serializer.is_valid():
@@ -384,15 +457,21 @@ def course_detail(request, pk):
     try:
         course = Course.objects.get(pk=pk)
     except Course.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'Course not found'}, status=status.HTTP_404_NOT_FOUND)
         
     if request.method == 'GET':
         serializer = CourseSerializer(course)
         return Response(serializer.data)
     
     # Check if user is admin for modifying operations
-    if not request.user.is_authenticated or not request.user.profile.role == 'admin':
-        return Response({'error': 'Only admins can modify courses'}, status=status.HTTP_403_FORBIDDEN)
+    if not request.user.is_authenticated:
+        return Response({'error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    try:
+        if request.user.role != 'admin':
+            return Response({'error': 'Only admins can modify courses'}, status=status.HTTP_403_FORBIDDEN)
+    except Exception as e:
+        return Response({'error': f'Permission error: {str(e)}'}, status=status.HTTP_403_FORBIDDEN)
     
     if request.method == 'PUT':
         serializer = CourseSerializer(course, data=request.data)
@@ -475,12 +554,15 @@ def list_users(request):
 @permission_classes([IsAuthenticated])
 def user_detail(request, pk):
     # Check if user is admin
-    if not request.user.profile.role == 'admin':
-        return Response({'error': 'Only admins can manage users'}, status=status.HTTP_403_FORBIDDEN)
+    try:
+        if request.user.role != 'admin':
+            return Response({'error': 'Only admins can manage users'}, status=status.HTTP_403_FORBIDDEN)
+    except Exception as e:
+        return Response({'error': f'Permission error: {str(e)}'}, status=status.HTTP_403_FORBIDDEN)
     
     try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
+        user = CustomUser.objects.get(pk=pk)
+    except CustomUser.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     
     if request.method == 'GET':
@@ -635,3 +717,31 @@ def featured_feedback(request):
     
     serializer = FeedbackSerializer(featured, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def popular_feedback(request):
+    """
+    Get a list of popular/commonly reported feedback issues.
+    Groups similar feedback by subject and returns the most common ones.
+    """
+    from django.db.models import Count
+    
+    limit = int(request.GET.get('limit', 5))
+    
+    # Group feedback by subject and count occurrences
+    popular = Feedback.objects.values('subject', 'message').annotate(
+        count=Count('id')
+    ).filter(count__gt=0).order_by('-count')[:limit]
+    
+    # Format the response
+    result = []
+    for item in popular:
+        result.append({
+            'id': item['subject'],  # Use subject as ID for grouping
+            'issue_title': item['subject'],
+            'description': item['message'][:100] + '...' if len(item['message']) > 100 else item['message'],
+            'count': item['count']
+        })
+    
+    return Response(result)

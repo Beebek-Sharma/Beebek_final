@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { validateLogin } from '../utils/validation';
 
 const Login = () => {
   const { login } = useAuth();
   const [loginId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [sessionMsg, setSessionMsg] = useState('');
+  const [touched, setTouched] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -33,7 +36,18 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setErrors({});
+    
+    // Mark fields as touched
+    setTouched({ loginId: true, password: true });
+    
+    // Validate inputs
+    const validationErrors = validateLogin(loginId, password);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+    
     setLoading(true);
     
     // Add a small delay to ensure any stale auth operations have completed
@@ -56,24 +70,6 @@ const Login = () => {
 
     console.log("[Login] Attempting login with:", loginId);
 
-    // Basic validation
-    if (!loginId || !password) {
-      setError('Username/Email and password are required');
-      setLoading(false);
-      return;
-    }
-    // Password validation: at least 8 chars, at least one letter and one number
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters long');
-      setLoading(false);
-      return;
-    }
-    if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
-      setError('Password must contain at least one letter and one number');
-      setLoading(false);
-      return;
-    }
-
     try {
       // Make sure any previous auth state is cleared before login
       if (localStorage.getItem('auth_refreshing') === 'true') {
@@ -91,7 +87,7 @@ const Login = () => {
           // Double check we're still authenticated before navigating
           if (!localStorage.getItem('auth_token') && !localStorage.getItem('auth_user')) {
             console.error("[Login] Authentication data missing after login!");
-            setError("Login was successful but session data is missing. Please try again.");
+            setErrors({ general: "Login was successful but session data is missing. Please try again." });
             setLoading(false);
             return;
           }
@@ -117,13 +113,13 @@ const Login = () => {
 
       // Detailed error handling
       if (err.response?.status === 401) {
-        setError('Invalid credentials. Please check your email or username and password.');
+        setErrors({ general: 'Invalid credentials. Please check your email or username and password.' });
       } else if (err.response?.status === 400) {
-        setError(err.response.data.error || 'Invalid form data. Please check your inputs.');
+        setErrors({ general: err.response.data.error || 'Invalid form data. Please check your inputs.' });
       } else if (err.message?.includes('Authentication verification failed')) {
-        setError('Authentication succeeded but session verification failed. This may be a cookie issue.');
+        setErrors({ general: 'Authentication succeeded but session verification failed. This may be a cookie issue.' });
       } else {
-        setError(err.response?.data?.error || err.message || 'Login failed. Please try again.');
+        setErrors({ general: err.response?.data?.error || err.message || 'Login failed. Please try again.' });
       }
 
       setLoading(false);
@@ -157,54 +153,93 @@ const Login = () => {
           </div>
         )}
 
-        {error && (
+        {errors.general && (
           <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-            {error}
+            {errors.general}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="loginId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Email or Username
+            <label htmlFor="loginId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Email or Username *
             </label>
             <input
               id="loginId"
               type="text"
               placeholder="Enter your email or username"
               value={loginId}
-              onChange={(e) => setLoginId(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              onChange={(e) => {
+                setLoginId(e.target.value);
+                if (errors.username) setErrors({ ...errors, username: '' });
+              }}
+              onBlur={() => setTouched({ ...touched, loginId: true })}
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+                touched.loginId && errors.username 
+                  ? 'border-red-500 focus:ring-red-500' 
+                  : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
+              }`}
               required
               disabled={loading}
             />
+            {touched.loginId && errors.username && (
+              <p className="mt-1 text-sm text-red-600">{errors.username}</p>
+            )}
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Password
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Password *
             </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              required
-              disabled={loading}
-            />
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={e => {
+                    setPassword(e.target.value);
+                    if (errors.password) setErrors({ ...errors, password: '' });
+                  }}
+                  onBlur={() => setTouched({ ...touched, password: true })}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+                    touched.password && errors.password 
+                      ? 'border-red-500 focus:ring-red-500' 
+                      : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
+                  }`}
+                  required
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-white"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.122-6.13M6.13 6.13A9.96 9.96 0 0112 3c5.523 0 10 4.477 10 10a9.96 9.96 0 01-1.17 4.53M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3l18 18M9.88 9.88A3 3 0 0012 15a3 3 0 002.12-5.12M6.13 6.13A9.96 9.96 0 0112 3c5.523 0 10 4.477 10 10a9.96 9.96 0 01-1.17 4.53M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.122-6.13" /></svg>
+                  )}
+                </button>
+              </div>
+              {touched.password && errors.password && (
+                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+              )}
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
             <div className="mt-3 flex justify-center">
-              <Link to="/forgot-password" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+              <Link to="/forgot-password" className="text-sky-600 hover:text-sky-700 text-sm font-medium">
                 Forgot password? <span className="underline">Reset it here</span>
               </Link>
             </div>
@@ -244,7 +279,7 @@ const Login = () => {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Don't have an account?{' '}
-            <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
+            <Link to="/register" className="text-sky-600 hover:text-sky-700 font-medium">
               Sign up
             </Link>
           </p>

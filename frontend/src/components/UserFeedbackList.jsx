@@ -80,8 +80,8 @@ const UserFeedbackList = () => {
             <div className="mt-4 border-t border-gray-200 dark:border-github-darkBorder-md pt-4">
               <h4 className="text-md font-semibold mb-2">Admin Responses:</h4>
               {feedback.responses.map((response) => (
-                <div key={response.id} className="bg-blue-50 dark:bg-blue-900 p-3 rounded-lg mt-2">
-                  <p className="text-blue-800 dark:text-blue-200">{response.message}</p>
+                <div key={response.id} className="bg-emerald-50 dark:bg-emerald-900 p-3 rounded-lg mt-2">
+                  <p className="text-emerald-800 dark:text-emerald-200">{response.message}</p>
                   <div className="text-sm text-gray-500 dark:text-github-darkText mt-1">
                     Responded on: {new Date(response.created_at).toLocaleDateString()}
                   </div>

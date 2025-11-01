@@ -3,6 +3,7 @@ import { Routes as RouterRoutes, Route } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import BecomeMember from "./pages/BecomeMember";
 import PartnerProgram from "./pages/PartnerProgram";
+import Help from "./pages/Help";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
@@ -24,6 +25,7 @@ import CourseDetail from "./pages/CourseDetail";
 import CourseComparison from "./pages/CourseComparison";
 import UserFeedback from "./pages/UserFeedback";
 import AdminFeedback from "./pages/AdminFeedback";
+import AdminFeedbackDetail from "./pages/AdminFeedbackDetail";
 import About from "./pages/About";
 import ContactUs from "./pages/ContactUs";
 import SearchPage from "./pages/SearchPage";
@@ -57,6 +59,7 @@ const Routes = () => {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/become-member" element={<BecomeMember />} />
           <Route path="/partner-program" element={<PartnerProgram />} />
+          <Route path="/help" element={<Help />} />
           
           {/* Protected routes */}
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
@@ -67,6 +70,7 @@ const Routes = () => {
           {/* Admin routes */}
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="/admin/feedback" element={<AdminRoute><AdminFeedback /></AdminRoute>} />
+          <Route path="/admin/feedback/:id" element={<AdminRoute><AdminFeedbackDetail /></AdminRoute>} />
           
           <Route path="/access-denied" element={<AccessDenied />} />
           {/* 404 route */}

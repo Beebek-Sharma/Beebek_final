@@ -56,7 +56,7 @@ SECRET_KEY = 'django-insecure-^xqp!-#(@6o6a_+e7_b64+34_&+&6&8)n+2c-)d-3pvj)_w5vo
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = False
+DEBUG = True
 # Check for production environment
 IS_PRODUCTION = os.environ.get('DJANGO_ENV') == 'production'
 # Allow localhost and 127.0.0.1 for development and testing

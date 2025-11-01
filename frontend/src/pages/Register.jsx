@@ -2,39 +2,125 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { validateUsername, validateEmail, validatePassword, validateName, validatePasswordMatch } from '../utils/validation';
 
 const Register = () => {
   const { register, login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     confirmPassword: '',
     username: '',
+    firstName: '',
+    lastName: '',
   });
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [touched, setTouched] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: '',
+      });
+    }
+  };
+
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    setTouched({
+      ...touched,
+      [name]: true,
+    });
+    validateField(name, formData[name]);
+  };
+
+  const validateField = (name, value) => {
+    let fieldErrors = [];
+    
+    switch (name) {
+      case 'username':
+        fieldErrors = validateUsername(value);
+        break;
+      case 'email':
+        fieldErrors = validateEmail(value);
+        break;
+      case 'firstName':
+        fieldErrors = validateName(value, 'First name');
+        break;
+      case 'lastName':
+        fieldErrors = validateName(value, 'Last name');
+        break;
+      case 'password':
+        fieldErrors = validatePassword(value);
+        break;
+      case 'confirmPassword':
+        fieldErrors = validatePasswordMatch(formData.password, value);
+        break;
+      default:
+        break;
+    }
+    
+    if (fieldErrors.length > 0) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: fieldErrors[0],
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    const usernameErrors = validateUsername(formData.username);
+    if (usernameErrors.length > 0) newErrors.username = usernameErrors[0];
+    
+    const emailErrors = validateEmail(formData.email);
+    if (emailErrors.length > 0) newErrors.email = emailErrors[0];
+    
+    const firstNameErrors = validateName(formData.firstName, 'First name');
+    if (firstNameErrors.length > 0) newErrors.firstName = firstNameErrors[0];
+    
+    const lastNameErrors = validateName(formData.lastName, 'Last name');
+    if (lastNameErrors.length > 0) newErrors.lastName = lastNameErrors[0];
+    
+    const passwordErrors = validatePassword(formData.password);
+    if (passwordErrors.length > 0) newErrors.password = passwordErrors[0];
+    
+    const matchErrors = validatePasswordMatch(formData.password, formData.confirmPassword);
+    if (matchErrors.length > 0) newErrors.confirmPassword = matchErrors[0];
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    
+    // Mark all fields as touched
+    setTouched({
+      username: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      password: true,
+      confirmPassword: true,
+    });
 
-    // Validation
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long');
+    // Validate all fields
+    if (!validateForm()) {
       return;
     }
 
@@ -42,26 +128,42 @@ const Register = () => {
 
     try {
       // Register the user
-      await register(formData.email, formData.password, formData.username);
+      await register(formData.email, formData.password, formData.username, formData.firstName, formData.lastName);
 
       // Attempt automatic login with the same credentials
       try {
         await login(formData.email, formData.password);
-        // After login, redirect to last visited page or home
+        // After successful login, redirect to home page
         setTimeout(() => {
-          const lastVisited = localStorage.getItem('last_visited_page');
-          const from = location.state?.from || lastVisited || '/';
           setLoading(false);
-          navigate(from, { replace: true });
+          navigate('/', { replace: true });
         }, 300);
       } catch (loginErr) {
-        // If login fails, show error and stay on register page
-        setError('Registration succeeded, but automatic sign-in failed. Please log in manually.');
+        // If login fails, redirect to login page
         setLoading(false);
+        navigate('/login', { 
+          replace: true, 
+          state: { message: 'Registration successful! Please log in.' }
+        });
       }
     } catch (err) {
-      // Registration error
-      setError(err.response?.data?.error || err.response?.data?.username?.[0] || err.response?.data?.email?.[0] || 'Registration failed. Please try again.');
+      // Registration error - extract backend validation errors
+      const backendErrors = {};
+      if (err.response?.data) {
+        Object.keys(err.response.data).forEach(key => {
+          if (Array.isArray(err.response.data[key])) {
+            backendErrors[key] = err.response.data[key][0];
+          } else if (typeof err.response.data[key] === 'string') {
+            backendErrors[key] = err.response.data[key];
+          }
+        });
+      }
+      
+      if (Object.keys(backendErrors).length > 0) {
+        setErrors(backendErrors);
+      } else {
+        setErrors({ general: err.response?.data?.error || 'Registration failed. Please try again.' });
+      }
       setLoading(false);
     }
   };
@@ -81,32 +183,92 @@ const Register = () => {
           </p>
         </div>
 
-        {error && (
+        {errors.general && (
           <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-            {error}
+            {errors.general}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Username
+            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              First Name *
+            </label>
+            <input
+              id="firstName"
+              name="firstName"
+              type="text"
+              placeholder="First Name"
+              value={formData.firstName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+                touched.firstName && errors.firstName 
+                  ? 'border-red-500 focus:ring-red-500' 
+                  : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
+              }`}
+              required
+              disabled={loading}
+            />
+            {touched.firstName && errors.firstName && (
+              <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Last Name *
+            </label>
+            <input
+              id="lastName"
+              name="lastName"
+              type="text"
+              placeholder="Last Name"
+              value={formData.lastName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+                touched.lastName && errors.lastName 
+                  ? 'border-red-500 focus:ring-red-500' 
+                  : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
+              }`}
+              required
+              disabled={loading}
+            />
+            {touched.lastName && errors.lastName && (
+              <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Username *
             </label>
             <input
               id="username"
               name="username"
               type="text"
-              placeholder="Choose a username"
+              placeholder="Username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              onBlur={handleBlur}
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+                touched.username && errors.username 
+                  ? 'border-red-500 focus:ring-red-500' 
+                  : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
+              }`}
+              required
               disabled={loading}
             />
+            {touched.username && errors.username && (
+              <p className="mt-1 text-sm text-red-600">{errors.username}</p>
+            )}
+            <p className="mt-1 text-xs text-gray-500">3-30 characters, letters, numbers, and underscores only</p>
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Email Address
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Email Address *
             </label>
             <input
               id="email"
@@ -115,44 +277,101 @@ const Register = () => {
               placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              onBlur={handleBlur}
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+                touched.email && errors.email 
+                  ? 'border-red-500 focus:ring-red-500' 
+                  : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
+              }`}
               required
               disabled={loading}
             />
+            {touched.email && errors.email && (
+              <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+            )}
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Password
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Password *
             </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="At least 8 characters"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              required
-              disabled={loading}
-            />
+            <div className="relative">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+                  touched.password && errors.password 
+                    ? 'border-red-500 focus:ring-red-500' 
+                    : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
+                }`}
+                required
+                disabled={loading}
+              />
+              <button
+                type="button"
+                tabIndex={-1}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-white"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.122-6.13M6.13 6.13A9.96 9.96 0 0112 3c5.523 0 10 4.477 10 10a9.96 9.96 0 01-1.17 4.53M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3l18 18M9.88 9.88A3 3 0 0012 15a3 3 0 002.12-5.12M6.13 6.13A9.96 9.96 0 0112 3c5.523 0 10 4.477 10 10a9.96 9.96 0 01-1.17 4.53M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.122-6.13" /></svg>
+                )}
+              </button>
+            </div>
+            {touched.password && errors.password && (
+              <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+            )}
+            <p className="mt-1 text-xs text-gray-500">
+              Must contain 8+ characters, uppercase, lowercase, number, and special character
+            </p>
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Confirm Password
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Confirm Password *
             </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              placeholder="Re-enter your password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              required
-              disabled={loading}
-            />
+            <div className="relative">
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Re-enter your password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+                  touched.confirmPassword && errors.confirmPassword 
+                    ? 'border-red-500 focus:ring-red-500' 
+                    : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
+                }`}
+                required
+                disabled={loading}
+              />
+              <button
+                type="button"
+                tabIndex={-1}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-white"
+                onClick={() => setShowConfirmPassword((v) => !v)}
+                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+              >
+                {showConfirmPassword ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.122-6.13M6.13 6.13A9.96 9.96 0 0112 3c5.523 0 10 4.477 10 10a9.96 9.96 0 01-1.17 4.53M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3l18 18M9.88 9.88A3 3 0 0012 15a3 3 0 002.12-5.12M6.13 6.13A9.96 9.96 0 0112 3c5.523 0 10 4.477 10 10a9.96 9.96 0 01-1.17 4.53M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.122-6.13" /></svg>
+                )}
+              </button>
+            </div>
+            {touched.confirmPassword && errors.confirmPassword && (
+              <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+            )}
           </div>
 
           <button

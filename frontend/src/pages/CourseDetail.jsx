@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FiBookmark, FiCheck, FiArrowLeft, FiMapPin, FiClock, FiDollarSign, FiAward, FiBookOpen, FiUsers, FiGlobe } from 'react-icons/fi';
 
 import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
@@ -88,10 +90,11 @@ const CourseDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-github-dark">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-github-dark dark:to-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+          <div className="flex flex-col items-center justify-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary-600"></div>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading course details...</p>
           </div>
         </div>
       </div>
@@ -147,143 +150,249 @@ const CourseDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-github-darkText">{course.name}</h1>
-              {university && (
-                <Link to={`/universities/${university.id}`} className="mt-1 text-lg text-primary-600 hover:text-primary-800">
-                  {university.name}
-                </Link>
-              )}
-            </div>
-            <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row sm:space-x-4">
-              <button
-                onClick={handleSaveCourse}
-                disabled={savingStatus.loading}
-                className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
-                  saved
-                    ? 'bg-red-600 hover:bg-red-700 text-white'
-                    : 'bg-primary-600 hover:bg-primary-700 text-white'
-                }`}
-              >
-                {savingStatus.loading ? (
-                  <span>Processing...</span>
-                ) : saved ? (
-                  <span>Remove from Saved</span>
-                ) : (
-                  <span>Save Course</span>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-github-dark dark:to-gray-900 flex flex-col">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+        {/* Back Button */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="mb-6"
+        >
+          <Link
+            to="/courses"
+            className="inline-flex items-center text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+          >
+            <FiArrowLeft className="mr-2" />
+            Back to Courses
+          </Link>
+        </motion.div>
+
+        {/* Hero Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-gradient-to-r from-primary-600 to-primary-800 dark:from-primary-700 dark:to-primary-900 rounded-2xl shadow-2xl overflow-hidden mb-8"
+        >
+          <div className="px-6 py-12 sm:px-12">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
+              <div className="flex-1">
+                <span className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-sm text-white text-sm font-semibold rounded-full mb-4">
+                  {course.level}
+                </span>
+                <h1 className="text-4xl font-bold text-white mb-4">{course.name}</h1>
+                {university && (
+                  <Link 
+                    to={`/universities/${university.id}`} 
+                    className="inline-flex items-center text-xl text-white/90 hover:text-white transition-colors group"
+                  >
+                    <FiGlobe className="mr-2 group-hover:rotate-12 transition-transform" />
+                    {university.name}
+                    {university.location && (
+                      <span className="ml-3 text-sm opacity-75">• {university.location}</span>
+                    )}
+                  </Link>
                 )}
-              </button>
+              </div>
               
-              <div className="mt-3 sm:mt-0">
-                <CompareButton courseId={course.id} />
+              <div className="mt-6 lg:mt-0 lg:ml-8 flex flex-col sm:flex-row gap-3">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleSaveCourse}
+                  disabled={savingStatus.loading}
+                  className={`inline-flex items-center justify-center px-6 py-3 rounded-xl text-base font-semibold transition-all duration-200 shadow-lg ${
+                    saved
+                      ? 'bg-white text-primary-600 hover:bg-gray-100'
+                      : 'bg-white/20 backdrop-blur-sm text-white border-2 border-white hover:bg-white hover:text-primary-600'
+                  }`}
+                >
+                  {savingStatus.loading ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-current"></div>
+                  ) : saved ? (
+                    <>
+                      <FiCheck className="mr-2" />
+                      Saved
+                    </>
+                  ) : (
+                    <>
+                      <FiBookmark className="mr-2" />
+                      Save Course
+                    </>
+                  )}
+                </motion.button>
+                
+                <div>
+                  <CompareButton courseId={course.id} />
+                </div>
+              </div>
+            </div>
+            
+            {savingStatus.error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 bg-red-500/20 backdrop-blur-sm border border-red-300 rounded-lg p-4"
+              >
+                <p className="text-white text-sm">{savingStatus.error}</p>
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Quick Info Cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+        >
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Duration</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{course.duration}</p>
+              </div>
+              <div className="p-3 bg-sky-100 dark:bg-sky-900/30 rounded-lg">
+                <FiClock className="h-6 w-6 text-sky-600 dark:text-sky-400" />
               </div>
             </div>
           </div>
           
-          {savingStatus.error && (
-            <div className="mt-4 bg-red-50 border-l-4 border-red-400 p-4">
-              <div className="flex">
-                <div className="ml-3">
-                  <p className="text-sm text-red-700">{savingStatus.error}</p>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Tuition Fees</p>
+                <p className="text-2xl font-bold text-green-600 dark:text-green-400">${course.fees}</p>
+              </div>
+              <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                <FiDollarSign className="h-6 w-6 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Level</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{course.level}</p>
+              </div>
+              <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                <FiAward className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              </div>
+            </div>
+          </div>
+          
+          {university && (
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Location</p>
+                  <p className="text-lg font-bold text-gray-900 dark:text-white truncate">{university.location}</p>
+                </div>
+                <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                  <FiMapPin className="h-6 w-6 text-orange-600 dark:text-orange-400" />
                 </div>
               </div>
             </div>
           )}
-        </div>
-        
-        <div className="bg-white dark:bg-github-dark shadow dark:border-github-darkBorder overflow-hidden sm:rounded-lg mb-8">
-          <div className="px-4 py-5 sm:px-6">
-            <h2 className="text-lg leading-6 font-medium text-gray-900 dark:text-github-darkText">Course Information</h2>
+        </motion.div>
+
+        {/* Course Description */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl overflow-hidden mb-8"
+        >
+          <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+              <FiBookOpen className="mr-3 text-primary-600 dark:text-primary-400" />
+              Course Overview
+            </h2>
           </div>
-          <div className="border-t border-gray-200">
-            <dl>
-              <div className="bg-gray-50 dark:bg-github-dark px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500 dark:text-github-darkText">Description</dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-github-darkText sm:mt-0 sm:col-span-2">
-                  {course.description}
-                </dd>
-              </div>
-              <div className="bg-white dark:bg-github-dark px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500 dark:text-github-darkText">Level</dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-github-darkText sm:mt-0 sm:col-span-2">
-                  {course.level}
-                </dd>
-              </div>
-              <div className="bg-gray-50 dark:bg-github-dark px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500 dark:text-github-darkText">Duration</dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-github-darkText sm:mt-0 sm:col-span-2">
-                  {course.duration}
-                </dd>
-              </div>
-              <div className="bg-white dark:bg-github-dark px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500 dark:text-github-darkText">Fees</dt>
-                <dd className="mt-1 text-sm text-gray-900 dark:text-github-darkText sm:mt-0 sm:col-span-2">
-                  ${course.fees}
-                </dd>
-              </div>
-              {university && (
-                <div className="bg-gray-50 dark:bg-github-dark px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 dark:text-github-darkText">University Location</dt>
-                  <dd className="mt-1 text-sm text-gray-900 dark:text-github-darkText sm:mt-0 sm:col-span-2">
-                    {university.location}
-                  </dd>
-                </div>
-              )}
-            </dl>
+          <div className="px-6 py-8">
+            <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed whitespace-pre-line">
+              {course.description}
+            </p>
           </div>
-        </div>
-        
-        {university && (
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-github-darkText mb-6">Other Courses at {university.name}</h2>
-            
-            {university.courses && university.courses.length > 0 ? (
-              <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                {university.courses
-                  .filter(c => c.id !== parseInt(id))
-                  .slice(0, 3)
-                  .map((relatedCourse) => (
-                    <div key={relatedCourse.id} className="bg-white dark:bg-github-dark overflow-hidden shadow dark:border-github-darkBorder rounded-lg">
-                      <div className="p-6">
-                        <h3 className="text-lg font-medium text-gray-900 dark:text-github-darkText">{relatedCourse.name}</h3>
-                        <p className="mt-1 text-sm text-gray-500 dark:text-github-darkText">{relatedCourse.level}</p>
-                        <p className="mt-2 text-sm text-gray-600 dark:text-github-darkText line-clamp-3">
-                          {relatedCourse.description}
-                        </p>
-                        <div className="mt-4 flex justify-between items-center">
-                          <div className="text-sm text-gray-500 dark:text-github-darkText">
-                            Duration: {relatedCourse.duration}
-                          </div>
-                          <div className="text-sm font-medium text-gray-900 dark:text-github-darkText">
-                            Fees: ${relatedCourse.fees}
-                          </div>
-                        </div>
-                        <div className="mt-4">
-                          <Link
-                            to={`/courses/${relatedCourse.id}`}
-                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
-                          >
-                            View Course
-                          </Link>
+        </motion.div>
+
+        {/* Related Courses */}
+        {university && university.courses && university.courses.length > 1 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mt-12"
+          >
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+                <FiUsers className="mr-3 text-primary-600 dark:text-primary-400" />
+                More Courses at {university.name}
+              </h2>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
+                Explore other programs offered by this university
+              </p>
+            </div>
+
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {university.courses
+                .filter(c => c.id !== parseInt(id))
+                .slice(0, 3)
+                .map((relatedCourse, index) => (
+                  <motion.div
+                    key={relatedCourse.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
+                    whileHover={{ y: -8, transition: { duration: 0.2 } }}
+                    className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700"
+                  >
+                    <div className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">
+                            {relatedCourse.name}
+                          </h3>
+                          <span className="inline-block mt-2 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-semibold rounded-full">
+                            {relatedCourse.level}
+                          </span>
                         </div>
                       </div>
+                      
+                      <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-3 mb-4">
+                        {relatedCourse.description}
+                      </p>
+                      
+                      <div className="space-y-3 mb-5">
+                        <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                          <FiClock className="mr-2 text-sky-600 dark:text-sky-400 flex-shrink-0" />
+                          <span className="font-medium">Duration:</span>
+                          <span className="ml-2">{relatedCourse.duration}</span>
+                        </div>
+                        <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                          <FiDollarSign className="mr-2 text-green-600 dark:text-green-400 flex-shrink-0" />
+                          <span className="font-medium">Fees:</span>
+                          <span className="ml-2 font-semibold text-green-600 dark:text-green-400">${relatedCourse.fees}</span>
+                        </div>
+                      </div>
+                      
+                      <Link
+                        to={`/courses/${relatedCourse.id}`}
+                        className="block w-full text-center px-4 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                      >
+                        View Details
+                      </Link>
                     </div>
-                  ))}
-              </div>
-            ) : (
-              <div className="bg-white dark:bg-github-dark shadow dark:border-github-darkBorder overflow-hidden sm:rounded-lg p-6 text-center">
-                <p className="text-gray-500 dark:text-github-darkText">No other courses available at this university.</p>
-              </div>
-            )}
-          </div>
+                  </motion.div>
+                ))}
+            </div>
+          </motion.div>
         )}
       </main>
       <div className="mt-auto">
-  {/* Footer removed: now only rendered in App.jsx */}
+        {/* Footer removed: now only rendered in App.jsx */}
       </div>
       
       {/* Floating comparison button */}

@@ -4,7 +4,7 @@ from .views import (
     hello, submissions, get_user_profile, update_user_profile,
     promote_to_admin, list_universities, university_detail, list_courses, course_detail,
     user_saved_courses, list_users, user_detail,
-    feedback_list, feedback_detail, feedback_response_create, featured_feedback,
+    feedback_list, feedback_detail, feedback_response_create, featured_feedback, popular_feedback,
     notifications_list, notifications_create, notifications_mark_read, notifications_clear_all, me
 )
 from .views_auth import (
@@ -63,7 +63,8 @@ urlpatterns = [
     path('feedback/', feedback_list, name='feedback_list'),
     path('feedback/<int:pk>/', feedback_detail, name='feedback_detail'),
     path('feedback/<int:feedback_id>/respond/', feedback_response_create, name='feedback_response_create'),
-    path('feedbacks/popular/', featured_feedback, name='feedbacks_popular'),
+    path('feedbacks/popular/', popular_feedback, name='feedbacks_popular'),
+    path('featured-feedback/', featured_feedback, name='featured_feedback'),
     
 
     # Notification system

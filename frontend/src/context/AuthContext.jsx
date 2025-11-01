@@ -302,7 +302,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (email, password, username = '') => {
+  const register = async (email, password, username = '', firstName = '', lastName = '') => {
     try {
       setLoading(true);
       const response = await axiosInstance.post('/auth/register/', {
@@ -310,6 +310,8 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
         password2: password,
+        first_name: firstName,
+        last_name: lastName,
       });
       
       setUser(response.data.user);

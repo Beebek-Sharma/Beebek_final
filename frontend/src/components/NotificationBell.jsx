@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from '../utils/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiBell } from 'react-icons/fi';
 
 const NotificationBell = () => {
+  const notificationRef = useRef(null);
+  
   // Clear all notifications
   const clearNotifications = async () => {
     try {
@@ -52,6 +54,23 @@ const NotificationBell = () => {
     return () => clearInterval(interval);
   }, [isLoaded, user]);
 
+  // Close notification panel when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
+    };
+
+    if (showNotifications) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showNotifications]);
+
   // Mark notification as read
   const markAsRead = async (id) => {
     try {
@@ -63,10 +82,10 @@ const NotificationBell = () => {
   // Helper to highlight feedback notifications
   const getNotificationStyle = (notification) => {
     if (notification.type === 'feedback_response') {
-      return 'border-l-4 border-green-500 bg-green-50 dark:bg-green-900';
+      return 'border-l-4 border-emerald-500 bg-emerald-50 dark:bg-emerald-900';
     }
     if (notification.type === 'feedback') {
-      return 'border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900';
+      return 'border-l-4 border-violet-500 bg-violet-50 dark:bg-violet-900';
     }
     return 'bg-gray-50 dark:bg-github-darkAccent';
   };
@@ -83,7 +102,7 @@ const NotificationBell = () => {
   };
 
   return (
-  <div className="relative">
+  <div className="relative" ref={notificationRef}>
       <motion.button
         onClick={() => setShowNotifications(!showNotifications)}
         className="relative p-2 text-gray-600 dark:text-github-darkText hover:text-gray-900 dark:hover:text-white focus:outline-none"

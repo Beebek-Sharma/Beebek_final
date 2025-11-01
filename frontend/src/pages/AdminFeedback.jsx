@@ -1,70 +1,91 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { motion } from 'framer-motion';
+import { FiGrid, FiBookOpen, FiUsers, FiMessageSquare } from 'react-icons/fi';
 import Footer from '../components/Footer';
 import AdminFeedbackManager from '../components/AdminFeedbackManager';
 
 const AdminFeedback = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = React.useState('feedback');
+  
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
-      {/* Heading and Tabs OUTSIDE the card */}
-      <div className="w-full max-w-3xl mx-auto mt-10">
-  <h1 className="text-4xl font-bold mb-8">Admin Feedback Management</h1>
-        <div className="flex justify-start mb-8">
-          <nav className="flex gap-6">
+      {/* Modern Gradient Header */}
+      <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-12 mb-8">
+        <div className="max-w-6xl mx-auto px-6">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl font-bold mb-6"
+          >
+            Admin Feedback Management
+          </motion.h1>
+          
+          {/* Navigation Tabs */}
+          <motion.nav
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="flex gap-3 flex-wrap"
+          >
             <button
               onClick={() => navigate('/admin')}
-              className={`px-6 py-2 rounded-full font-semibold shadow transition-all text-lg ${
+              className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
                 activeTab === 'universities'
-                  ? 'bg-[#4f46e5] text-white dark:bg-[#4f46e5] dark:text-white'
-                  : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:hover:bg-github-darkBorder'
+                  ? 'bg-white text-primary-600 shadow-lg'
+                  : 'bg-white/10 text-white hover:bg-white/20'
               }`}
             >
+              <FiGrid size={20} />
               Universities
             </button>
             <button
               onClick={() => navigate('/admin?tab=courses')}
-              className={`px-6 py-2 rounded-full font-semibold shadow transition-all text-lg ${
+              className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
                 activeTab === 'courses'
-                  ? 'bg-[#4f46e5] text-white dark:bg-[#4f46e5] dark:text-white'
-                  : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:hover:bg-github-darkBorder'
+                  ? 'bg-white text-primary-600 shadow-lg'
+                  : 'bg-white/10 text-white hover:bg-white/20'
               }`}
             >
+              <FiBookOpen size={20} />
               Courses
             </button>
             <button
               onClick={() => navigate('/admin?tab=users')}
-              className={`px-6 py-2 rounded-full font-semibold shadow transition-all text-lg ${
+              className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
                 activeTab === 'users'
-                  ? 'bg-[#4f46e5] text-white dark:bg-[#4f46e5] dark:text-white'
-                  : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:hover:bg-github-darkBorder'
+                  ? 'bg-white text-primary-600 shadow-lg'
+                  : 'bg-white/10 text-white hover:bg-white/20'
               }`}
             >
+              <FiUsers size={20} />
               Users
             </button>
             <button
               onClick={() => setActiveTab('feedback')}
-              className={`px-6 py-2 rounded-full font-semibold shadow transition-all text-lg ${
+              className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
                 activeTab === 'feedback'
-                  ? 'bg-[#4f46e5] text-white dark:bg-[#4f46e5] dark:text-white'
-                  : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:bg-github-darkAccent dark:text-github-lightText dark:hover:bg-github-darkBorder'
+                  ? 'bg-white text-primary-600 shadow-lg'
+                  : 'bg-white/10 text-white hover:bg-white/20'
               }`}
             >
+              <FiMessageSquare size={20} />
               Feedback
             </button>
-          </nav>
+          </motion.nav>
         </div>
       </div>
-      {/* Card */}
-      <div className="p-8 rounded-2xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-darkText transition-colors duration-300 mx-auto w-full max-w-3xl">
+      
+      {/* Main Content */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="max-w-6xl mx-auto px-6 pb-12 w-full"
+      >
         {activeTab === 'feedback' && <AdminFeedbackManager />}
-        {/* You can add content for other tabs here if needed */}
-      </div>
-      <div className="mt-auto">
-        {/* Footer removed: now only rendered in App.jsx */}
-      </div>
+      </motion.div>
     </div>
   );
 };

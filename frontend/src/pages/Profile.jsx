@@ -46,7 +46,7 @@ const Profile = () => {
   if (authLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-600"></div>
       </div>
     );
   }
@@ -60,7 +60,7 @@ const Profile = () => {
             <h2 className="text-lg leading-6 font-bold">Personal Information</h2>
             <Link
               to="/settings"
-              className="inline-flex items-center px-3 py-1 border border-primary-600 text-sm font-medium rounded-md text-primary-600 bg-white hover:bg-primary-50 dark:bg-github-dark dark:text-primary-400 dark:border-primary-400 dark:hover:bg-github-darkSecondary"
+              className="inline-flex items-center px-3 py-1 border border-sky-600 text-sm font-medium rounded-md text-sky-600 bg-white hover:bg-sky-50 dark:bg-github-dark dark:text-sky-400 dark:border-sky-400 dark:hover:bg-github-darkSecondary"
             >
               Edit
             </Link>
@@ -98,7 +98,7 @@ const Profile = () => {
             <p className="text-sm opacity-80 mb-4">View and manage the courses you've saved for later.</p>
             <Link
               to="#saved-courses"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow dark:border-github-darkBorder-sm text-white bg-primary-600 hover:bg-primary-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow dark:border-github-darkBorder-sm text-white bg-sky-600 hover:bg-sky-700"
             >
               View Saved Courses
             </Link>
@@ -108,7 +108,7 @@ const Profile = () => {
             <p className="text-sm opacity-80 mb-4">Compare different courses to find the best one for you.</p>
             <Link
               to="/compare-courses"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow dark:border-github-darkBorder-sm text-white bg-primary-600 hover:bg-primary-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow dark:border-github-darkBorder-sm text-white bg-teal-600 hover:bg-teal-700"
             >
               Compare Courses
             </Link>
@@ -118,7 +118,7 @@ const Profile = () => {
             <p className="text-sm opacity-80 mb-4">Send feedback to administrators and view responses.</p>
             <Link
               to="/feedback"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow dark:border-github-darkBorder-sm text-white bg-primary-600 hover:bg-primary-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow dark:border-github-darkBorder-sm text-white bg-violet-600 hover:bg-violet-700"
             >
               Go to Feedback
             </Link>
@@ -137,14 +137,14 @@ const Profile = () => {
           )}
           {loading ? (
             <div className="mt-4 flex justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-600"></div>
             </div>
           ) : savedCourses.length === 0 ? (
             <div className="mt-4 p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-darkText transition-colors duration-300 text-center">
               <p className="text-gray-500 dark:text-github-darkText">You haven't saved any courses yet.</p>
               <Link
                 to="/courses"
-                className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow dark:border-github-darkBorder-sm text-white bg-primary-600 hover:bg-primary-700"
+                className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow dark:border-github-darkBorder-sm text-white bg-sky-600 hover:bg-sky-700"
               >
                 Browse Courses
               </Link>
@@ -184,7 +184,7 @@ const Profile = () => {
                   <div className="text-right mt-2">
                     <Link
                       to={`/courses/${item.course}`}
-                      className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
+                      className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700"
                     >
                       View Details
                     </Link>

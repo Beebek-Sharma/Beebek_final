@@ -15,9 +15,9 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
 
-  // Track last visited page except login/register
+  // Track last visited page except login/register/password reset pages
   useEffect(() => {
-    const publicPaths = ['/login', '/register'];
+    const publicPaths = ['/login', '/register', '/forgot-password', '/reset-password'];
     if (!publicPaths.some(p => location.pathname.startsWith(p))) {
       localStorage.setItem('last_visited_page', location.pathname + location.search);
     }

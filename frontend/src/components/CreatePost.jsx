@@ -36,7 +36,7 @@ export default function CreatePost() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 max-w-lg mx-auto mt-10">
       <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Title" className="border p-2" />
       <textarea value={content} onChange={e => setContent(e.target.value)} placeholder="Content" className="border p-2 h-40" />
-      <button type="submit" className="bg-blue-600 text-white p-2 rounded">Create Post</button>
+      <button type="submit" className="bg-violet-600 hover:bg-violet-700 text-white p-2 rounded">Create Post</button>
     </form>
   );
 }

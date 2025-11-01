@@ -136,63 +136,93 @@ const AdminDashboard = () => {
   };
 
   const handleEdit = async (id) => {
+    console.log('[AdminDashboard] Edit clicked for ID:', id, 'Tab:', activeTab);
     try {
       setLoading(true);
+      setError('');
+      
       if (activeTab === 'universities') {
+        console.log('[AdminDashboard] Fetching university details...');
         const response = await axiosInstance.get(`/universities/${id}/`);
-        setFormData(response.data);
+        console.log('[AdminDashboard] University data:', response.data);
+        // Only extract editable fields, exclude read-only fields like 'id' and 'courses'
+        const { id: _, courses, ...editableData } = response.data;
+        setFormData(editableData);
       } 
       else if (activeTab === 'courses') {
+        console.log('[AdminDashboard] Fetching course details...');
         const response = await axiosInstance.get(`/courses/${id}/`);
-        setFormData(response.data);
+        console.log('[AdminDashboard] Course data:', response.data);
+        // Only extract editable fields, exclude read-only fields like 'id' and 'university_name'
+        const { id: _, university_name, ...editableData } = response.data;
+        setFormData(editableData);
       }
       else if (activeTab === 'users') {
+        console.log('[AdminDashboard] Finding user from loaded users...');
         // For users, find from the already loaded users
         const user = users.find(u => u.id === id);
         if (user) {
+          console.log('[AdminDashboard] User found:', user);
           // Don't include password in edit form
           const { password, ...userData } = user;
           setFormData(userData);
+        } else {
+          console.error('[AdminDashboard] User not found in list');
+          throw new Error('User not found');
         }
       }
       setEditMode(true);
       setEditItemId(id);
       setShowForm(true);
       setLoading(false);
+      console.log('[AdminDashboard] Edit mode activated successfully');
     } catch (err) {
-      console.error('Error fetching item details:', err);
-      setError('Could not load item details. Please try again.');
+      console.error('[AdminDashboard] Error fetching item details:', err);
+      console.error('[AdminDashboard] Error response:', err.response?.data);
+      setError(`Could not load item details: ${err.response?.data?.error || err.message}`);
       setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this item? This action cannot be undone.')) {
+    console.log('[AdminDashboard] Delete clicked for ID:', id, 'Tab:', activeTab);
+    if (!window.confirm('Are you sure you want to delete this item? This action cannot be undone.')) {
+      console.log('[AdminDashboard] Delete cancelled by user');
       return;
     }
     try {
       setLoading(true);
+      setError('');
+      
       if (activeTab === 'universities') {
+        console.log('[AdminDashboard] Deleting university...');
         await axiosInstance.delete(`/universities/${id}/`);
         setUniversities(universities.filter(uni => uni.id !== id));
+        console.log('[AdminDashboard] University deleted successfully');
       } 
       else if (activeTab === 'courses') {
+        console.log('[AdminDashboard] Deleting course...');
         await axiosInstance.delete(`/courses/${id}/`);
         setCourses(courses.filter(course => course.id !== id));
+        console.log('[AdminDashboard] Course deleted successfully');
       }
       else if (activeTab === 'users') {
         // Only allow deleting if the user is not the current logged-in user
         if (user && user.id === id) {
+          console.error('[AdminDashboard] Cannot delete own account');
           throw new Error('You cannot delete your own account while logged in.');
         }
+        console.log('[AdminDashboard] Deleting user...');
         await axiosInstance.delete(`/users/${id}/`);
         setUsers(users.filter(u => u.id !== id));
+        console.log('[AdminDashboard] User deleted successfully');
       }
       setLoading(false);
       setError('');
       alert('Item deleted successfully!');
     } catch (err) {
-      console.error('Error deleting item:', err);
+      console.error('[AdminDashboard] Error deleting item:', err);
+      console.error('[AdminDashboard] Error response:', err.response?.data);
       setError(`Could not delete: ${err.response?.data?.error || err.message}`);
       setLoading(false);
     }
@@ -200,15 +230,20 @@ const AdminDashboard = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('[AdminDashboard] Submitting form for tab:', activeTab);
+    console.log('[AdminDashboard] Form data:', formData);
+    console.log('[AdminDashboard] Edit mode:', editMode, 'Edit ID:', editItemId);
     try {
       if (activeTab === 'universities') {
         if (editMode) {
           // Update existing university
+          console.log('[AdminDashboard] Updating university ID:', editItemId);
           const response = await axiosInstance.put(`/universities/${editItemId}/`, formData);
           // Update the universities list with the updated item
           setUniversities(universities.map(uni => uni.id === editItemId ? response.data : uni));
         } else {
           // Create new university
+          console.log('[AdminDashboard] Creating new university');
           const response = await axiosInstance.post(`/universities/`, formData);
           setUniversities([...universities, response.data]);
         }
@@ -266,15 +301,25 @@ const AdminDashboard = () => {
       alert(editMode ? 'Successfully updated!' : 'Successfully added!');
     } catch (err) {
       console.error('Error submitting form:', err);
+      console.log('[AdminDashboard] Error response data:', err.response?.data);
+      console.log('[AdminDashboard] Error status:', err.response?.status);
       setError(`Could not save data: ${err.response?.data?.error || err.message}`);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
-      <main className="flex-grow max-w-5xl mx-auto px-4 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold">Admin Dashboard</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col">
+      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 gap-4">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Admin Dashboard
+            </h1>
+            <p className="mt-2 text-gray-600 dark:text-gray-300">
+              Manage universities, courses, and users
+            </p>
+          </div>
           <button
             type="button"
             onClick={() => {
@@ -285,50 +330,51 @@ const AdminDashboard = () => {
                 setFormData(initialFormState[activeTab]);
               }
             }}
-            className="px-6 py-2 rounded-lg bg-[#4f46e5] text-white font-semibold shadow hover:bg-[#4338ca] transition-all"
+            className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105"
           >
-            {showForm ? 'Cancel' : 'Add New'}
+            {showForm ? '✕ Cancel' : '+ Add New'}
           </button>
         </div>
         
-        <div className="mt-6">
+        {/* Tabs */}
+        <div className="mt-8">
           <div className="mb-8">
-            <nav className="flex gap-4">
+            <nav className="flex flex-wrap gap-3">
               <button
                 onClick={() => setActiveTab('universities')}
-                className={`px-5 py-2 rounded-full font-semibold shadow transition-all ${
+                className={`px-6 py-3 rounded-xl font-semibold shadow-md transition-all duration-200 ${
                   activeTab === 'universities'
-                    ? 'bg-[#4f46e5] text-white'
-                    : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:hover:bg-github-darkBorder'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white scale-105'
+                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-lg hover:scale-105'
                 }`}
               >
-                Universities
+                🏛️ Universities
               </button>
               <button
                 onClick={() => setActiveTab('courses')}
-                className={`px-5 py-2 rounded-full font-semibold shadow transition-all ${
+                className={`px-6 py-3 rounded-xl font-semibold shadow-md transition-all duration-200 ${
                   activeTab === 'courses'
-                    ? 'bg-[#4f46e5] text-white'
-                    : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:hover:bg-github-darkBorder'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white scale-105'
+                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-lg hover:scale-105'
                 }`}
               >
-                Courses
+                📚 Courses
               </button>
               <button
                 onClick={() => setActiveTab('users')}
-                className={`px-5 py-2 rounded-full font-semibold shadow transition-all ${
+                className={`px-6 py-3 rounded-xl font-semibold shadow-md transition-all duration-200 ${
                   activeTab === 'users'
-                    ? 'bg-[#4f46e5] text-white'
-                    : 'bg-white text-gray-700 hover:bg-[#eef2ff] dark:hover:bg-github-darkBorder'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white scale-105'
+                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-lg hover:scale-105'
                 }`}
               >
-                Users
+                👥 Users
               </button>
               <a
                 href="/admin/feedback"
-                className="px-5 py-2 rounded-full font-semibold shadow transition-all bg-white text-gray-700 hover:bg-[#eef2ff]"
+                className="px-6 py-3 rounded-xl font-semibold shadow-md transition-all duration-200 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-lg hover:scale-105"
               >
-                Feedback
+                💬 Feedback
               </a>
             </nav>
           </div>
@@ -348,10 +394,12 @@ const AdminDashboard = () => {
 
         {/* Show errors only for admins who encounter backend issues */}
         {isLoaded && isAdmin && error && (
-          <div className="mt-4 p-6 rounded-xl shadow-md bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400 text-red-700 dark:text-red-400">
-            <div className="flex">
-              <div className="ml-3">
-                <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+          <div className="mt-4 p-6 rounded-xl shadow-xl bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 text-red-700 dark:text-red-400">
+            <div className="flex items-center">
+              <span className="text-2xl mr-3">⚠️</span>
+              <div>
+                <p className="font-semibold">Error</p>
+                <p className="text-sm">{error}</p>
               </div>
             </div>
           </div>
@@ -362,17 +410,19 @@ const AdminDashboard = () => {
           <>
             {/* Add Form */}
             {showForm && (
-              <div className="mt-6 p-6 rounded-2xl shadow bg-white">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">
-                  {editMode ? 'Edit' : 'Add New'} {activeTab === 'universities' ? 'University' : activeTab === 'courses' ? 'Course' : 'User'}
+              <div className="mt-6 p-8 rounded-2xl shadow-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
+                  {editMode ? '✏️ Edit' : '➕ Add New'} {activeTab === 'universities' ? 'University' : activeTab === 'courses' ? 'Course' : 'User'}
                 </h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
               {/* University Form */}
               {activeTab === 'universities' && (
                 <>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">University Name</label>
+                      <label htmlFor="name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        University Name <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="text"
                         name="name"
@@ -380,12 +430,15 @@ const AdminDashboard = () => {
                         required
                         value={formData.name || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                        placeholder="Enter university name"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Location</label>
+                      <label htmlFor="location" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Location <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="text"
                         name="location"
@@ -393,59 +446,72 @@ const AdminDashboard = () => {
                         required
                         value={formData.location || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                        placeholder="Enter location"
                       />
                     </div>
                   </div>
                   
                   <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Description</label>
+                    <label htmlFor="description" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                      Description <span className="text-red-500">*</span>
+                    </label>
                     <textarea
                       name="description"
                       id="description"
-                      rows="3"
+                      rows="4"
                       required
                       value={formData.description || ''}
                       onChange={handleFormChange}
-                      className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                      className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                      placeholder="Enter description"
                     ></textarea>
                   </div>
                   
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="ranking" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Ranking</label>
+                      <label htmlFor="ranking" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Ranking
+                      </label>
                       <input
                         type="number"
                         name="ranking"
                         id="ranking"
                         value={formData.ranking || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                        placeholder="Enter ranking"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="website" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Website</label>
+                      <label htmlFor="website" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Website
+                      </label>
                       <input
                         type="url"
                         name="website"
                         id="website"
                         value={formData.website || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                        placeholder="https://example.com"
                       />
                     </div>
                   </div>
                   
                   <div>
-                    <label htmlFor="image" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Image URL</label>
+                    <label htmlFor="image" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                      Image URL
+                    </label>
                     <input
                       type="url"
                       name="image"
                       id="image"
                       value={formData.image || ''}
                       onChange={handleFormChange}
-                      className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                      className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                      placeholder="https://example.com/image.jpg"
                     />
                   </div>
                 </>
@@ -456,7 +522,9 @@ const AdminDashboard = () => {
                 <>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Course Name</label>
+                      <label htmlFor="name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Course Name <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="text"
                         name="name"
@@ -464,19 +532,22 @@ const AdminDashboard = () => {
                         required
                         value={formData.name || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                        placeholder="Enter course name"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="university" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">University</label>
+                      <label htmlFor="university" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        University <span className="text-red-500">*</span>
+                      </label>
                       <select
                         name="university"
                         id="university"
                         required
                         value={formData.university || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
                       >
                         <option value="">Select a university</option>
                         {universities.map(uni => (
@@ -487,21 +558,26 @@ const AdminDashboard = () => {
                   </div>
                   
                   <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Description</label>
+                    <label htmlFor="description" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                      Description <span className="text-red-500">*</span>
+                    </label>
                     <textarea
                       name="description"
                       id="description"
-                      rows="3"
+                      rows="4"
                       required
                       value={formData.description || ''}
                       onChange={handleFormChange}
-                      className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                      className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                      placeholder="Enter description"
                     ></textarea>
                   </div>
                   
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <div>
-                      <label htmlFor="duration" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Duration</label>
+                      <label htmlFor="duration" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Duration <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="text"
                         name="duration"
@@ -510,12 +586,14 @@ const AdminDashboard = () => {
                         placeholder="e.g. 4 years"
                         value={formData.duration || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="fees" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Fees</label>
+                      <label htmlFor="fees" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Fees <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="number"
                         name="fees"
@@ -523,19 +601,22 @@ const AdminDashboard = () => {
                         required
                         value={formData.fees || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                        placeholder="0.00"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="level" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Level</label>
+                      <label htmlFor="level" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Level <span className="text-red-500">*</span>
+                      </label>
                       <select
                         name="level"
                         id="level"
                         required
                         value={formData.level || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
                       >
                         <option value="Undergraduate">Undergraduate</option>
                         <option value="Postgraduate">Postgraduate</option>
@@ -552,7 +633,9 @@ const AdminDashboard = () => {
                 <>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Username</label>
+                      <label htmlFor="username" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Username <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="text"
                         name="username"
@@ -560,12 +643,15 @@ const AdminDashboard = () => {
                         required
                         value={formData.username || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                        placeholder="Enter username"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Email</label>
+                      <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Email <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="email"
                         name="email"
@@ -573,14 +659,17 @@ const AdminDashboard = () => {
                         required
                         value={formData.email || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                        placeholder="user@example.com"
                       />
                     </div>
                   </div>
                   
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Password</label>
+                      <label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Password <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="password"
                         name="password"
@@ -588,19 +677,22 @@ const AdminDashboard = () => {
                         required
                         value={formData.password || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                        placeholder="Enter password"
                       />
                     </div>
                     
                     <div>
-                      <label htmlFor="role" className="block text-sm font-medium text-gray-700 dark:text-github-darkText">Role</label>
+                      <label htmlFor="role" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Role <span className="text-red-500">*</span>
+                      </label>
                       <select
                         name="role"
                         id="role"
                         required
                         value={formData.role || ''}
                         onChange={handleFormChange}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
+                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
                       >
                         <option value="student">Student</option>
                         <option value="admin">Admin</option>
@@ -610,19 +702,19 @@ const AdminDashboard = () => {
                 </>
               )}
               
-              <div className="flex justify-end">
+              <div className="flex justify-end gap-3 pt-4">
                 <button
                   type="button"
                   onClick={() => setShowForm(false)}
-                  className="mr-3 px-6 py-2 rounded-lg bg-gray-100 text-gray-700 font-semibold shadow hover:bg-gray-200 transition-all"
+                  className="px-6 py-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold shadow-lg hover:bg-gray-200 dark:hover:bg-gray-600 hover:scale-105 transition-all duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 rounded-lg bg-[#4f46e5] text-white font-semibold shadow hover:bg-[#4338ca] transition-all"
+                  className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg hover:from-blue-700 hover:to-purple-700 hover:scale-105 transition-all duration-200"
                 >
-                  Save
+                  💾 Save
                 </button>
               </div>
             </form>
@@ -630,39 +722,54 @@ const AdminDashboard = () => {
         )}
         
         {loading ? (
-          <div className="mt-8 flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+          <div className="mt-8 flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
           </div>
         ) : (
           <div className="mt-8">
             {activeTab === 'universities' && (
-              <div className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-lightText transition-colors duration-300 w-full max-w-none">
-                <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">University</h2>
+              <div className="p-6 rounded-xl shadow-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  🏛️ Universities List
+                </h2>
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead>
-                      <tr>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Name</th>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Location</th>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Ranking</th>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Courses</th>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Actions</th>
+                      <tr className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-700">
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Name</th>
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Location</th>
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Ranking</th>
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Courses</th>
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-github-darkBorder">
-                      {universities.map((uni) => (
-                        <tr key={uni.id}>
-                          <td className="py-3 text-base font-semibold text-gray-900 dark:text-white">{uni.name}</td>
-                          <td className="py-3 text-base text-gray-700 dark:text-white">{uni.location}</td>
-                          <td className="py-3">
-                            <span className="px-3 py-1 rounded-full bg-blue-100 dark:bg-github-darkBorder text-blue-800 dark:text-white text-xs font-semibold">{uni.ranking || 'N/A'}</span>
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">{universities.map((uni) => (
+                        <tr key={uni.id} className="hover:bg-sky-50 dark:hover:bg-gray-700/50 transition-colors">
+                          <td className="py-4 px-4 text-sm font-semibold text-gray-900 dark:text-white">{uni.name}</td>
+                          <td className="py-4 px-4 text-sm text-gray-700 dark:text-gray-300">{uni.location}</td>
+                          <td className="py-4 px-4">
+                            <span className="px-3 py-1 rounded-full bg-gradient-to-r from-sky-100 to-cyan-100 dark:from-sky-900/50 dark:to-cyan-900/50 text-sky-800 dark:text-sky-200 text-xs font-bold">
+                              #{uni.ranking || 'N/A'}
+                            </span>
                           </td>
-                          <td className="py-3">
-                            <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-github-darkBorder text-gray-800 dark:text-white text-xs font-semibold">{uni.courses?.length || 0}</span>
+                          <td className="py-4 px-4">
+                            <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-bold">
+                              {uni.courses?.length || 0} courses
+                            </span>
                           </td>
-                          <td className="py-3">
-                            <button onClick={() => handleEdit(uni.id)} className="text-[#4f46e5] hover:text-[#4338ca] font-semibold mr-4 dark:text-blue-400 dark:hover:text-blue-200">Edit</button>
-                            <button onClick={() => handleDelete(uni.id)} className="text-red-600 hover:text-red-900 font-semibold dark:text-red-400 dark:hover:text-red-200">Delete</button>
+                          <td className="py-4 px-4">
+                            <button 
+                              onClick={() => handleEdit(uni.id)} 
+                              className="text-sky-600 hover:text-sky-800 dark:text-sky-400 dark:hover:text-sky-200 font-semibold mr-4 hover:scale-110 transition-all"
+                            >
+                              ✏️ Edit
+                            </button>
+                            <button 
+                              onClick={() => handleDelete(uni.id)} 
+                              className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 font-semibold hover:scale-110 transition-all"
+                            >
+                              🗑️ Delete
+                            </button>
                           </td>
                         </tr>
                       ))}
@@ -673,37 +780,55 @@ const AdminDashboard = () => {
             )}
             
             {activeTab === 'courses' && (
-              <div className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-lightText transition-colors duration-300 w-full max-w-none">
-                <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Course</h2>
+              <div className="p-6 rounded-xl shadow-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  📚 Courses List
+                </h2>
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead>
-                      <tr>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Name</th>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">University</th>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Level</th>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Duration</th>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Fees</th>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Actions</th>
+                      <tr className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-700">
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Name</th>
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">University</th>
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Level</th>
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Duration</th>
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Fees</th>
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-github-darkBorder">
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                       {courses.map((course) => (
-                        <tr key={course.id}>
-                          <td className="py-3 text-base font-semibold text-gray-900 dark:text-white">{course.name}</td>
-                          <td className="py-3 text-base text-gray-700 dark:text-white">{course.university_name}</td>
-                          <td className="py-3">
-                            <span className="px-3 py-1 rounded-full bg-green-100 dark:bg-github-darkBorder text-green-800 dark:text-white text-xs font-semibold">{course.level}</span>
+                        <tr key={course.id} className="hover:bg-blue-50 dark:hover:bg-gray-700/50 transition-colors">
+                          <td className="py-4 px-4 text-sm font-semibold text-gray-900 dark:text-white">{course.name}</td>
+                          <td className="py-4 px-4 text-sm text-gray-700 dark:text-gray-300">{course.university_name}</td>
+                          <td className="py-4 px-4">
+                            <span className="px-3 py-1 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/50 dark:to-emerald-900/50 text-green-800 dark:text-green-200 text-xs font-bold">
+                              {course.level}
+                            </span>
                           </td>
-                          <td className="py-3">
-                            <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-github-darkBorder text-gray-800 dark:text-white text-xs font-semibold">{course.duration}</span>
+                          <td className="py-4 px-4">
+                            <span className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-bold">
+                              ⏱️ {course.duration}
+                            </span>
                           </td>
-                          <td className="py-3">
-                            <span className="px-3 py-1 rounded-full bg-blue-100 dark:bg-github-darkBorder text-blue-800 dark:text-white text-xs font-semibold">${course.fees}</span>
+                          <td className="py-4 px-4">
+                            <span className="px-3 py-1 rounded-full bg-gradient-to-r from-amber-100 to-yellow-100 dark:from-amber-900/50 dark:to-yellow-900/50 text-amber-800 dark:text-amber-200 text-xs font-bold">
+                              💰 ${course.fees}
+                            </span>
                           </td>
-                          <td className="py-3">
-                            <button onClick={() => handleEdit(course.id)} className="text-[#4f46e5] hover:text-[#4338ca] font-semibold mr-4 dark:text-blue-400 dark:hover:text-blue-200">Edit</button>
-                            <button onClick={() => handleDelete(course.id)} className="text-red-600 hover:text-red-900 font-semibold dark:text-red-400 dark:hover:text-red-200">Delete</button>
+                          <td className="py-4 px-4">
+                            <button 
+                              onClick={() => handleEdit(course.id)} 
+                              className="text-sky-600 hover:text-sky-800 dark:text-sky-400 dark:hover:text-sky-200 font-semibold mr-4 hover:scale-110 transition-all"
+                            >
+                              ✏️ Edit
+                            </button>
+                            <button 
+                              onClick={() => handleDelete(course.id)} 
+                              className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 font-semibold hover:scale-110 transition-all"
+                            >
+                              🗑️ Delete
+                            </button>
                           </td>
                         </tr>
                       ))}
@@ -714,34 +839,50 @@ const AdminDashboard = () => {
             )}
             
             {activeTab === 'users' && (
-              <div className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-lightText transition-colors duration-300 w-full max-w-none">
-                <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">User</h2>
+              <div className="p-6 rounded-xl shadow-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  👥 Users List
+                </h2>
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead>
-                      <tr>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Name</th>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Email</th>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Role</th>
-                        <th className="text-left text-base font-semibold text-gray-600 dark:text-white pb-4">Actions</th>
+                      <tr className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-700">
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Name</th>
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Email</th>
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Role</th>
+                        <th className="text-left text-sm font-bold text-gray-700 dark:text-gray-200 pb-4 px-4 py-3">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-github-darkBorder">
+                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                       {users.map((user) => (
-                        <tr key={user.id}>
-                          <td className="py-3 text-base font-semibold text-gray-900 dark:text-white">
-                            {user.display_name || (user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : user.username)}
-                            <div className="text-xs text-gray-500 dark:text-white">
+                        <tr key={user.id} className="hover:bg-blue-50 dark:hover:bg-gray-700/50 transition-colors">
+                          <td className="py-4 px-4">
+                            <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                              {user.display_name || (user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : user.username)}
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
                               {user.email ? user.email : user.username && user.username.length > 10 ? `@${user.username.substring(0, 10)}...` : `@${user.username}`}
                             </div>
                           </td>
-                          <td className="py-3 text-base text-gray-700 dark:text-white">{user.email}</td>
-                          <td className="py-3">
-                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${user.role === 'admin' ? 'bg-green-100 dark:bg-github-darkBorder text-green-800 dark:text-white' : 'bg-blue-100 dark:bg-github-darkBorder text-blue-800 dark:text-white'}`}>{user.role}</span>
+                          <td className="py-4 px-4 text-sm text-gray-700 dark:text-gray-300">{user.email}</td>
+                          <td className="py-4 px-4">
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${user.role === 'admin' ? 'bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/50 dark:to-emerald-900/50 text-green-800 dark:text-green-200' : 'bg-gradient-to-r from-sky-100 to-cyan-100 dark:from-sky-900/50 dark:to-cyan-900/50 text-sky-800 dark:text-sky-200'}`}>
+                              {user.role === 'admin' ? '👑 Admin' : '👤 ' + user.role}
+                            </span>
                           </td>
-                          <td className="py-3">
-                            <button onClick={() => handleEdit(user.id)} className="text-[#4f46e5] hover:text-[#4338ca] font-semibold mr-4 dark:text-blue-400 dark:hover:text-blue-200">Edit</button>
-                            <button onClick={() => handleDelete(user.id)} className="text-red-600 hover:text-red-900 font-semibold dark:text-red-400 dark:hover:text-red-200">Delete</button>
+                          <td className="py-4 px-4">
+                            <button 
+                              onClick={() => handleEdit(user.id)} 
+                              className="text-sky-600 hover:text-sky-800 dark:text-sky-400 dark:hover:text-sky-200 font-semibold mr-4 hover:scale-110 transition-all"
+                            >
+                              ✏️ Edit
+                            </button>
+                            <button 
+                              onClick={() => handleDelete(user.id)} 
+                              className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 font-semibold hover:scale-110 transition-all"
+                            >
+                              🗑️ Delete
+                            </button>
                           </td>
                         </tr>
                       ))}

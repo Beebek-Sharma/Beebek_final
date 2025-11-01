@@ -465,13 +465,32 @@ def edit_username(request):
     Edit username for the current user
     """
     import logging
+    import re
     logger = logging.getLogger('django')
     
     new_username = request.data.get('username')
     
+    # Validate username
     if not new_username:
         return Response({
             'error': 'Username is required'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    new_username = new_username.strip()
+    
+    if len(new_username) < 3:
+        return Response({
+            'error': 'Username must be at least 3 characters long'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    if len(new_username) > 30:
+        return Response({
+            'error': 'Username must not exceed 30 characters'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    if not re.match(r'^[a-zA-Z0-9_]+$', new_username):
+        return Response({
+            'error': 'Username can only contain letters, numbers, and underscores'
         }, status=status.HTTP_400_BAD_REQUEST)
     
     user = request.user
@@ -499,6 +518,7 @@ def update_name(request):
     Update first name and last name for the current user
     """
     import logging
+    import re
     logger = logging.getLogger('django')
     
     first_name = request.data.get('first_name')
@@ -514,11 +534,32 @@ def update_name(request):
             user = auth_result[0]
         else:
             return Response({'error': 'Authentication required'}, status=status.HTTP_403_FORBIDDEN)
+    
+    # Validate first name
+    if first_name is not None:
+        first_name = first_name.strip()
+        if not first_name:
+            return Response({'error': 'First name cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
+        if len(first_name) < 2:
+            return Response({'error': 'First name must be at least 2 characters long'}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match(r'^[A-Za-z]+$', first_name):
+            return Response({'error': 'First name must contain only letters'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Validate last name
+    if last_name is not None:
+        last_name = last_name.strip()
+        if not last_name:
+            return Response({'error': 'Last name cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
+        if len(last_name) < 2:
+            return Response({'error': 'Last name must be at least 2 characters long'}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match(r'^[A-Za-z]+$', last_name):
+            return Response({'error': 'Last name must contain only letters'}, status=status.HTTP_400_BAD_REQUEST)
+    
     # Update first name and last name if provided
     if first_name is not None:
-        user.first_name = first_name
+        user.first_name = first_name.capitalize()
     if last_name is not None:
-        user.last_name = last_name
+        user.last_name = last_name.capitalize()
     user.save()
     return Response({
         'success': True,
