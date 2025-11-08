@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { validateLogin } from '../utils/validation';
+import LiquidEther from '../components/LiquidEther';
 
 const Login = () => {
   const { login } = useAuth();
@@ -138,8 +139,23 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-github-dark">
-      <div className="w-full max-w-xs bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+    <div className="fixed inset-0 w-full h-screen overflow-hidden bg-white dark:bg-gray-950 flex items-center justify-center">
+      {/* Liquid Ether Background */}
+      <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+        <LiquidEther
+          colors={['#5227FF', '#FF9FFC', '#B19EEF']}
+          mouseForce={40}
+          cursorSize={150}
+          autoDemo={true}
+          autoSpeed={0.8}
+          autoIntensity={2.5}
+          resolution={1}
+          isBounce={false}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-xs bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/20">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome Back</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">

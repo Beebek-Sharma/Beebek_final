@@ -3,7 +3,7 @@ import React from 'react';
 export default function InfoCard({ icon, title, description }) {
   return (
     <div
-      className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-darkText transition-colors duration-300"
+      className="p-6 rounded-xl shadow-md bg-white/40 dark:bg-gray-800/40 text-gray-900 dark:text-gray-100 transition-colors duration-300 border border-white/30 dark:border-gray-700/30"
       style={{ transform: "none" }}
     >
       <div className="mb-4">{icon}</div>

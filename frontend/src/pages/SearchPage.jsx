@@ -84,7 +84,7 @@ const SearchPage = () => {
   const hasResults = results.total > 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-github-dark">
+    <div className="w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Search Header */}
         <motion.div
@@ -105,7 +105,7 @@ const SearchPage = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search universities and courses..."
-                className="flex-1 px-4 py-3 border border-gray-300 dark:border-github-darkBorder rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-github-darkCard text-gray-900 dark:text-github-darkText"
+                className="flex-1 px-4 py-3 border border-white/30 dark:border-gray-700/30 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white/40 dark:bg-gray-800/40 text-gray-900 dark:text-gray-300"
                 autoFocus
               />
               <button

@@ -61,7 +61,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           
           {/* Sidebar */}
           <motion.div
-            className="fixed left-0 top-0 h-full w-72 bg-gradient-to-br from-white to-gray-50 dark:from-github-darkSecondary dark:to-github-darkAccent shadow-2xl border-r border-gray-200 dark:border-gray-700 overflow-y-auto no-scrollbar z-50"
+            className="fixed left-0 top-0 h-full w-72 bg-white/40 dark:bg-gray-800/40 shadow-2xl border-r border-white/30 dark:border-gray-700/30 overflow-y-auto no-scrollbar z-50"
             initial={{ x: -280 }}
             animate={{ x: 0 }}
             exit={{ x: -280 }}

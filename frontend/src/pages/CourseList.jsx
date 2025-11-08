@@ -86,11 +86,11 @@ const CourseList = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
+    <div className="w-full flex flex-col">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-github-darkText">Courses</h1>
         
-        <div className="mt-6 bg-white dark:bg-github-dark shadow dark:border-github-darkBorder px-4 py-5 sm:rounded-lg sm:p-6">
+        <div className="mt-6 bg-white/40 dark:bg-gray-800/40 shadow border border-white/30 dark:border-gray-700/30 px-4 py-5 sm:rounded-lg sm:p-6">
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-github-darkText">Search & Filter</h3>
@@ -123,7 +123,7 @@ const CourseList = () => {
                     <select
                       id="university"
                       name="university"
-                      className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-github-dark rounded-md shadow dark:border-github-darkBorder-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      className="mt-1 block w-full py-2 px-3 border border-white/30 dark:border-gray-700/30 bg-white/40 dark:bg-gray-800/40 rounded-md shadow focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                       value={filters.university}
                       onChange={(e) => setFilters({...filters, university: e.target.value})}
                     >
@@ -143,7 +143,7 @@ const CourseList = () => {
                     <select
                       id="level"
                       name="level"
-                      className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white dark:bg-github-dark rounded-md shadow dark:border-github-darkBorder-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      className="mt-1 block w-full py-2 px-3 border border-white/30 dark:border-gray-700/30 bg-white/40 dark:bg-gray-800/40 rounded-md shadow focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                       value={filters.level}
                       onChange={(e) => setFilters({...filters, level: e.target.value})}
                     >
@@ -158,7 +158,7 @@ const CourseList = () => {
                 <div className="mt-6 flex justify-end">
                   <button
                     type="button"
-                    className="bg-white dark:bg-github-dark py-2 px-4 border border-gray-300 rounded-md shadow dark:border-github-darkBorder-sm text-sm font-medium text-gray-700 dark:text-github-darkText hover:bg-gray-50 dark:bg-github-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    className="bg-white/40 dark:bg-gray-800/40 py-2 px-4 border border-white/30 dark:border-gray-700/30 rounded-md shadow text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-800/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                     onClick={resetFilters}
                   >
                     Reset
@@ -191,7 +191,7 @@ const CourseList = () => {
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
             </div>
           ) : courses.length === 0 ? (
-            <div className="bg-white dark:bg-github-dark shadow dark:border-github-darkBorder overflow-hidden sm:rounded-lg p-6 text-center">
+            <div className="bg-white/40 dark:bg-gray-800/40 shadow border border-white/30 dark:border-gray-700/30 overflow-hidden sm:rounded-lg p-6 text-center">
               <p className="text-gray-500 dark:text-github-darkText">No courses found matching your criteria.</p>
               <button
                 className="mt-4 inline-flex items-center px-3 py-2 border border-gray-300 shadow dark:border-github-darkBorder-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-github-darkText bg-white dark:bg-github-dark hover:bg-gray-50 dark:bg-github-dark"

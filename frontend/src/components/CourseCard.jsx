@@ -12,7 +12,7 @@ const CourseCard = ({ course }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       whileHover={{ y: -4 }}
-      className="bg-white dark:bg-github-darkSecondary rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-github-darkBorder"
+      className="bg-white/40 dark:bg-gray-800/40 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-white/30 dark:border-gray-700/30"
     >
       <Link to={`/courses/${course.id}`} className="block">
         {/* Course Header */}

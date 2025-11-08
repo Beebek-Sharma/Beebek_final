@@ -147,7 +147,7 @@ const AdminFeedbackManager = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl shadow-sm"
+                className="text-center py-16 bg-white/40 dark:bg-gray-800/40 rounded-xl shadow-md border border-white/30 dark:border-gray-700/30"
         >
           <div className="text-gray-400 dark:text-gray-600 mb-4">
             {activeTab === 'pending' ? <FiClock size={48} className="mx-auto" /> : <FiCheckCircle size={48} className="mx-auto" />}
@@ -166,7 +166,7 @@ const AdminFeedbackManager = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ delay: index * 0.05 }}
-                className="p-6 rounded-xl shadow-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all"
+                className="p-6 rounded-xl shadow-md bg-white/40 dark:bg-gray-800/40 border border-white/30 dark:border-gray-700/30 hover:shadow-lg transition-all"
               >
                 {/* Header */}
                 <div className="flex justify-between items-start mb-4">

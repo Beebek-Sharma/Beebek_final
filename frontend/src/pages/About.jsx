@@ -1,14 +1,13 @@
 import React from 'react';
-
 import Footer from '../components/Footer';
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
+    <div className="w-full flex flex-col">
       <main className="max-w-5xl mx-auto px-4 py-12 w-full">
         <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-github-darkText mb-8">About Us</h1>
         <div className="space-y-8">
-          <section className="p-8 rounded-xl shadow-md bg-white dark:bg-github-darkAccent w-full max-w-none">
+          <section className="p-8 rounded-xl shadow-md bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-700/20 w-full max-w-none">
             <p className="text-lg text-gray-700 dark:text-github-darkText mb-6">Welcome to EduConnect!</p>
             <p className="text-gray-600 dark:text-github-darkText mb-6">We believe that every student deserves access to quality education. Our mission is to create meaningful connections through educational resources, helping students find value, inspiration, and make informed decisions about their academic future.</p>
           </section>

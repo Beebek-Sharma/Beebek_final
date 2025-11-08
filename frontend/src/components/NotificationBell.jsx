@@ -85,7 +85,7 @@ const NotificationBell = () => {
       return 'border-l-4 border-emerald-500 bg-emerald-50 dark:bg-emerald-900';
     }
     if (notification.type === 'feedback') {
-      return 'border-l-4 border-violet-500 bg-violet-50 dark:bg-violet-900';
+        return 'border-l-4 border-[#2b4c50] bg-[#2b4c50] dark:bg-[#2b4c50]';
     }
     return 'bg-gray-50 dark:bg-github-darkAccent';
   };
@@ -119,7 +119,7 @@ const NotificationBell = () => {
       <AnimatePresence>
         {showNotifications && (
           <motion.div
-            className="absolute right-0 mt-2 w-80 bg-white dark:bg-github-darkSecondary rounded-lg shadow-lg border border-gray-200 dark:border-github-darkBorder z-50"
+            className="absolute right-0 mt-2 w-80 bg-white/40 dark:bg-gray-800/40 rounded-lg shadow-lg border border-white/30 dark:border-gray-700/30 z-50"
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -145,7 +145,7 @@ const NotificationBell = () => {
                   {notifications.filter((n) => !n.is_read).map((notification) => (
                     <div
                       key={notification.id}
-                      className={`p-3 rounded-lg cursor-pointer ${getNotificationStyle(notification)}`}
+                      className={`p-3 rounded-lg cursor-pointer border border-white/30 dark:border-gray-700/30 ${getNotificationStyle(notification)}`}
                       onClick={() => handleNotificationClick(notification)}
                     >
                       <div className="flex justify-between items-center">

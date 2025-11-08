@@ -35,7 +35,7 @@ const UniversityList = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
+    <div className="w-full flex flex-col">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-github-darkText">Universities</h1>
         
@@ -78,7 +78,7 @@ const UniversityList = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
           </div>
         ) : filteredUniversities.length === 0 ? (
-          <div className="mt-8 bg-white dark:bg-github-dark shadow dark:border-github-darkBorder overflow-hidden sm:rounded-lg p-6 text-center">
+          <div className="mt-8 bg-white/40 dark:bg-gray-800/40 shadow border border-white/30 dark:border-gray-700/30 overflow-hidden sm:rounded-lg p-6 text-center">
             <p className="text-gray-500 dark:text-github-darkText">No universities found matching your search.</p>
           </div>
         ) : (

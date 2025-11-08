@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
 import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../utils/axiosConfig';
@@ -52,15 +51,15 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
+    <div className="w-full flex flex-col">
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-github-darkText">Your Profile</h1>
-        <div className="mt-8 p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-darkText transition-colors duration-300">
+        <div className="mt-8 p-6 rounded-xl shadow-md bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-700/20 text-gray-900 dark:text-white transition-colors duration-300">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg leading-6 font-bold">Personal Information</h2>
             <Link
               to="/settings"
-              className="inline-flex items-center px-3 py-1 border border-sky-600 text-sm font-medium rounded-md text-sky-600 bg-white hover:bg-sky-50 dark:bg-github-dark dark:text-sky-400 dark:border-sky-400 dark:hover:bg-github-darkSecondary"
+              className="inline-flex items-center px-3 py-1 border border-sky-600 text-sm font-medium rounded-md text-sky-600 bg-white/40 hover:bg-white/50 dark:bg-gray-800/40 dark:text-sky-400 dark:border-sky-400 dark:hover:bg-gray-800/50"
             >
               Edit
             </Link>

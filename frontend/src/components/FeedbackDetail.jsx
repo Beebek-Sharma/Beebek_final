@@ -95,7 +95,7 @@ const FeedbackDetail = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-github-darkCard rounded-lg shadow-lg p-8 max-w-md w-full text-center"
+          className="bg-white/40 dark:bg-gray-800/40 rounded-lg shadow-md p-8 max-w-md w-full text-center border border-white/30 dark:border-gray-700/30"
         >
           <div className="text-red-500 text-5xl mb-4">⚠️</div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Error</h2>
@@ -177,7 +177,7 @@ const FeedbackDetail = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white dark:bg-github-darkCard rounded-lg shadow-lg p-6"
+              className="bg-white/40 dark:bg-gray-800/40 rounded-lg shadow-md p-6 border border-white/30 dark:border-gray-700/30"
             >
               <div className="flex items-center gap-2 mb-4">
                 <FiMessageSquare className="text-primary-600" size={24} />
@@ -196,7 +196,7 @@ const FeedbackDetail = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-white dark:bg-github-darkCard rounded-lg shadow-lg p-6"
+                className="bg-white/40 dark:bg-gray-800/40 rounded-lg shadow-md p-6 border border-white/30 dark:border-gray-700/30"
               >
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                   Previous Responses ({feedback.responses.length})

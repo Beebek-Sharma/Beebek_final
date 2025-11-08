@@ -51,7 +51,7 @@ export default function Header({ toggleSidebar }) {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
-      className="fixed top-0 left-0 right-0 w-full bg-white/80 dark:bg-github-darkSecondary/80 backdrop-blur-md shadow-lg z-50 transition-colors duration-300 border-b border-gray-200 dark:border-gray-800"
+      className="fixed top-0 left-0 right-0 w-full bg-white/40 dark:bg-github-darkSecondary/40 backdrop-blur-md shadow-lg z-50 transition-colors duration-300 border-b border-gray-200 dark:border-gray-800"
     >
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">{/* Left Section: Menu Toggle + Logo */}
@@ -124,7 +124,7 @@ export default function Header({ toggleSidebar }) {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-2 w-72 max-h-[80vh] overflow-y-auto bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50"
+                        className="absolute right-0 mt-2 w-72 max-h-[80vh] overflow-y-auto bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/20 z-50"
                       >
                         <div className="flex flex-col items-center py-6 px-6 border-b border-gray-100 dark:border-gray-800">
                           {user?.profile_picture ? (
@@ -217,7 +217,7 @@ export default function Header({ toggleSidebar }) {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-4 py-2 text-sm rounded-lg text-primary-600 dark:text-primary-400 bg-white dark:bg-gray-800 border border-primary-600 dark:border-primary-400 hover:bg-primary-50 dark:hover:bg-gray-700 font-medium transition-all duration-200"
+                      className="px-4 py-2 text-sm rounded-lg text-primary-600 dark:text-primary-400 bg-white/40 dark:bg-gray-800/40 border border-white/30 dark:border-gray-700/30 hover:bg-white/50 dark:hover:bg-gray-800/50 font-medium transition-all duration-200"
                     >
                       Login
                     </motion.button>
@@ -239,7 +239,7 @@ export default function Header({ toggleSidebar }) {
       </div>
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-github-dark shadow-md">
+        <div className="md:hidden bg-white/40 dark:bg-gray-800/40 shadow-md border-t border-white/30 dark:border-gray-700/30">
           <div className="px-4 pt-2 pb-3">
             <SearchBar />
           </div>

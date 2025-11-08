@@ -9,7 +9,7 @@ const Footer = () => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="w-full p-8 rounded-xl shadow-lg bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-github-darkAccent mt-12 border border-gray-200 dark:border-gray-800"
+      className="w-full p-8 rounded-xl shadow-lg bg-white/40 dark:bg-gray-800/40 mt-12 border border-white/30 dark:border-gray-700/30"
     >
       <div className="max-w-7xl mx-auto">
         <div className="xl:grid xl:grid-cols-3 xl:gap-4">

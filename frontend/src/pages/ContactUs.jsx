@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import Footer from '../components/Footer';
 
 const ContactUs = () => {
@@ -27,11 +26,11 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-github-dark flex flex-col">
+    <div className="w-full flex flex-col">
       <main className="max-w-5xl mx-auto px-4 py-12 w-full">
         <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-github-darkText mb-8">Contact Us</h1>
         <div className="space-y-8">
-          <section className="p-8 rounded-xl shadow-md bg-white dark:bg-github-darkAccent w-full max-w-none">
+          <section className="p-8 rounded-xl shadow-md bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-700/20 w-full max-w-none">
             <div className="md:flex">
               {/* Contact Information Section */}
               <div className="bg-violet-700 text-white p-8 md:w-1/3 rounded-xl md:rounded-r-none">

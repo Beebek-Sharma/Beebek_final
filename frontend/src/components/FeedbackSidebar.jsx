@@ -24,9 +24,9 @@ const FeedbackSidebar = () => {
   return (
     <motion.div
       className="p-6 rounded-xl shadow-md 
-                               bg-github-lightAccent dark:bg-github-darkAccent 
-                               text-github-lightText dark:text-github-darkText 
-                               transition-colors duration-300" style={{ transform: "none" }}
+                               bg-white/40 dark:bg-gray-800/40 
+                               text-gray-900 dark:text-gray-100 
+                               transition-colors duration-300 border border-white/30 dark:border-gray-700/30"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -50,7 +50,7 @@ const FeedbackSidebar = () => {
               return (
                 <li
                   key={fb.id}
-                  className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-darkText transition-colors duration-300"
+                  className="p-6 rounded-xl shadow-md bg-white/40 dark:bg-gray-800/40 text-gray-900 dark:text-gray-100 transition-colors duration-300 border border-white/30 dark:border-gray-700/30"
                   style={{ transform: "none" }}
                 >
                   <button
@@ -87,7 +87,7 @@ const FeedbackSidebar = () => {
               return (
                 <li
                   key={fb.id}
-                  className="p-6 rounded-xl shadow-md bg-github-lightAccent dark:bg-github-darkAccent text-github-lightText dark:text-github-darkText transition-colors duration-300"
+                  className="p-6 rounded-xl shadow-md bg-white/40 dark:bg-gray-800/40 text-gray-900 dark:text-gray-100 transition-colors duration-300 border border-white/30 dark:border-gray-700/30"
                   style={{ transform: "none" }}
                 >
                   <button

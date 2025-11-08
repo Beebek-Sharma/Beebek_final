@@ -59,9 +59,9 @@ export default function AccountSettings() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="w-full py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-white/40 dark:bg-gray-800/40 rounded-2xl shadow-xl overflow-hidden border border-white/30 dark:border-gray-700/30">
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-8">
             <h1 className="text-3xl font-bold text-white">Account Settings</h1>
             <p className="text-blue-100 mt-2">Manage your account preferences</p>

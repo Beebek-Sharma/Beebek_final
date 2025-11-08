@@ -185,7 +185,7 @@ const SearchResults = ({ loading, error, results, query, activeTab }) => {
             </Link>
             <Link
               to="/courses"
-              className="inline-flex items-center px-6 py-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="inline-flex items-center px-6 py-3 bg-white/40 dark:bg-gray-800/40 border-2 border-white/30 dark:border-gray-700/30 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               <FiBookOpen className="mr-2" />
               Browse Courses

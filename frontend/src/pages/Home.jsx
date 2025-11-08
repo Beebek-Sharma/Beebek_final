@@ -33,7 +33,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Main Content */}
@@ -84,7 +84,7 @@ const Home = () => {
                 >
                   <Link
                     to="/courses"
-                    className="inline-flex items-center justify-center px-8 py-4 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 shadow-lg"
+                    className="inline-flex items-center justify-center px-8 py-4 border border-white/30 dark:border-gray-700/30 text-base font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white/40 dark:bg-gray-800/40 hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all duration-200 shadow-lg"
                   >
                     Explore Courses
                   </Link>
@@ -95,7 +95,7 @@ const Home = () => {
                 >
                   <Link
                     to="/compare-courses"
-                    className="inline-flex items-center justify-center px-8 py-4 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 shadow-lg"
+                    className="inline-flex items-center justify-center px-8 py-4 border border-white/30 dark:border-gray-700/30 text-base font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white/40 dark:bg-gray-800/40 hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all duration-200 shadow-lg"
                   >
                     Compare Courses
                   </Link>
@@ -142,7 +142,7 @@ const Home = () => {
                   <motion.div
                     key={index}
                     whileHover={{ scale: 1.05, y: -5 }}
-                    className="p-8 rounded-2xl shadow-xl bg-white dark:bg-gray-800 transition-all duration-300"
+                    className="p-8 rounded-2xl shadow-xl bg-white/40 dark:bg-gray-800/40 border border-white/30 dark:border-gray-700/30 transition-all duration-300"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -177,7 +177,7 @@ const Home = () => {
                 <motion.div whileHover={{ x: 5 }} transition={{ type: "spring", stiffness: 300 }}>
                   <Link
                     to="/universities"
-                    className="text-rose-600 hover:text-rose-800 dark:text-rose-400 dark:hover:text-rose-300 font-semibold flex items-center group transition-all duration-200"
+                    className="text-sky-600 hover:text-sky-800 dark:text-sky-400 dark:hover:text-sky-300 font-semibold flex items-center group transition-all duration-200"
                   >
                     View all
                     <motion.svg

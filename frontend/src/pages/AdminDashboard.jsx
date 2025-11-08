@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../utils/axiosConfig';
-
+import { FiGrid, FiBookOpen, FiUsers, FiMessageSquare } from 'react-icons/fi';
 import Footer from '../components/Footer';
 import AdminPromoter from '../components/AdminPromoter';
 import { useAuth } from '../context/AuthContext';
@@ -39,6 +39,8 @@ const AdminDashboard = () => {
     };
     checkAdmin();
   }, [user, isLoaded]);
+  
+  // Return main render section - check later in the file
 
   // Initial form state for each entity type
   const initialFormState = {
@@ -308,12 +310,12 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col">
+    <div className="w-full flex flex-col">
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 gap-4">
           <div>
-            <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold mb-6">
               Admin Dashboard
             </h1>
             <p className="mt-2 text-gray-600 dark:text-gray-300">
@@ -342,39 +344,47 @@ const AdminDashboard = () => {
             <nav className="flex flex-wrap gap-3">
               <button
                 onClick={() => setActiveTab('universities')}
-                className={`px-6 py-3 rounded-xl font-semibold shadow-md transition-all duration-200 ${
-                  activeTab === 'universities'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white scale-105'
-                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-lg hover:scale-105'
-                }`}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                    activeTab === 'universities'
+                      ? 'bg-white text-primary-600 shadow-lg'
+                      : 'bg-white/40 dark:bg-gray-800/40 text-gray-700 dark:text-gray-300 hover:shadow-lg hover:scale-105 border border-white/30 dark:border-gray-700/30'
+                  }`}
               >
-                🏛️ Universities
+                <FiGrid size={20} />
+                 Universities
               </button>
               <button
                 onClick={() => setActiveTab('courses')}
-                className={`px-6 py-3 rounded-xl font-semibold shadow-md transition-all duration-200 ${
-                  activeTab === 'courses'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white scale-105'
-                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-lg hover:scale-105'
-                }`}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                    activeTab === 'courses'
+                      ? 'bg-white text-primary-600 shadow-lg'
+                      : 'bg-white/10 text-white hover:bg-white/20'
+                  }`}
               >
-                📚 Courses
+                <FiBookOpen size={20} />
+                Courses
               </button>
               <button
                 onClick={() => setActiveTab('users')}
-                className={`px-6 py-3 rounded-xl font-semibold shadow-md transition-all duration-200 ${
-                  activeTab === 'users'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white scale-105'
-                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-lg hover:scale-105'
-                }`}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                    activeTab === 'users'
+                      ? 'bg-white text-primary-600 shadow-lg'
+                      : 'bg-white/10 text-white hover:bg-white/20'
+                  }`}
               >
-                👥 Users
+                <FiUsers size={20} />
+                Users
               </button>
               <a
                 href="/admin/feedback"
-                className="px-6 py-3 rounded-xl font-semibold shadow-md transition-all duration-200 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-lg hover:scale-105"
+                className={`px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                activeTab === 'feedback'
+                  ? 'bg-white text-primary-600 shadow-lg'
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
               >
-                💬 Feedback
+                <FiMessageSquare size={20} />
+                Feedback
               </a>
             </nav>
           </div>
@@ -410,7 +420,7 @@ const AdminDashboard = () => {
           <>
             {/* Add Form */}
             {showForm && (
-              <div className="mt-6 p-8 rounded-2xl shadow-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+              <div className="mt-6 p-8 rounded-2xl shadow-2xl bg-white/40 dark:bg-gray-800/40 border border-white/30 dark:border-gray-700/30">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
                   {editMode ? '✏️ Edit' : '➕ Add New'} {activeTab === 'universities' ? 'University' : activeTab === 'courses' ? 'Course' : 'User'}
                 </h2>
@@ -728,7 +738,7 @@ const AdminDashboard = () => {
         ) : (
           <div className="mt-8">
             {activeTab === 'universities' && (
-              <div className="p-6 rounded-xl shadow-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+              <div className="p-6 rounded-xl shadow-2xl bg-white/40 dark:bg-gray-800/40 border border-white/30 dark:border-gray-700/30 transition-colors duration-300">
                 <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   🏛️ Universities List
                 </h2>
@@ -780,7 +790,7 @@ const AdminDashboard = () => {
             )}
             
             {activeTab === 'courses' && (
-              <div className="p-6 rounded-xl shadow-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+              <div className="p-6 rounded-xl shadow-2xl bg-white/40 dark:bg-gray-800/40 border border-white/30 dark:border-gray-700/30 transition-colors duration-300">
                 <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   📚 Courses List
                 </h2>
@@ -839,7 +849,7 @@ const AdminDashboard = () => {
             )}
             
             {activeTab === 'users' && (
-              <div className="p-6 rounded-xl shadow-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+              <div className="p-6 rounded-xl shadow-2xl bg-white/40 dark:bg-gray-800/40 border border-white/30 dark:border-gray-700/30 transition-colors duration-300">
                 <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   👥 Users List
                 </h2>

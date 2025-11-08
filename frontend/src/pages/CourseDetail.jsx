@@ -90,7 +90,7 @@ const CourseDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-github-dark dark:to-gray-900">
+      <div className="w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col items-center justify-center min-h-[400px]">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary-600"></div>
@@ -103,7 +103,7 @@ const CourseDetail = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-github-dark">
+      <div className="w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="bg-red-50 border-l-4 border-red-400 p-4">
             <div className="flex">
@@ -127,7 +127,7 @@ const CourseDetail = () => {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-github-dark">
+      <div className="w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
             <div className="flex">
@@ -150,7 +150,7 @@ const CourseDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-github-dark dark:to-gray-900 flex flex-col">
+    <div className="w-full flex flex-col">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
         {/* Back Button */}
         <motion.div
@@ -247,7 +247,7 @@ const CourseDetail = () => {
           transition={{ delay: 0.2 }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
         >
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+          <div className="bg-white/40 dark:bg-gray-800/40 rounded-xl shadow-lg p-6 border border-white/30 dark:border-gray-700/30">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Duration</p>
@@ -259,7 +259,7 @@ const CourseDetail = () => {
             </div>
           </div>
           
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+          <div className="bg-white/40 dark:bg-gray-800/40 rounded-xl shadow-lg p-6 border border-white/30 dark:border-gray-700/30">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Tuition Fees</p>
@@ -271,7 +271,7 @@ const CourseDetail = () => {
             </div>
           </div>
           
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+          <div className="bg-white/40 dark:bg-gray-800/40 rounded-xl shadow-lg p-6 border border-white/30 dark:border-gray-700/30">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Level</p>
@@ -284,7 +284,7 @@ const CourseDetail = () => {
           </div>
           
           {university && (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+            <div className="bg-white/40 dark:bg-gray-800/40 rounded-xl shadow-lg p-6 border border-white/30 dark:border-gray-700/30">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Location</p>
@@ -303,7 +303,7 @@ const CourseDetail = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl overflow-hidden mb-8"
+          className="bg-white/40 dark:bg-gray-800/40 shadow-xl rounded-2xl overflow-hidden mb-8 border border-white/30 dark:border-gray-700/30"
         >
           <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
@@ -347,7 +347,7 @@ const CourseDetail = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 + index * 0.1 }}
                     whileHover={{ y: -8, transition: { duration: 0.2 } }}
-                    className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700"
+                    className="group bg-white/40 dark:bg-gray-800/40 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-white/30 dark:border-gray-700/30"
                   >
                     <div className="p-6">
                       <div className="flex items-start justify-between mb-4">

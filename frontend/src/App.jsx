@@ -9,6 +9,7 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import RouteChangeListener from './components/RouteChangeListener';
 import ChatWidget from './components/ChatWidget';
+import PageLayout from './components/PageLayout';
 // ...existing code...
 
 function App() {
@@ -63,36 +64,48 @@ function App() {
           });
       });
     }, []);
-  return (
-    <div className="flex flex-col min-h-screen bg-github-light dark:bg-github-dark transition-colors duration-300">
-      <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-      <div className="flex flex-1 overflow-hidden">
-        <div 
-          className={`fixed top-0 left-0 w-64 h-full z-40 transform transition-transform duration-300 ease-in-out ${
-            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } pt-16`}
-        >
-          <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-        </div>
-        {isSidebarOpen && (
-          <div 
-            className="fixed inset-0 top-16 bg-black bg-opacity-50 z-30 transition-opacity duration-300"
-            aria-hidden="true"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-        )}
-        <div className="flex flex-col flex-1">
-          <RouteChangeListener />
-          <main className="flex-1 overflow-y-auto no-scrollbar p-4 pt-20 md:p-8 md:pt-20">
-            <Routes />
-          </main>
-          {location.pathname !== '/login' && location.pathname !== '/register' && <Footer />}
-        </div>
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/forgot-password';
+  
+  if (isAuthPage) {
+    return (
+      <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900">
+        <Routes />
       </div>
-      
-      {/* AI Chat Widget */}
-      <ChatWidget />
-    </div>
+    );
+  }
+  
+  return (
+    <PageLayout>
+      <div className="flex flex-col min-h-screen bg-transparent">
+        <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+        <div className="flex flex-1 overflow-hidden">
+          <div 
+            className={`fixed top-0 left-0 w-64 h-full z-50 transform transition-transform duration-300 ease-in-out ${
+              isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+            } pt-16`}
+          >
+            <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+          </div>
+          {isSidebarOpen && (
+            <div 
+              className="fixed inset-0 top-16 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
+              aria-hidden="true"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+          <div className="flex flex-col flex-1 bg-transparent">
+            <RouteChangeListener />
+            <main className="flex-1 overflow-y-auto no-scrollbar p-4 pt-20 md:p-8 md:pt-20 bg-transparent">
+              <Routes />
+            </main>
+            {location.pathname !== '/login' && location.pathname !== '/register' && <Footer />}
+          </div>
+        </div>
+        
+        {/* AI Chat Widget */}
+        <ChatWidget />
+      </div>
+    </PageLayout>
   );
 }
 

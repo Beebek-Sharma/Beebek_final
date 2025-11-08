@@ -109,11 +109,11 @@ export default function Help() {
 
   if (formSubmitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4">
+      <div className="w-full flex items-center justify-center px-4 py-12">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-12 max-w-md text-center"
+          className="bg-white/40 dark:bg-gray-800/40 rounded-2xl shadow-2xl p-12 max-w-md text-center border border-white/30 dark:border-gray-700/30"
         >
           <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg
@@ -142,7 +142,7 @@ export default function Help() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="w-full py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -200,7 +200,7 @@ export default function Help() {
         >
           <button
             onClick={() => navigate('/courses')}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition group"
+            className="bg-white/40 dark:bg-gray-800/40 rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition group border border-white/30 dark:border-gray-700/30"
           >
             <div className="text-4xl mb-3">📖</div>
             <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
@@ -210,7 +210,7 @@ export default function Help() {
 
           <button
             onClick={() => navigate('/universities')}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition group"
+            className="bg-white/40 dark:bg-gray-800/40 rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition group border border-white/30 dark:border-gray-700/30"
           >
             <div className="text-4xl mb-3">🏛️</div>
             <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
@@ -220,7 +220,7 @@ export default function Help() {
 
           <button
             onClick={() => navigate('/contact')}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition group"
+            className="bg-white/40 dark:bg-gray-800/40 rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition group border border-white/30 dark:border-gray-700/30"
           >
             <div className="text-4xl mb-3">📧</div>
             <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
@@ -230,7 +230,7 @@ export default function Help() {
 
           <button
             onClick={() => navigate('/about')}
-            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition group"
+            className="bg-white/40 dark:bg-gray-800/40 rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition group border border-white/30 dark:border-gray-700/30"
           >
             <div className="text-4xl mb-3">ℹ️</div>
             <h3 className="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
@@ -254,7 +254,7 @@ export default function Help() {
                 className={`px-6 py-3 rounded-lg font-medium transition ${
                   selectedCategory === category.id
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    : 'bg-white/40 dark:bg-gray-800/40 text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-800/50 border border-white/30 dark:border-gray-700/30'
                 }`}
               >
                 <span className="mr-2">{category.icon}</span>
@@ -283,7 +283,7 @@ export default function Help() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden group"
+                  className="bg-white/40 dark:bg-gray-800/40 rounded-xl shadow-md overflow-hidden group border border-white/30 dark:border-gray-700/30"
                 >
                   <summary className="px-6 py-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition font-medium text-gray-900 dark:text-white list-none flex items-center justify-between">
                     <span>{faq.question}</span>
@@ -321,7 +321,7 @@ export default function Help() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden"
+          className="bg-white/40 dark:bg-gray-800/40 rounded-2xl shadow-xl overflow-hidden border border-white/30 dark:border-gray-700/30"
         >
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
             <h2 className="text-2xl font-bold text-white">Still Need Help?</h2>

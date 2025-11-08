@@ -21,8 +21,8 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-github-darkAccent">
-          <div className="max-w-md w-full p-6 bg-white dark:bg-github-dark rounded-lg shadow dark:border-github-darkBorder-lg">
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="max-w-md w-full p-6 bg-white/40 dark:bg-gray-800/40 rounded-lg shadow-md border border-white/30 dark:border-gray-700/30">
             <h2 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h2>
             <p className="text-gray-700 dark:text-github-darkText mb-4">
               The application encountered an unexpected error. Please try refreshing the page.

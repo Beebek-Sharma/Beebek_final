@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import LiquidEther from '../components/LiquidEther';
 
 export default function ResetPassword() {
   const navigate = useNavigate();
@@ -84,11 +85,26 @@ export default function ResetPassword() {
 
   if (passwordReset) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4">
+      <div className="fixed inset-0 w-full h-screen overflow-hidden bg-white dark:bg-gray-950 flex items-center justify-center px-4">
+        {/* Liquid Ether Background */}
+        <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+          <LiquidEther
+            colors={['#5227FF', '#FF9FFC', '#B19EEF']}
+            mouseForce={40}
+            cursorSize={150}
+            autoDemo={true}
+            autoSpeed={0.8}
+            autoIntensity={2.5}
+            resolution={1}
+            isBounce={false}
+          />
+        </div>
+
+        {/* Content */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-12 max-w-md text-center"
+          className="relative z-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-2xl p-12 max-w-md text-center border border-white/20 dark:border-gray-700/20"
         >
           <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg
@@ -120,15 +136,39 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4 py-12">
+    <div className="fixed inset-0 w-full h-screen overflow-hidden bg-white dark:bg-gray-950 flex items-center justify-center px-4 py-12">
+      {/* Liquid Ether Background */}
+      <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+        <LiquidEther
+          colors={['#5227FF', '#FF9FFC', '#B19EEF']}
+          mouseForce={40}
+          cursorSize={150}
+          autoDemo={true}
+          autoSpeed={0.8}
+          autoIntensity={2.5}
+          resolution={1}
+          isBounce={false}
+        />
+      </div>
+
+      {/* Content */}
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="w-full max-w-md"
+        className="relative z-10 w-full max-w-md max-h-[95vh] overflow-y-auto scrollbar-hide"
       >
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+        <style>{`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `}</style>
+        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden border border-white/20 dark:border-gray-700/20">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-10 text-center">
+            <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-8 py-10 text-center">
             <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
                 className="w-8 h-8 text-white"
@@ -145,7 +185,7 @@ export default function ResetPassword() {
               </svg>
             </div>
             <h1 className="text-3xl font-bold text-white">Reset Password</h1>
-            <p className="text-blue-100 mt-2">
+            <p className="text-green-100 mt-2">
               Enter your verification code and new password
             </p>
           </div>
@@ -181,11 +221,11 @@ export default function ResetPassword() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+                className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
               >
                 <div className="flex items-center">
                   <svg
-                    className="w-5 h-5 text-red-600 dark:text-red-400 mr-2 flex-shrink-0"
+                    className="w-5 h-5 text-green-600 dark:text-green-400 mr-2 flex-shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -230,7 +270,7 @@ export default function ResetPassword() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="you@example.com"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
                   />
                 </div>
               </div>
@@ -263,7 +303,7 @@ export default function ResetPassword() {
                     required
                     maxLength="6"
                     placeholder="Enter 6-digit code"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition text-center text-lg tracking-widest font-mono"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition text-center text-lg tracking-widest font-mono"
                   />
                 </div>
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -298,7 +338,7 @@ export default function ResetPassword() {
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
                     placeholder="Enter new password"
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
                   />
                   <button
                     type="button"
@@ -349,7 +389,7 @@ export default function ResetPassword() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                     placeholder="Confirm new password"
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition"
                   />
                   <button
                     type="button"
@@ -373,7 +413,7 @@ export default function ResetPassword() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                className="w-full py-3 px-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-medium hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
               >
                 {loading ? (
                   <span className="flex items-center justify-center">
@@ -410,7 +450,7 @@ export default function ResetPassword() {
                 Remember your password?{' '}
                 <button
                   onClick={() => navigate('/login')}
-                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                  className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-medium"
                 >
                   Sign in
                 </button>

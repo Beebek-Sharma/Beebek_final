@@ -182,7 +182,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="w-full py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
@@ -210,7 +210,7 @@ export default function Settings() {
             className={`p-6 rounded-xl shadow-lg text-center transition group ${
               activeTab === 'profile'
                 ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                : 'bg-white dark:bg-gray-800 hover:shadow-xl'
+                : 'bg-white/40 dark:bg-gray-800/40 hover:shadow-xl border border-white/30 dark:border-gray-700/30'
             }`}
           >
             <div className="text-4xl mb-3">
@@ -237,7 +237,7 @@ export default function Settings() {
             className={`p-6 rounded-xl shadow-lg text-center transition group ${
               activeTab === 'account'
                 ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                : 'bg-white dark:bg-gray-800 hover:shadow-xl'
+                : 'bg-white/40 dark:bg-gray-800/40 hover:shadow-xl border border-white/30 dark:border-gray-700/30'
             }`}
           >
             <div className="text-4xl mb-3">
@@ -264,7 +264,7 @@ export default function Settings() {
             className={`p-6 rounded-xl shadow-lg text-center transition group ${
               activeTab === 'billing'
                 ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                : 'bg-white dark:bg-gray-800 hover:shadow-xl'
+                : 'bg-white/40 dark:bg-gray-800/40 hover:shadow-xl border border-white/30 dark:border-gray-700/30'
             }`}
           >
             <div className="text-4xl mb-3">
@@ -343,7 +343,7 @@ export default function Settings() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden"
+          className="bg-white/40 dark:bg-gray-800/40 rounded-2xl shadow-xl overflow-hidden border border-white/30 dark:border-gray-700/30"
         >
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
             <h2 className="text-2xl font-bold text-white">
@@ -386,7 +386,7 @@ export default function Settings() {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                       Profile Picture
                     </h3>
-                    <label className="cursor-pointer bg-white dark:bg-gray-700 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
+                    <label className="cursor-pointer bg-white/40 dark:bg-gray-800/40 px-4 py-2 border border-white/30 dark:border-gray-700/30 rounded-lg shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-800/50 transition">
                       <span>Change Picture</span>
                       <input
                         type="file"

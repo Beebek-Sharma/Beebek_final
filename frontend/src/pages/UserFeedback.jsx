@@ -12,10 +12,10 @@ const UserFeedback = () => {
       <h1 className="text-3xl font-bold mb-8 mt-2">Feedback Center</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div>
+        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 dark:border-gray-700/20 p-6">
           <FeedbackForm />
         </div>
-        <div>
+        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 dark:border-gray-700/20 p-6">
           <UserFeedbackList />
         </div>
       </div>

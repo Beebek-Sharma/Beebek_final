@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { validateUsername, validateEmail, validatePassword, validateName, validatePasswordMatch } from '../utils/validation';
+import LiquidEther from '../components/LiquidEther';
 
 const Register = () => {
   const { register, login } = useAuth();
@@ -174,11 +175,35 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-github-dark py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Create Account</h2>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+    <div className="fixed inset-0 w-full h-screen overflow-hidden bg-white dark:bg-gray-950 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Liquid Ether Background */}
+      <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+        <LiquidEther
+          colors={['#5227FF', '#FF9FFC', '#B19EEF']}
+          mouseForce={40}
+          cursorSize={150}
+          autoDemo={true}
+          autoSpeed={0.8}
+          autoIntensity={2.5}
+          resolution={1}
+          isBounce={false}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-md bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-lg shadow-lg border border-white/20 dark:border-gray-700/20 max-h-[95vh] overflow-y-auto scrollbar-hide">
+        <style>{`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `}</style>
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Create Account</h2>
+          <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
             Join us to explore universities and courses
           </p>
         </div>
@@ -189,9 +214,9 @@ const Register = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="firstName" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
               First Name *
             </label>
             <input
@@ -202,7 +227,7 @@ const Register = () => {
               value={formData.firstName}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+              className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
                 touched.firstName && errors.firstName 
                   ? 'border-red-500 focus:ring-red-500' 
                   : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
@@ -211,12 +236,12 @@ const Register = () => {
               disabled={loading}
             />
             {touched.firstName && errors.firstName && (
-              <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+              <p className="mt-0.5 text-xs text-red-600">{errors.firstName}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="lastName" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
               Last Name *
             </label>
             <input
@@ -227,7 +252,7 @@ const Register = () => {
               value={formData.lastName}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+              className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
                 touched.lastName && errors.lastName 
                   ? 'border-red-500 focus:ring-red-500' 
                   : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
@@ -236,12 +261,12 @@ const Register = () => {
               disabled={loading}
             />
             {touched.lastName && errors.lastName && (
-              <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+              <p className="mt-0.5 text-xs text-red-600">{errors.lastName}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="username" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
               Username *
             </label>
             <input
@@ -252,7 +277,7 @@ const Register = () => {
               value={formData.username}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+              className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
                 touched.username && errors.username 
                   ? 'border-red-500 focus:ring-red-500' 
                   : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
@@ -261,13 +286,13 @@ const Register = () => {
               disabled={loading}
             />
             {touched.username && errors.username && (
-              <p className="mt-1 text-sm text-red-600">{errors.username}</p>
+              <p className="mt-0.5 text-xs text-red-600">{errors.username}</p>
             )}
-            <p className="mt-1 text-xs text-gray-500">3-30 characters, letters, numbers, and underscores only</p>
+            <p className="mt-0.5 text-xs text-gray-500">3-30 characters, letters, numbers, and underscores only</p>
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="email" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
               Email Address *
             </label>
             <input
@@ -278,7 +303,7 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+              className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
                 touched.email && errors.email 
                   ? 'border-red-500 focus:ring-red-500' 
                   : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
@@ -287,12 +312,12 @@ const Register = () => {
               disabled={loading}
             />
             {touched.email && errors.email && (
-              <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              <p className="mt-0.5 text-xs text-red-600">{errors.email}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="password" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
               Password *
             </label>
             <div className="relative">
@@ -304,7 +329,7 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+                className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
                   touched.password && errors.password 
                     ? 'border-red-500 focus:ring-red-500' 
                     : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
@@ -327,15 +352,15 @@ const Register = () => {
               </button>
             </div>
             {touched.password && errors.password && (
-              <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+              <p className="mt-0.5 text-xs text-red-600">{errors.password}</p>
             )}
-            <p className="mt-1 text-xs text-gray-500">
-              Must contain 8+ characters, uppercase, lowercase, number, and special character
+            <p className="mt-0.5 text-xs text-gray-500">
+              8+ chars, uppercase, lowercase, number, special char
             </p>
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="confirmPassword" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
               Confirm Password *
             </label>
             <div className="relative">
@@ -347,7 +372,7 @@ const Register = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
+                className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:border-transparent dark:bg-gray-700 dark:text-white ${
                   touched.confirmPassword && errors.confirmPassword 
                     ? 'border-red-500 focus:ring-red-500' 
                     : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
@@ -363,23 +388,23 @@ const Register = () => {
                 aria-label={showConfirmPassword ? "Hide password" : "Show password"}
               >
                 {showConfirmPassword ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.122-6.13M6.13 6.13A9.96 9.96 0 0112 3c5.523 0 10 4.477 10 10a9.96 9.96 0 01-1.17 4.53M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.122-6.13M6.13 6.13A9.96 9.96 0 0112 3c5.523 0 10 4.477 10 10a9.96 9.96 0 01-1.17 4.53M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3l18 18M9.88 9.88A3 3 0 0012 15a3 3 0 002.12-5.12M6.13 6.13A9.96 9.96 0 0112 3c5.523 0 10 4.477 10 10a9.96 9.96 0 01-1.17 4.53M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.122-6.13" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3l18 18M9.88 9.88A3 3 0 0012 15a3 3 0 002.12-5.12M6.13 6.13A9.96 9.96 0 0112 3c5.523 0 10 4.477 10 10a9.96 9.96 0 01-1.17 4.53M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.96 9.96 0 012.122-6.13" /></svg>
                 )}
               </button>
             </div>
             {touched.confirmPassword && errors.confirmPassword && (
-              <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+              <p className="mt-0.5 text-xs text-red-600">{errors.confirmPassword}</p>
             )}
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
-            {loading ? 'Creating account & signing in...' : 'Create Account'}
+            {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
 
@@ -414,8 +439,8 @@ const Register = () => {
         </div>
         */}
 
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+        <div className="mt-4 text-center">
+          <p className="text-xs text-gray-600 dark:text-gray-400">
             Already have an account?{' '}
             <Link to="/login" className="text-green-600 hover:text-green-700 font-medium">
               Sign in
