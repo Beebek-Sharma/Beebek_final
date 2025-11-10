@@ -33,6 +33,33 @@ The project is organized into two main folders:
 - Social media integration with links to popular platforms
 - Consistent footer with navigation and social links across all pages
 - Responsive design with TailwindCSS
+ 
+## Screenshots
+
+Below are the screenshots captured from the running application (stored in `frontend/screenshot/`).
+
+### Gallery
+
+![Home (light)](frontend/screenshot/Home_light.png)
+
+_Caption: Home (Light)_
+
+![Home (dark)](frontend/screenshot/Home_dark.png)
+
+_Caption: Home (Dark)_
+
+![Admin Dashboard](frontend/screenshot/Admin_dashboard.png)
+
+_Caption: Admin Dashboard_
+
+![Profile](frontend/screenshot/Profile.png)
+
+_Caption: Profile Page_
+
+![University](frontend/screenshot/University.png)
+
+_Caption: University Detail_
+
 
 ## Requirements
 
